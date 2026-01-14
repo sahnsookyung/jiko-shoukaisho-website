@@ -1,0 +1,164 @@
+@import "tailwindcss";
+
+/* =========================================
+   1. Full Screen Layout
+   ========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #0a0a0a;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+svg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    overflow: visible;
+}
+
+/* =========================================
+   2. Interactive Elements Base
+   ========================================= */
+#interactive-overlays path {
+    opacity: 0.4;
+    fill-opacity: 0.5 !important;
+    stroke-width: 0;
+    transition: all 0.3s ease-out;
+    cursor: pointer;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+/* =========================================
+   3. Hover Effects
+   ========================================= */
+/* Single elements (direct children of interactive-overlays) */
+#interactive-overlays>path:hover {
+    opacity: 0.7;
+    transform: scale(1.015);
+    stroke-width: 3px;
+}
+
+/* Grouped elements (hover any path in a group, all pop together) */
+#interactive-overlays g:hover path {
+    opacity: 0.7;
+    transform: scale(1.015);
+    stroke-width: 3px;
+}
+
+/* =========================================
+   4. Element Colors & Glows
+   ========================================= */
+
+/* Scroll */
+#scroll {
+    fill: #ff9955 !important;
+}
+
+#scroll:hover {
+    stroke: #ffe0cc;
+    filter: drop-shadow(0 0 15px rgba(255, 153, 85, 1)) drop-shadow(0 0 30px rgba(255, 153, 85, 0.8));
+}
+
+/* Philosopher */
+#philosopher {
+    fill: #e5ff80 !important;
+}
+
+#philosopher:hover {
+    stroke: #f5ffc2;
+    filter: drop-shadow(0 0 15px rgba(229, 255, 128, 1)) drop-shadow(0 0 30px rgba(229, 255, 128, 0.8));
+}
+
+/* Japan */
+#japan {
+    fill: #ff8080 !important;
+}
+
+#japan:hover {
+    stroke: #ffe6e6;
+    filter: drop-shadow(0 0 15px rgba(255, 128, 128, 1)) drop-shadow(0 0 30px rgba(255, 128, 128, 0.8));
+}
+
+/* Person */
+#person {
+    fill: #666666 !important;
+}
+
+#person:hover {
+    stroke: #cccccc;
+    filter: drop-shadow(0 0 15px rgba(200, 200, 200, 0.6)) drop-shadow(0 0 30px rgba(200, 200, 200, 0.4));
+}
+
+/* Iceland Mountains Group */
+#iceland-mountains path {
+    fill: #00ffff !important;
+}
+
+#iceland-mountains:hover path {
+    stroke: #ccffff;
+    filter: drop-shadow(0 0 15px rgba(0, 255, 255, 1)) drop-shadow(0 0 30px rgba(0, 255, 255, 0.8));
+}
+
+/* Europe Group */
+#europe path {
+    fill: #0000ff !important;
+}
+
+#europe:hover path {
+    stroke: #8080ff;
+    filter: drop-shadow(0 0 15px rgba(80, 80, 255, 1)) drop-shadow(0 0 30px rgba(80, 80, 255, 0.8));
+}
+
+/* Plane-Skydiver Group (now works like iceland-mountains!) */
+#plane-skydiver path {
+    fill: #008080 !important;
+}
+
+#plane-skydiver:hover path {
+    stroke: #66ffff;
+    filter: drop-shadow(0 0 15px rgba(0, 255, 255, 0.8)) drop-shadow(0 0 30px rgba(0, 255, 255, 0.6));
+}
+
+/* =========================================
+   5. Responsive Adjustments
+   ========================================= */
+@media (max-width: 768px) {
+    body {
+        overflow: auto;
+    }
+
+    #interactive-overlays path {
+        stroke-width: 2px;
+    }
+
+    #interactive-overlays>path:hover,
+    #interactive-overlays g:hover path {
+        stroke-width: 4px;
+    }
+}
+
+@media (min-width: 2560px) {
+    svg {
+        max-width: 2560px;
+        max-height: 1440px;
+    }
+}

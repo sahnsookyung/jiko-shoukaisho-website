@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soo Kyung Ahn</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Add a class for the script to target -->
+        <object class="svg-replace" data="images/inkscape_svg/main.min.interactiveLayerApplied-optimized.svg"
+            type="image/svg+xml" id="svg-object">
+        </object>
+    </div>
+
+    <script>
+        // This script replaces the <object> tag with the actual SVG code
+        // so your CSS in style.css can actually affect the elements inside.
+        document.querySelectorAll('object.svg-replace').forEach(async (obj) => {
+            const response = await fetch(obj.data);
+            const text = await response.text();
+            const span = document.createElement('span');
+            span.innerHTML = text;
+            const svg = span.querySelector('svg');
+
+            // Preserve the ID and Class if needed
+            if (obj.id) svg.id = obj.id;
+            if (obj.className) svg.classList.add(...obj.classList);
+
+            obj.replaceWith(svg);
+        });
+    </script>
+</body>
+
+</html>
