@@ -1,0 +1,16 @@
+{
+    "images": [
+        {
+            "src": "https://source.unsplash.com/random/800x600?tokyo",
+            "caption": "Tokyo"
+        },
+        {
+            "src": "https://source.unsplash.com/random/800x600?kyoto",
+            "caption": "Kyoto"
+        },
+        {
+            "src": "https://source.unsplash.com/random/800x600?osaka",
+            "caption": "Osaka"
+        }
+    ]
+}

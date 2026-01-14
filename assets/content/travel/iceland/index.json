@@ -1,0 +1,16 @@
+{
+    "images": [
+        {
+            "src": "https://source.unsplash.com/random/800x600?iceland",
+            "caption": "Reykjavik"
+        },
+        {
+            "src": "https://source.unsplash.com/random/800x600?glacier",
+            "caption": "Glacier Hike"
+        },
+        {
+            "src": "https://source.unsplash.com/random/800x600?waterfall",
+            "caption": "Waterfall"
+        }
+    ]
+}

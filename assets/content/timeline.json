@@ -1,0 +1,24 @@
+{
+    "events": [
+        {
+            "year": "2014",
+            "title": "Started Coding",
+            "description": "Wrote my first line of Python code."
+        },
+        {
+            "year": "2018",
+            "title": "Graduated University",
+            "description": "Earned my degree in Computer Science."
+        },
+        {
+            "year": "2020",
+            "title": "First Senior Role",
+            "description": "Promoted to Senior Engineer at Tech Corp."
+        },
+        {
+            "year": "2023",
+            "title": "Traveled the World",
+            "description": "Took a sabbatical to visit 10 countries."
+        }
+    ]
+}

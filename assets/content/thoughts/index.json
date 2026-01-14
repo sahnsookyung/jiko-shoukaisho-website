@@ -1,0 +1,19 @@
+{
+    "thoughts": [
+        {
+            "title": "The Art of Code",
+            "date": "Jan 15, 2024",
+            "content": "<p>Code is not just logic; it is a form of expression. Like poetry, it can be elegant, concise, and powerful.</p>"
+        },
+        {
+            "title": "Why I Love SVGs",
+            "date": "Feb 20, 2024",
+            "content": "<p>Scalable Vector Graphics are amazing. They are resolution-independent, manipulatable with code, and lightweight.</p>"
+        },
+        {
+            "title": "Minimalism in Design",
+            "date": "Mar 10, 2024",
+            "content": "<p>Less is often more. By removing clutter, we allow the content to shine and the user to focus.</p>"
+        }
+    ]
+}

@@ -1,0 +1,44 @@
+{
+    "name": "Soo Kyung Ahn",
+    "title": "Software Engineer",
+    "sections": [
+        {
+            "title": "Experience",
+            "items": [
+                {
+                    "company": "Tech Corp",
+                    "role": "Senior Developer",
+                    "period": "2020 - Present",
+                    "description": "Led development of scalable web applications.",
+                    "highlights": [
+                        "Improved performance by 40%",
+                        "Mentored 5 junior developers",
+                        "Architected new microservices system"
+                    ]
+                },
+                {
+                    "company": "Startup Inc",
+                    "role": "Full Stack Developer",
+                    "period": "2018 - 2020",
+                    "description": "Built MVP for fintech product.",
+                    "highlights": [
+                        "Launched product in 3 months",
+                        "Integrated payment gateway"
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Education",
+            "items": [
+                {
+                    "company": "University of Technology",
+                    "role": "B.S. Computer Science",
+                    "period": "2014 - 2018",
+                    "description": "Graduated with Honors",
+                    "highlights": []
+                }
+            ]
+        }
+    ]
+}

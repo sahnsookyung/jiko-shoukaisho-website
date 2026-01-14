@@ -1,0 +1,16 @@
+{
+    "images": [
+        {
+            "src": "https://source.unsplash.com/random/800x600?skydiving",
+            "caption": "Freefall"
+        },
+        {
+            "src": "https://source.unsplash.com/random/800x600?plane",
+            "caption": "The Jump Plane"
+        },
+        {
+            "src": "https://source.unsplash.com/random/800x600?parachute",
+            "caption": "Landing"
+        }
+    ]
+}

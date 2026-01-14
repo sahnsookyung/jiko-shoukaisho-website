@@ -16,23 +16,7 @@
         </object>
     </div>
 
-    <script>
-        // This script replaces the <object> tag with the actual SVG code
-        // so your CSS in style.css can actually affect the elements inside.
-        document.querySelectorAll('object.svg-replace').forEach(async (obj) => {
-            const response = await fetch(obj.data);
-            const text = await response.text();
-            const span = document.createElement('span');
-            span.innerHTML = text;
-            const svg = span.querySelector('svg');
-
-            // Preserve the ID and Class if needed
-            if (obj.id) svg.id = obj.id;
-            if (obj.className) svg.classList.add(...obj.classList);
-
-            obj.replaceWith(svg);
-        });
-    </script>
+    <script type="module" src="/app.js"></script>
 </body>
 
 </html>
