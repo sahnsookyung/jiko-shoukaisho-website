@@ -17,12 +17,24 @@ class LaptopViewer extends HTMLElement {
 
     this.shadowRoot.innerHTML = `
       <style>
-        .wrap{position:relative;width:min(1000px, 95vw);}
-        .frame{width:100%;height:auto;display:block;}
+        :host { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+        .wrap { 
+          position: relative; 
+          width: auto; 
+          height: auto; 
+          max-width: 90vw; 
+          max-height: 90vh; 
+          aspect-ratio: 1376/768; /* Approximate laptop aspect ratio */
+          display: flex; 
+          align-items: center; 
+          justify-content: center;
+        }
+        .frame { width: 100%; height: 100%; display: block; }
+        .frame svg { width: 100%; height: 100%; display: block; }
         /* Adjust these percentages to match your laptop SVG screen area */
         .content-area{position:absolute;left:13%;right:13%;top:7%;bottom:12%;
           background:#fff;overflow:auto;padding:30px;
-          font-family: system-ui, -apple-system, sans-serif; color:#333; line-height:1.6;}
+          font-family: 'Poiret One', system-ui, -apple-system, sans-serif; color:#333; line-height:1.6;}
         
         h1{font-size:24px;border-bottom:2px solid #eee;padding-bottom:10px;margin-bottom:20px;}
         h2{font-size:18px;color:#555;margin-top:24px;margin-bottom:8px;}

@@ -69,12 +69,13 @@
 │   └── focus-trap.js                   # Optional: focus management for overlay
 │
 ├── assets/
-│   ├── svg-containers/                 # SVG frames
-│   │   ├── laptop-screen.svg
-│   │   ├── thought-bubble.svg
+│   ├── images/output_svgs/min/         # SVG frames
+│   │   ├── book.svg 
 │   │   ├── camera-viewfinder.svg
-│   │   ├── scroll-unfurled.svg
-│   │   └── (optional) arrows/icons.svg
+│   │   ├── laptop-screen.svg
+│   │   ├── main.svg
+│   │   ├── navigation-sprites.svg
+│   │   ├── scroll.svg
 │   │
 │   ├── content/                        # Data files
 │   │   ├── resume.json
@@ -507,7 +508,7 @@ class ContentViewer extends HTMLElement {
 
     // Lazy-load frame svg + JSON content
     const [frameSvg, data] = await Promise.all([
-      loadSVG(`assets/svg-containers/${cfg.containerSVG}.svg`),
+      loadSVG(`assets/images/output_svgs/min/${cfg.containerSVG}.svg`),
       loadJSON(cfg.contentPath)
     ]);
 

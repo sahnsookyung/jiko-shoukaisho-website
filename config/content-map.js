@@ -14,7 +14,7 @@ export const contentMap = {
         label: 'Thoughts & Reflections',
         description: 'Read my thoughts page-by-page',
         type: 'thoughts',
-        containerSVG: 'thought-bubble',
+        containerSVG: 'book',
         contentPath: 'assets/content/thoughts/index.json',
         component: 'thought-viewer'
     },
@@ -64,7 +64,7 @@ export const contentMap = {
         label: 'Timeline',
         description: 'A scroll-based story carousel',
         type: 'timeline',
-        containerSVG: 'scroll-unfurled',
+        containerSVG: 'scroll',
         contentPath: 'assets/content/timeline.json',
         component: 'timeline-viewer'
     },

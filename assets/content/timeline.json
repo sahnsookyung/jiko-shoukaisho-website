@@ -1,24 +1,44 @@
 {
     "events": [
         {
-            "year": "2014",
-            "title": "Started Coding",
-            "description": "Wrote my first line of Python code."
+            "year": "2000",
+            "title": "Biogenesis",
+            "description": "The journey begins."
+        },
+        {
+            "year": "2010",
+            "title": "Hello South Africa.",
+            "description": "A young mind in a new world."
+        },
+        {
+            "year": "2016",
+            "title": "Graduation @16",
+            "description": "A successful high-school career guarding 1st place through every year at 98%+, and the privilege of serving as head prefect."
+        },
+        {
+            "year": "2017",
+            "title": "Student becometh Master",
+            "description": "An interesting experience teaching at high school at 17, yesterday's friends become students."
         },
         {
             "year": "2018",
-            "title": "Graduated University",
-            "description": "Earned my degree in Computer Science."
+            "title": "Beginning of University",
+            "description": "Decided to study Computer Science and Applied Statistics."
         },
         {
-            "year": "2020",
-            "title": "First Senior Role",
-            "description": "Promoted to Senior Engineer at Tech Corp."
+            "year": "2021",
+            "title": "Graduation with Distinction",
+            "description": "Graduated with B.Sc. Applied Statistics and B.Sc. Honours in Computer Science. Enjoyable time learning about the world of data, statistics, and computer science."
         },
         {
-            "year": "2023",
-            "title": "Traveled the World",
-            "description": "Took a sabbatical to visit 10 countries."
+            "year": "2022-2025",
+            "title": "To the World of Fintech",
+            "description": "Spent 3.5 years with a fantastic team at Electrum Payments building distributed systems for digital goods and payments used by South Africa's top banks and retailers."
+        },
+        {
+            "year": "2026",
+            "title": "Onwards...",
+            "description": "Learning variable technology that can shape the world."
         }
     ]
 }

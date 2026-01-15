@@ -12,14 +12,14 @@
         "vtracer_command": "vtracer --input thought.jpeg --output output_svgs/thought.svg --colormode color --preset photo --mode spline --hierarchical stacked --filter_speckle 2 --color_precision 8 --gradient_step 25 --segment_length 4"
     },
     "camera": {
-        "prompt": "A camera viewfinder overlay interface drawn with rough black ink brushstrokes. Four bracketed corners and a central crosshair, hand-painted Sumi-e style. Technical markings but made of ink washes. Texture of faded silk. High contrast, distinct lines, isolated on white background. --ar 16:9",
+        "prompt": "A camera viewfinder overlay interface drawn with rough black ink brushstrokes. Four bracketed corners and a central crosshair, hand-painted Sumi-e style. Technical markings but made of ink washes. Texture of faded silk. High contrast, distinct lines, isolated on old parchment background. --ar 16:9",
         "vtracer_command": "vtracer --input camera.jpeg --output output_svgs/camera.svg --colormode color --preset photo --mode spline --hierarchical stacked --filter_speckle 2 --color_precision 8 --gradient_step 25 --segment_length 4"
     },
     "scroll": {
-        "prompt": "A wide horizontal unfurled scroll, open and flat. The paper of the scroll is aged and textured, edges defined by heavy black Sumi-e ink wash lines. Wooden rollers at the top and bottom with visible wood grain. The center is blank for text. Eerie and atmospheric, mineral pigments. Isolated on white background. --ar 16:9",
+        "prompt": "A wide horizontal unfurled scroll, open and flat. The paper of the scroll is aged and textured, edges defined by heavy black Sumi-e ink wash lines. Wooden rollers at the top and bottom with visible wood grain. The center is blank for text. Eerie and atmospheric. Isolated on old parchment background. --ar 16:9",
         "vtracer_command": "vtracer --input scroll.jpeg --output output_svgs/scroll.svg --colormode color --preset photo --mode spline --hierarchical stacked --filter_speckle 2 --color_precision 8 --gradient_step 25 --segment_length 4"
     },
-    "arrows": {
+    "navigation-sprites": {
         "prompt": "A sprite sheet of navigational arrows and user interface icons painted in heavy black Sumi-e brushstrokes. Hand-painted ink wash aesthetic. Left arrow, right arrow, home icon, menu hamburger icon. Rough, organic edges, visible brush texture. Isolated on white background. --ar 16:9",
         "vtracer_command": "vtracer --input arrows.jpeg --output output_svgs/arrows.svg --colormode color --preset photo --mode spline --hierarchical stacked --filter_speckle 2 --color_precision 8 --gradient_step 25 --segment_length 4"
     }

@@ -1,37 +1,137 @@
 import '../ui/navigation-arrows.js';
 
 class TimelineViewer extends HTMLElement {
-    constructor() {
-        super();
-        this.attachShadow({ mode: 'open' });
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+  }
+
+  set frameSvg(v) { this._frameSvg = v; this.render(); }
+  set data(v) { this._data = v; this.render(); }
+  set config(v) { this._config = v; }
+
+  connectedCallback() {
+    this.render();
+  }
+
+  render() {
+    if (!this._frameSvg || !this._data) return;
+
+    // 1. PARSE & CLEAN SVG
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(this._frameSvg, "image/svg+xml");
+    const svgEl = doc.documentElement;
+
+    if (svgEl.nodeName !== 'svg') return;
+
+    // Get the exact dimensions
+    let viewBox = svgEl.getAttribute('viewBox');
+    let w, h;
+
+    if (viewBox) {
+      const parts = viewBox.split(/\s+|,/);
+      w = parseFloat(parts[2]);
+      h = parseFloat(parts[3]);
+    } else {
+      w = parseFloat(svgEl.getAttribute('width')) || 1376;
+      h = parseFloat(svgEl.getAttribute('height')) || 768;
+      svgEl.setAttribute('viewBox', `0 0 ${w} ${h}`);
     }
 
-    set frameSvg(v) { this._frameSvg = v; this.render(); }
-    set data(v) { this._data = v; this.render(); }
-    set config(v) { this._config = v; }
+    // Remove fixed dimensions so CSS can control size
+    svgEl.removeAttribute('width');
+    svgEl.removeAttribute('height');
+    svgEl.style.width = '100%';
+    svgEl.style.height = '100%';
+    svgEl.style.display = 'block';
 
-    connectedCallback() {
-        this.render();
-    }
+    const cleanSvgString = svgEl.outerHTML;
 
-    render() {
-        if (!this._frameSvg || !this._data) return;
+    // Calculate ratio for CSS
+    const cssRatio = `${w} / ${h}`;
+    const ratioVal = w / h;
 
-        this.shadowRoot.innerHTML = `
+    this.shadowRoot.innerHTML = `
       <style>
-        .wrap{position:relative;width:min(600px, 90vw); margin:auto;}
-        .frame{width:100%;height:auto;display:block;}
-        .content-area{position:absolute;left:15%;right:15%;top:12%;bottom:12%;
-          overflow:auto;padding:20px; font-family: 'Georgia', serif; color:#2c1a0b; text-align:center;}
+        :host { 
+          display: flex; 
+          width: 100%; 
+          height: 100%; 
+          align-items: center; 
+          justify-content: center;
+          overflow: hidden; 
+        }
+
+        .wrap { 
+          position: relative; 
+          
+          /* Lock shape to SVG */
+          aspect-ratio: ${cssRatio};
+
+          /* Fit to Screen Logic (95% to match others) */
+          width: min(95vw, calc(95vh * ${ratioVal}));
+          
+          /* Allow child elements to use container query units */
+          container-type: inline-size;
+
+          margin: auto;
+          display: flex; 
+          align-items: center; 
+          justify-content: center;
+        }
+
+        .frame { width: 100%; height: 100%; display: block; }
         
-        .timeline-item{margin-bottom:40px; border-bottom:1px solid rgba(0,0,0,0.1); padding-bottom:30px;}
-        .timeline-item:last-child{border-bottom:none;}
-        .year{font-size:24px;font-weight:bold;color:#8B4513;margin-bottom:8px;}
-        .title{font-size:18px;margin-bottom:12px;font-style:italic;}
-        .desc{line-height:1.5;font-size:15px;}
+        .content-area {
+          position: absolute;
+          /* Adjust these percentages based on your specific scroll/parchment SVG */
+          left: 14%; right: 14%; top: 12%; bottom: 12%;
+          
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 50px;
+          overflow-x: auto;
+          overflow-y: hidden;
+          padding: 20px;
+          
+          font-family: 'Italianno', cursive;
+          scrollbar-width: thin;
+          scrollbar-color: #5c4033 rgba(0,0,0,0.05); 
+        }
+        
+        .content-area::-webkit-scrollbar { height: 8px; }
+        .content-area::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); }
+        .content-area::-webkit-scrollbar-thumb { background-color: #5c4033; border-radius: 10px; border: 1px solid #e0d0b0; }
+
+        .timeline-item {
+          /* Using cqw allows the items to scale down slightly on smaller screens */
+          flex: 0 0 clamp(200px, 25cqw, 280px);
+          text-align: center;
+          padding: 10px;
+          border-right: 1px solid rgba(139, 69, 19, 0.2);
+        }
+        .timeline-item:last-child { border-right: none; }
+
+        .year { 
+          font-size: clamp(24px, 4cqw, 32px); 
+          font-weight: bold; 
+          color: #8B4513; 
+          margin-bottom: 8px; 
+        }
+        .title { 
+          font-size: clamp(18px, 3cqw, 24px); 
+          margin-bottom: 12px; 
+          color: #2c1a0b; 
+        }
+        .desc { 
+          font-size: clamp(16px, 2.5cqw, 20px); 
+          line-height: 1.4; 
+          color: #4a3b2a; 
+        }
       </style>
       <div class="wrap">
-        <div class="frame">${this._frameSvg}</div>
+        <div class="frame">${cleanSvgString}</div>
         <div class="content-area">
           ${(this._data.events || []).map(evt => `
             <div class="timeline-item">
@@ -43,7 +143,7 @@ class TimelineViewer extends HTMLElement {
         </div>
       </div>
     `;
-    }
+  }
 }
 
 customElements.define('timeline-viewer', TimelineViewer);

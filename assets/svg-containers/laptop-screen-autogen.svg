@@ -1,6 +1,0 @@
-<svg viewBox="0 0 1000 700" xmlns="http://www.w3.org/2000/svg">
-  <!-- Simple laptop shape -->
-  <rect x="100" y="50" width="800" height="500" rx="20" ry="20" fill="#333" stroke="#111" stroke-width="5"/>
-  <rect x="120" y="70" width="760" height="460" fill="#fff"/>
-  <path d="M50 550 L950 550 L980 600 L20 600 Z" fill="#ccc"/>
-</svg>
