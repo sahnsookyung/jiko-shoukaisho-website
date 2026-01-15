@@ -5,7 +5,7 @@ Hi! This is "me".
 
 ### Images 
 1. Nano banana prompt searching to come up with a design that I like.
-2. Use Vtracer to generate SVGs from the jpeg so we can have near lossless  .
+2. Use Vtracer to generate SVGs from the jpeg so we can have near lossless quality when zooming.
 3. Minify svg using `svgo`[https://github.com/svg/svgo]
 4. Use inkscape to create layers. Used spline and bezier to create the shapes. The layers are overlayed with100% opacity but will be set to zero in css.
 

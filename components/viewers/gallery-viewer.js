@@ -49,11 +49,11 @@ class GalleryViewer extends HTMLElement {
         @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
       </style>
       <div class="wrap">
-        <div class="frame">${this._frameSvg}</div>
         <div class="viewfinder">
             ${current ? `<img src="${current.src}" alt="${current.caption}">` : '<div style="color:white">No images</div>'}
-            ${current && current.caption ? `<div class="caption">${current.caption}</div>` : ''}
+            ${current?.caption ? `<div class="caption">${current.caption}</div>` : ''}
         </div>
+        <div class="frame" style="position:relative; z-index: 2; pointer-events:none;">${this._frameSvg}</div>
         <div class="controls">
             <navigation-arrows></navigation-arrows>
         </div>
