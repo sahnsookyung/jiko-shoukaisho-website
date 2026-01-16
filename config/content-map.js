@@ -75,7 +75,7 @@ export const contentMap = {
         label: 'About Me',
         description: 'A short intro',
         type: 'about',
-        containerSVG: 'laptop-screen',
+        containerSVG: 'laptop-frame',
         cutoutSVG: 'laptop-screen-cutout',
         contentPath: 'assets/content/about.json',
         component: 'laptop-viewer'

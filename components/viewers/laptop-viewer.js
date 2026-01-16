@@ -5,47 +5,59 @@ class LaptopViewer extends HTMLElement {
   }
 
   set frameSvg(v) { this._frameSvg = v; this.render(); }
+  set cutoutSvg(v) { this._cutoutSvg = v; this.render(); }
   set data(v) { this._data = v; this.render(); }
-  set config(v) { this._config = v; }
 
   connectedCallback() {
     this.render();
   }
 
-  render() {
-    if (!this._frameSvg || !this._data) return;
+  /**
+   * 1. Extracts dimensions for the Aspect Ratio.
+   * 2. Converts the SVG string to a Data URI for isolation.
+   */
+  _processSvg(svgString) {
+    if (!svgString) return null;
 
-    // 1. CLEAN SVG
+    // A. Parse dimensions
     const parser = new DOMParser();
-    const doc = parser.parseFromString(this._frameSvg, "image/svg+xml");
+    const doc = parser.parseFromString(svgString, "image/svg+xml");
     const svgEl = doc.documentElement;
 
-    if (svgEl.nodeName !== 'svg') return;
+    if (svgEl.nodeName !== 'svg') return null;
 
-    // Get exact dimensions
-    let viewBox = svgEl.getAttribute('viewBox');
     let w, h;
+    const viewBox = svgEl.getAttribute('viewBox');
 
     if (viewBox) {
       const parts = viewBox.split(/\s+|,/);
       w = parseFloat(parts[2]);
       h = parseFloat(parts[3]);
     } else {
-      w = parseFloat(svgEl.getAttribute('width')) || 1376;
-      h = parseFloat(svgEl.getAttribute('height')) || 768;
-      svgEl.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      // Fallback: check attributes or style, default to standard HD if completely missing
+      w = parseFloat(svgEl.getAttribute('width')) || parseFloat(svgEl.style.width) || 1376;
+      h = parseFloat(svgEl.getAttribute('height')) || parseFloat(svgEl.style.height) || 768;
     }
 
-    // Standardize SVG
-    svgEl.removeAttribute('width');
-    svgEl.removeAttribute('height');
-    svgEl.style.width = '100%';
-    svgEl.style.height = '100%';
-    svgEl.style.display = 'block';
+    // B. Create Data URI
+    // We use encodeURIComponent to safely handle special characters without full base64 overhead
+    const dataUri = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgString)}`;
 
-    const cleanSvgString = svgEl.outerHTML;
-    const cssRatio = `${w} / ${h}`;
-    const ratioVal = w / h;
+    return { src: dataUri, w, h };
+  }
+
+  render() {
+    if (!this._frameSvg || !this._data) return;
+
+    const frameObj = this._processSvg(this._frameSvg);
+    if (!frameObj) return;
+
+    // Optional Cutout
+    const cutoutObj = this._processSvg(this._cutoutSvg);
+
+    // Calculate Aspect Ratio from the Frame
+    const cssRatio = `${frameObj.w} / ${frameObj.h}`;
+    const ratioVal = frameObj.w / frameObj.h;
 
     this.shadowRoot.innerHTML = `
       <style>
@@ -60,54 +72,74 @@ class LaptopViewer extends HTMLElement {
 
         .wrap { 
           position: relative; 
-          /* Lock shape to SVG */
           aspect-ratio: ${cssRatio};
-          /* Fit to screen */
           width: min(95vw, calc(95vh * ${ratioVal}));
           margin: auto;
           display: flex; 
           align-items: center; 
           justify-content: center;
-          
           container-type: inline-size;
         }
 
-        /* FRAME: Fills the wrapper completely on top */
-        .frame { 
+        /* 
+           STRICT LAYERING 
+           Using z-index to force the order:
+           1. Cutout (Bottom)
+           2. Content (Middle)
+           3. Frame (Top)
+        */
+
+        .layer-cutout { 
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 2; 
-            pointer-events: none; /* Pass clicks to content */
+            z-index: 0;
+            object-fit: fill; /* Ensures SVG stretches exactly like the frame */
+            pointer-events: none;
         }
 
-        /* CONTENT: Sits behind frame */
-        .content-area {
+        .layer-content {
             position: absolute;
-            z-index: 1; 
+            z-index: 1;
             
-            /* Proven alignment values from previous step */
+            /* Positioning: Defines the outer boundary */
             left: 14%; 
             right: 14%; 
             top: 8%; 
             bottom: 12%;
 
-            background: #fff; 
+            background: rgba(255, 255, 255, 0.9);
             overflow: auto;
-            padding: 30px;
             
-            /* Re-enable interactions */
+            /* Fluid padding (matches your font logic) */
+            /* Scales between 15px and 40px based on container width */
+            /* 
+            Top:    Larger (scales 20px-60px)
+            Right:  Standard (scales 15px-40px)
+            Bottom: Larger (scales 20px-60px)
+            Left:   Standard (scales 15px-40px)
+            */
+            padding: clamp(40px, 8cqw, 80px) clamp(15px, 6cqw, 80px) clamp(20px, 8cqw, 60px) clamp(15px, 6cqw, 60px);
+
+
             pointer-events: auto; 
             
             font-family: 'Poiret One', system-ui, -apple-system, sans-serif; 
-            color: #333; 
-            line-height: 1.6;
+            color: #333;
             scrollbar-width: thin;
         }
-        
+
+        .layer-frame { 
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 2;
+            object-fit: fill;
+            pointer-events: none;
+        }
+
         /* Typography */
         h1{font-size: clamp(20px, 4cqw, 28px); border-bottom:2px solid #eee; padding-bottom:10px; margin-bottom:20px;}
         h2{font-size: clamp(16px, 3cqw, 22px); color:#555; margin-top:24px; margin-bottom:8px;}
-        p, li, span { font-size: clamp(14px, 2.5cqw, 18px); }
+        p, li, span { font-size: clamp(14px, 2.5cqw, 18px); line-height: 1.6; }
         
         .job{margin-bottom:24px;}
         .job-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
@@ -119,13 +151,16 @@ class LaptopViewer extends HTMLElement {
       </style>
       
       <div class="wrap">
-        <!-- The Content Layer -->
-        <div class="content-area">
+        <!-- Layer 1: The Screen Cutout (Background) -->
+        ${cutoutObj ? `<img class="layer-cutout" src="${cutoutObj.src}" />` : ''}
+
+        <!-- Layer 2: The Content (Middle) -->
+        <div class="layer-content">
           ${this.renderContent()}
         </div>
         
-        <!-- The Frame Layer -->
-        <div class="frame">${cleanSvgString}</div>
+        <!-- Layer 3: The Frame (Top) -->
+        <img class="layer-frame" src="${frameObj.src}" />
       </div>
     `;
   }

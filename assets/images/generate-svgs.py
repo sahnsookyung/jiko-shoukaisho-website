@@ -225,5 +225,5 @@ if __name__ == "__main__":
     # subprocess.run(["svgo", f"{OUTPUT_DIR}/navigation-sprites.svg", "-o", f"{OUTPUT_MIN_DIR}/navigation-sprites.svg"], check=True)
     # subprocess.run(["svgo", f"{OUTPUT_DIR}/scroll.svg", "-o", f"{OUTPUT_MIN_DIR}/scroll.svg"], check=True)
 
-    subprocess.run(["svgo", f"{OUTPUT_DIR}/laptop-frame.svg", "-o", f"{OUTPUT_MIN_DIR}/laptop-frame.svg"], check=True)
-    subprocess.run(["svgo", f"{OUTPUT_DIR}/laptop-screen-cutout.svg", "-o", f"{OUTPUT_MIN_DIR}/laptop-screen-cutout.svg"], check=True)
+    subprocess.run(["svgo", f"{OUTPUT_DIR}/laptop-frame-rectangle.svg", "-o", f"{OUTPUT_MIN_DIR}/laptop-frame-rectangle.svg"], check=True)
+    subprocess.run(["svgo", f"{OUTPUT_DIR}/laptop-screen-cutout-rectangle.svg", "-o", f"{OUTPUT_MIN_DIR}/laptop-screen-cutout-rectangle.svg"], check=True)
