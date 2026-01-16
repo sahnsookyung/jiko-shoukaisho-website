@@ -90,7 +90,7 @@ class TimelineViewer extends HTMLElement {
           display: flex;
           flex-direction: row;
           align-items: center;
-          gap: 50px;
+          gap: 0; /* Removing gap, using padding on items for spacing */
           overflow-x: auto;
           overflow-y: hidden;
           padding: 20px;
@@ -105,10 +105,15 @@ class TimelineViewer extends HTMLElement {
         .content-area::-webkit-scrollbar-thumb { background-color: #5c4033; border-radius: 10px; border: 1px solid #e0d0b0; }
 
         .timeline-item {
-          /* Using cqw allows the items to scale down slightly on smaller screens */
+          /* Allow content to define width, but ensure minimums so it's not too squashed */
           flex: 0 0 clamp(200px, 25cqw, 280px);
+          min-width: 200px; 
+          
           text-align: center;
-          padding: 10px;
+          
+          /* Symmetric padding ensures the border (right) is visually centered between contents */
+          padding: 0 clamp(20px, 4cqw, 40px);
+          
           border-right: 1px solid rgba(139, 69, 19, 0.2);
         }
         .timeline-item:last-child { border-right: none; }

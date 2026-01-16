@@ -137,17 +137,7 @@ def generate_variants():
     print(f"All variants saved to: {OUTPUT_DIR}/")
     print("=" * 60)
 
-if __name__ == "__main__":
-    # Check if input file exists
-    if not os.path.exists(f"{INPUT_DIR}/main.jpeg"):
-        print(f"Error: Input image '{INPUT_DIR}/main.jpeg' not found!")
-        print("Please ensure main.jpeg is in the current directory.")
-        exit(1)
-    
-    # Run to compare effects of different parameters
-    # generate_variants()
-
-    # Final gen main.svg
+def generate_svgs_from_jpeg():
     run_vtracer(f"{INPUT_DIR}/main.jpeg", f"{OUTPUT_DIR}/main.svg",
                colormode="color",
                preset="photo",
@@ -211,17 +201,29 @@ if __name__ == "__main__":
                filter_speckle=2,
                color_precision=8,
                gradient_step=25,
-               segment_length=4)    
+               segment_length=4)
 
+if __name__ == "__main__":
+    # Check if input file exists
+    if not os.path.exists(f"{INPUT_DIR}/main.jpeg"):
+        print(f"Error: Input image '{INPUT_DIR}/main.jpeg' not found!")
+        print("Please ensure main.jpeg is in the current directory.")
+        exit(1)
+    
+    # Run to compare effects of different parameters
+    # generate_variants()
+
+    # Final gen main.svg
+    # generate_svgs_from_jpeg()
 
     # Minify the result
     print("\nMinifying SVG...")
-    subprocess.run(["svgo", f"{OUTPUT_DIR}/main.svg", "-o", f"{OUTPUT_MIN_DIR}/main.svg"], check=True)
-    subprocess.run(["svgo", f"{OUTPUT_DIR}/laptop-screen.svg", "-o", f"{OUTPUT_MIN_DIR}/laptop-screen.svg"], check=True)
-    subprocess.run(["svgo", f"{OUTPUT_DIR}/book.svg", "-o", f"{OUTPUT_MIN_DIR}/book.svg"], check=True)
-    subprocess.run(["svgo", f"{OUTPUT_DIR}/camera-viewfinder.svg", "-o", f"{OUTPUT_MIN_DIR}/camera-viewfinder.svg"], check=True)
-    subprocess.run(["svgo", f"{OUTPUT_DIR}/navigation-sprites.svg", "-o", f"{OUTPUT_MIN_DIR}/navigation-sprites.svg"], check=True)
-    subprocess.run(["svgo", f"{OUTPUT_DIR}/scroll.svg", "-o", f"{OUTPUT_MIN_DIR}/scroll.svg"], check=True)
+    # subprocess.run(["svgo", f"{OUTPUT_DIR}/main.svg", "-o", f"{OUTPUT_MIN_DIR}/main.svg"], check=True)
+    # subprocess.run(["svgo", f"{OUTPUT_DIR}/laptop-screen.svg", "-o", f"{OUTPUT_MIN_DIR}/laptop-screen.svg"], check=True)
+    # subprocess.run(["svgo", f"{OUTPUT_DIR}/book.svg", "-o", f"{OUTPUT_MIN_DIR}/book.svg"], check=True)
+    # subprocess.run(["svgo", f"{OUTPUT_DIR}/camera-viewfinder.svg", "-o", f"{OUTPUT_MIN_DIR}/camera-viewfinder.svg"], check=True)
+    # subprocess.run(["svgo", f"{OUTPUT_DIR}/navigation-sprites.svg", "-o", f"{OUTPUT_MIN_DIR}/navigation-sprites.svg"], check=True)
+    # subprocess.run(["svgo", f"{OUTPUT_DIR}/scroll.svg", "-o", f"{OUTPUT_MIN_DIR}/scroll.svg"], check=True)
 
-    
-
+    subprocess.run(["svgo", f"{OUTPUT_DIR}/laptop-frame.svg", "-o", f"{OUTPUT_MIN_DIR}/laptop-frame.svg"], check=True)
+    subprocess.run(["svgo", f"{OUTPUT_DIR}/laptop-screen-cutout.svg", "-o", f"{OUTPUT_MIN_DIR}/laptop-screen-cutout.svg"], check=True)

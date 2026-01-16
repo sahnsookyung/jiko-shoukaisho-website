@@ -15,42 +15,117 @@ class LaptopViewer extends HTMLElement {
   render() {
     if (!this._frameSvg || !this._data) return;
 
+    // 1. CLEAN SVG
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(this._frameSvg, "image/svg+xml");
+    const svgEl = doc.documentElement;
+
+    if (svgEl.nodeName !== 'svg') return;
+
+    // Get exact dimensions
+    let viewBox = svgEl.getAttribute('viewBox');
+    let w, h;
+
+    if (viewBox) {
+      const parts = viewBox.split(/\s+|,/);
+      w = parseFloat(parts[2]);
+      h = parseFloat(parts[3]);
+    } else {
+      w = parseFloat(svgEl.getAttribute('width')) || 1376;
+      h = parseFloat(svgEl.getAttribute('height')) || 768;
+      svgEl.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    }
+
+    // Standardize SVG
+    svgEl.removeAttribute('width');
+    svgEl.removeAttribute('height');
+    svgEl.style.width = '100%';
+    svgEl.style.height = '100%';
+    svgEl.style.display = 'block';
+
+    const cleanSvgString = svgEl.outerHTML;
+    const cssRatio = `${w} / ${h}`;
+    const ratioVal = w / h;
+
     this.shadowRoot.innerHTML = `
       <style>
-        :host { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+        :host { 
+          display: flex; 
+          width: 100%; 
+          height: 100%; 
+          align-items: center; 
+          justify-content: center; 
+          overflow: hidden;
+        }
+
         .wrap { 
           position: relative; 
-          width: auto; 
-          height: auto; 
-          max-width: 90vw; 
-          max-height: 90vh; 
-          aspect-ratio: 1376/768; /* Approximate laptop aspect ratio */
+          /* Lock shape to SVG */
+          aspect-ratio: ${cssRatio};
+          /* Fit to screen */
+          width: min(95vw, calc(95vh * ${ratioVal}));
+          margin: auto;
           display: flex; 
           align-items: center; 
           justify-content: center;
+          
+          container-type: inline-size;
         }
-        .frame { width: 100%; height: 100%; display: block; }
-        .frame svg { width: 100%; height: 100%; display: block; }
-        /* Adjust these percentages to match your laptop SVG screen area */
-        .content-area{position:absolute;left:13%;right:13%;top:7%;bottom:12%;
-          background:#fff;overflow:auto;padding:30px;
-          font-family: 'Poiret One', system-ui, -apple-system, sans-serif; color:#333; line-height:1.6;}
+
+        /* FRAME: Fills the wrapper completely on top */
+        .frame { 
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 2; 
+            pointer-events: none; /* Pass clicks to content */
+        }
+
+        /* CONTENT: Sits behind frame */
+        .content-area {
+            position: absolute;
+            z-index: 1; 
+            
+            /* Proven alignment values from previous step */
+            left: 14%; 
+            right: 14%; 
+            top: 8%; 
+            bottom: 12%;
+
+            background: #fff; 
+            overflow: auto;
+            padding: 30px;
+            
+            /* Re-enable interactions */
+            pointer-events: auto; 
+            
+            font-family: 'Poiret One', system-ui, -apple-system, sans-serif; 
+            color: #333; 
+            line-height: 1.6;
+            scrollbar-width: thin;
+        }
         
-        h1{font-size:24px;border-bottom:2px solid #eee;padding-bottom:10px;margin-bottom:20px;}
-        h2{font-size:18px;color:#555;margin-top:24px;margin-bottom:8px;}
+        /* Typography */
+        h1{font-size: clamp(20px, 4cqw, 28px); border-bottom:2px solid #eee; padding-bottom:10px; margin-bottom:20px;}
+        h2{font-size: clamp(16px, 3cqw, 22px); color:#555; margin-top:24px; margin-bottom:8px;}
+        p, li, span { font-size: clamp(14px, 2.5cqw, 18px); }
+        
         .job{margin-bottom:24px;}
         .job-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
-        .role{font-weight:600;font-size:16px;}
+        .role{font-weight:600;}
         .company{color:#666;}
-        .period{font-size:14px;color:#888;}
+        .period{font-size:0.9em;color:#888;}
         ul{padding-left:20px;margin-top:8px;}
         li{margin-bottom:6px;}
       </style>
+      
       <div class="wrap">
-        <div class="frame">${this._frameSvg}</div>
+        <!-- The Content Layer -->
         <div class="content-area">
           ${this.renderContent()}
         </div>
+        
+        <!-- The Frame Layer -->
+        <div class="frame">${cleanSvgString}</div>
       </div>
     `;
   }
@@ -62,7 +137,7 @@ class LaptopViewer extends HTMLElement {
     if (d.text) {
       const bodyContent = Array.isArray(d.text)
         ? d.text.map(p => `<p>${p}</p>`).join('')
-        : d.text; // Assume raw HTML string if not array
+        : d.text;
 
       return `
             <h1>${d.title || 'About Me'}</h1>
@@ -104,4 +179,3 @@ class LaptopViewer extends HTMLElement {
 }
 
 customElements.define('laptop-viewer', LaptopViewer);
-

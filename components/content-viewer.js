@@ -86,10 +86,19 @@ class ContentViewer extends HTMLElement {
         try {
             await import(`./viewers/${cfg.component}.js`);
 
-            const [frameSvg, data] = await Promise.all([
+            const promises = [
                 loadSVG(`assets/images/output_svgs/min/${cfg.containerSVG}.svg`),
                 loadJSON(cfg.contentPath)
-            ]);
+            ];
+
+            if (cfg.cutoutSVG) {
+                promises.push(loadSVG(`assets/images/output_svgs/min/${cfg.cutoutSVG}.svg`));
+            }
+
+            const results = await Promise.all(promises);
+            const frameSvg = results[0];
+            const data = results[1];
+            const cutoutSvg = cfg.cutoutSVG ? results[2] : null;
 
             const el = document.createElement(cfg.component);
 
@@ -125,6 +134,7 @@ class ContentViewer extends HTMLElement {
 
             // 3. Set data (which triggers the first render + our patch)
             el.frameSvg = frameSvg;
+            if (cutoutSvg) el.cutoutSvg = cutoutSvg;
             el.data = data;
             el.config = cfg;
 

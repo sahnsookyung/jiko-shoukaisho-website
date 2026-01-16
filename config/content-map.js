@@ -4,7 +4,8 @@ export const contentMap = {
         label: 'Resume & Experience',
         description: 'View my professional background',
         type: 'resume',
-        containerSVG: 'laptop-screen',
+        containerSVG: 'laptop-frame',
+        cutoutSVG: 'laptop-screen-cutout',
         contentPath: 'assets/content/resume.json',
         component: 'laptop-viewer'
     },
@@ -75,6 +76,7 @@ export const contentMap = {
         description: 'A short intro',
         type: 'about',
         containerSVG: 'laptop-screen',
+        cutoutSVG: 'laptop-screen-cutout',
         contentPath: 'assets/content/about.json',
         component: 'laptop-viewer'
     }
