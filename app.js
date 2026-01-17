@@ -4,14 +4,13 @@ import { inlineSVG } from './utils/svg-loader.js';
 import './components/content-viewer.js';
 import './components/tooltip-display.js';
 
-// import { initParticles } from './components/ui/particles.js';
-// import { initEventHorizon } from './components/ui/particle-effects/pseudoeventhorizon.js';
-import { initEventHorizon } from './components/ui/particle-effects/loreaccurateeventhorizon.js';
+import { initWatermark } from './components/korean-words-bg/korean-words-bg.js';
+import { initEventHorizon } from './components/ui/particle-effects/event-horizon/index.js';
 
 class PortfolioApp {
     async init() {
-        // initParticles();
-        initEventHorizon(true);
+        this.watermarkCtrl = initWatermark();
+        this.horizonCtrl = initEventHorizon(); // mouse pointer effect
 
         await inlineSVG();
 
@@ -35,6 +34,47 @@ class PortfolioApp {
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && this.viewer.isVisible()) this.viewer.hide();
         });
+
+        this.addEffectControls();
+    }
+
+    addEffectControls() {
+        const container = document.createElement('div');
+        container.style.cssText = `
+            position: fixed; top: 50%; left: 20px; transform: translateY(-50%);
+            display: flex; flex-direction: column; gap: 10px; z-index: 9999;
+            font-family: sans-serif;
+        `;
+
+        const createToggle = (symbol, label, onClick, initialState = true) => {
+            const btn = document.createElement('div');
+            btn.innerHTML = symbol;
+            btn.title = label;
+            btn.style.cssText = `
+                font-size: 24px; cursor: pointer; user-select: none;
+                opacity: ${initialState ? '0.9' : '0.3'};
+                transition: opacity 0.3s; color: #4a3b2a;
+            `;
+            let active = initialState;
+            btn.addEventListener('click', () => {
+                active = !active;
+                btn.style.opacity = active ? '0.9' : '0.3';
+                onClick(active);
+            });
+            return btn;
+        };
+
+        const toggleWatermark = createToggle('㉿', 'Toggle Korean background effect (on, off)', (active) => {
+            active ? this.watermarkCtrl?.start() : this.watermarkCtrl?.stop();
+        });
+
+        const toggleEventHorizon = createToggle('⦵', 'Toggle event horizon effect (on, off)', (active) => {
+            active ? this.horizonCtrl?.start() : this.horizonCtrl?.stop();
+        });
+
+        container.appendChild(toggleWatermark);
+        container.appendChild(toggleEventHorizon);
+        document.body.appendChild(container);
     }
 
     resolveConfigFromEventTarget(target) {

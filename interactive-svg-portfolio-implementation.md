@@ -117,10 +117,10 @@ Use an `<object>` tag to load the main SVG file, then inline it with JS so inter
 <body>
   <div class="container">
     <object
-      class="svg-replace"
+      class="main-svg"
       data="images/inkscape_svg/main.min.interactiveLayerApplied-optimized.svg"
       type="image/svg+xml"
-      id="svg-object"
+      id="main-svg-object"
     ></object>
   </div>
 
@@ -338,7 +338,7 @@ const svgCache = new Map();
 const jsonCache = new Map();
 
 export async function inlineSVG() {
-  const objects = document.querySelectorAll('object.svg-replace[type="image/svg+xml"]');
+  const objects = document.querySelectorAll('object.main-svg[type="image/svg+xml"]');
 
   await Promise.all([...objects].map(async (obj) => {
     const res = await fetch(obj.data);

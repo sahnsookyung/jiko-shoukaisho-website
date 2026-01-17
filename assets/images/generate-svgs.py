@@ -1,229 +1,220 @@
 #!/usr/bin/env python3
 """
-Generate multiple SVG files using vtracer with different parameter combinations
-to visualize the differences between various settings.
+Optimized SVG Generator & Minifier.
+Orchestrates vtracer and svgo in parallel for maximum performance.
 """
 
+import argparse
 import subprocess
-import os
+import logging
 from pathlib import Path
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# Input image
-INPUT_DIR = "input_svgs"
-OUTPUT_DIR = "output_svgs"
-OUTPUT_MIN_DIR = "output_svgs/min"
+# --- Configuration ---
 
-# Create output directory
-Path(OUTPUT_DIR).mkdir(exist_ok=True)
+INPUT_DIR = Path("input_svgs")
+OUTPUT_DIR = Path("output_svgs")
+MIN_DIR = OUTPUT_DIR / "min"
 
-def run_vtracer(input_file, output_file, **kwargs):
-    """Run vtracer with specified parameters."""
-    cmd = ["vtracer", "--input", input_file, "--output", output_file]
-    
-    for key, value in kwargs.items():
-        if value is not None:
-            # Keep underscores in argument names (vtracer uses snake_case)
-            arg_name = f"--{key}"
-            cmd.extend([arg_name, str(value)])
-    
-    print(f"Running: {' '.join(cmd)}")
+# Default settings applied to all images unless overridden
+DEFAULT_PARAMS = {
+    "colormode": "color",
+    "preset": "photo",
+    "mode": "spline",
+    "hierarchical": "stacked",
+    "filter_speckle": 2,
+    "color_precision": 8,
+    "gradient_step": 25,
+    "segment_length": 4
+}
+
+# --- Setup Logging ---
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+def run_command(cmd, task_name):
+    """Helper to run a subprocess command safely."""
     try:
         subprocess.run(cmd, check=True, capture_output=True, text=True)
-        print(f"✓ Generated: {output_file}")
-        return True
+        return True, None
     except subprocess.CalledProcessError as e:
-        print(f"✗ Error generating {output_file}: {e.stderr}")
-        return False
+        return False, f"Error in {task_name}: {e.stderr.strip()}"
     except FileNotFoundError:
-        print("✗ Error: vtracer not found. Please install it first.")
-        print("  You can install it with: cargo install vtracer")
-        return False
+        return False, f"Tool not found for {task_name}. Is it installed?"
 
-def generate_variants():
-    """Generate SVG files with different parameter combinations."""
+def process_single_image(job_config):
+    """
+    Handles the full pipeline for a single image:
+    JPEG -> vtracer -> SVG -> svgo -> Minified SVG
+    """
+    name = job_config["name"]
+    output_name = job_config.get("output_name", name)
+    overrides = job_config.get("overrides", {}) or {}
+    should_minify = job_config.get("minify", False)
     
-    print("=" * 60)
-    print("Generating SVG variants using vtracer")
-    print("=" * 60)
-    print()
-    
-    # Test 1: Different presets
-    print("1. Testing presets...")
-    presets = ["bw", "poster", "photo"]
-    for preset in presets:
-        output = f"{OUTPUT_DIR}/preset_{preset}.svg"
-        run_vtracer(f"{INPUT_DIR}/main.jpeg", output, preset=preset)
-    print()
-    
-    # Test 2: Different modes with photo preset
-    print("2. Testing modes (with photo preset)...")
-    modes = ["pixel", "polygon", "spline"]
-    for mode in modes:
-        output = f"{OUTPUT_DIR}/mode_{mode}.svg"
-        run_vtracer(f"{INPUT_DIR}/main.jpeg", output, preset="photo", mode=mode)
-    print()
-    
-    # Test 3: Different color modes
-    print("3. Testing color modes...")
-    run_vtracer(f"{INPUT_DIR}/main.jpeg", f"{OUTPUT_DIR}/colormode_color.svg", 
-                colormode="color", preset="photo")
-    run_vtracer(f"{INPUT_DIR}/main.jpeg", f"{OUTPUT_DIR}/colormode_bw.svg", 
-                colormode="bw")
-    print()
-    
-    # Test 4: Different hierarchical settings (color mode only)
-    print("4. Testing hierarchical settings...")
-    hierarchical_modes = ["stacked", "cutout"]
-    for hier_mode in hierarchical_modes:
-        output = f"{OUTPUT_DIR}/hierarchical_{hier_mode}.svg"
-        run_vtracer(f"{INPUT_DIR}/main.jpeg", output, 
-                   preset="photo", hierarchical=hier_mode)
-    print()
-    
-    # Test 5: Different filter_speckle values (valid range is 0-16)
-    print("5. Testing filter_speckle (noise reduction)...")
-    speckle_values = [0, 4, 8, 16]
-    for speckle in speckle_values:
-        output = f"{OUTPUT_DIR}/speckle_{speckle}.svg"
-        run_vtracer(f"{INPUT_DIR}/main.jpeg", output, 
-                   preset="photo", filter_speckle=speckle)
-    print()
-    
-    # Test 6: Different corner_threshold values
-    print("6. Testing corner_threshold...")
-    corner_values = [30, 60, 90, 120]
-    for corner in corner_values:
-        output = f"{OUTPUT_DIR}/corner_{corner}.svg"
-        run_vtracer(f"{INPUT_DIR}/main.jpeg", output, 
-                   preset="photo", corner_threshold=corner)
-    print()
-    
-    # Test 7: Different color_precision values
-    print("7. Testing color_precision...")
-    precision_values = [4, 6, 8]
-    for precision in precision_values:
-        output = f"{OUTPUT_DIR}/precision_{precision}.svg"
-        run_vtracer(f"{INPUT_DIR}/main.jpeg", output, 
-                   preset="photo", color_precision=precision)
-    print()
-    
-    # Test 8: Different gradient_step values
-    print("8. Testing gradient_step...")
-    gradient_values = [5, 10, 20, 40]
-    for gradient in gradient_values:
-        output = f"{OUTPUT_DIR}/gradient_{gradient}.svg"
-        run_vtracer(f"{INPUT_DIR}/main.jpeg", output, 
-                   preset="photo", gradient_step=gradient)
-    print()
-    
-    # Test 9: Combination tests - high detail vs low detail
-    print("9. Testing detail level combinations...")
-    run_vtracer(f"{INPUT_DIR}/main.jpeg", f"{OUTPUT_DIR}/detail_high.svg",
-               mode="spline",
-               filter_speckle=2,
-               corner_threshold=30,
-               color_precision=8,
-               gradient_step=5)
-    
-    run_vtracer(f"{INPUT_DIR}/main.jpeg", f"{OUTPUT_DIR}/detail_low.svg",
-               mode="polygon",
-               filter_speckle=16,
-               corner_threshold=120,
-               color_precision=4,
-               gradient_step=40)
-    print()
-    
-    print("=" * 60)
-    print(f"All variants saved to: {OUTPUT_DIR}/")
-    print("=" * 60)
+    input_path = INPUT_DIR / f"{name}.jpeg"
+    output_path = OUTPUT_DIR / f"{output_name}.svg"
+    min_path = MIN_DIR / f"{output_name}.svg"
 
-def generate_svgs_from_jpeg():
-    run_vtracer(f"{INPUT_DIR}/main.jpeg", f"{OUTPUT_DIR}/main.svg",
-               colormode="color",
-               preset="photo",
-               mode="spline",
-               hierarchical="stacked",
-               filter_speckle=2,
-               color_precision=8,
-               gradient_step=25,
-               segment_length=4)
+    # 1. Run vtracer (Skip if input doesn't exist)
+    if not input_path.exists():
+        return f"SKIP: Input {input_path} not found."
 
-    # book.svg
-    run_vtracer(f"{INPUT_DIR}/book.jpeg", f"{OUTPUT_DIR}/book.svg",
-               colormode="color",
-               preset="photo",
-               mode="spline",
-               hierarchical="stacked",
-               filter_speckle=2,
-               color_precision=8,
-               gradient_step=25,
-               segment_length=4)
+    # Merge defaults with overrides
+    params = {**DEFAULT_PARAMS, **overrides}
+    
+    cmd = ["vtracer", "--input", str(input_path), "--output", str(output_path)]
+    for key, value in params.items():
+        if value is not None:
+            cmd.extend([f"--{key}", str(value)])
 
-    # camera-viewfinder.svg
-    run_vtracer(f"{INPUT_DIR}/camera-viewfinder.jpeg", f"{OUTPUT_DIR}/camera-viewfinder.svg",
-               colormode="color",
-               preset="photo",
-               mode="spline",
-               hierarchical="stacked",
-               filter_speckle=2,
-               color_precision=8,
-               gradient_step=25,
-               segment_length=4)
+    success, error = run_command(cmd, f"vtracer: {name}")
+    if not success:
+        return error
 
-    # laptop.svg
-    run_vtracer(f"{INPUT_DIR}/laptop.jpeg", f"{OUTPUT_DIR}/laptop-screen.svg",
-               colormode="color",
-               preset="photo",
-               mode="spline",
-               hierarchical="stacked",
-               filter_speckle=2,
-               color_precision=8,
-               gradient_step=25,
-               segment_length=4)
+    msg = f"✓ Generated: {output_name}.svg"
 
-    # navigation-sprites.svg
-    run_vtracer(f"{INPUT_DIR}/navigation-sprites.jpeg", f"{OUTPUT_DIR}/navigation-sprites.svg",
-               colormode="color",
-               preset="photo",
-               mode="spline",
-               hierarchical="stacked",
-               filter_speckle=2,
-               color_precision=8,
-               gradient_step=25,
-               segment_length=4)
+    # 2. Run SVGO (if requested and vtracer succeeded)
+    if should_minify:
+        svgo_cmd = ["svgo", str(output_path), "-o", str(min_path)]
+        success, error = run_command(svgo_cmd, f"svgo: {name}")
+        if success:
+            msg += f" -> Minified to {min_path.name}"
+        else:
+            msg += f" (Minification Failed: {error})"
 
-    # scroll.svg
-    run_vtracer(f"{INPUT_DIR}/scroll.jpeg", f"{OUTPUT_DIR}/scroll.svg",
-               colormode="color",
-               preset="poster",
-               mode="spline",
-               hierarchical="stacked",
-               filter_speckle=2,
-               color_precision=8,
-               gradient_step=25,
-               segment_length=4)
+    return msg
+
+def minify_existing_file(filename):
+    """Handles files that already exist and just need SVGO."""
+    input_path = OUTPUT_DIR / f"{filename}.svg"
+    output_path = MIN_DIR / f"{filename}.svg"
+    
+    if not input_path.exists():
+        return f"SKIP: {filename}.svg not found in {OUTPUT_DIR}"
+        
+    cmd = ["svgo", str(input_path), "-o", str(output_path)]
+    success, error = run_command(cmd, f"svgo-only: {filename}")
+    
+    if success:
+        return f"✓ Minified: {filename}.svg"
+    return error
+
+def run_batch_parallel(minify=False, minify_only=False):
+    """Execute all production jobs in parallel."""
+    # Ensure directories exist
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    if minify or minify_only:
+        MIN_DIR.mkdir(parents=True, exist_ok=True)
+
+    tasks = {} # Map future to job name for logging
+    
+    logger.info(f"Starting batch processing (Minify Only: {minify_only})...")
+
+    with ThreadPoolExecutor() as executor:
+        
+        # 1. Process Production Jobs (Converted files)
+        for name, overrides in PRODUCTION_JOBS:
+            overrides = overrides or {}
+            output_name = overrides.get("output_name", name)
+            
+            if minify_only:
+                # Skip vtracer, just try to minify the output file
+                future = executor.submit(minify_existing_file, output_name)
+                tasks[future] = f"Minify {output_name}"
+            else:
+                # Full pipeline
+                task_config = {
+                    "name": name,
+                    "output_name": output_name,
+                    "overrides": overrides,
+                    "minify": minify
+                }
+                future = executor.submit(process_single_image, task_config)
+                tasks[future] = f"Process {name}"
+
+        # 2. Process Static Minification Jobs (Always minified if minify/minify_only is on)
+        if minify or minify_only:
+            for static_file in MINIFY_ONLY_JOBS:
+                future = executor.submit(minify_existing_file, static_file)
+                tasks[future] = f"Minify Static {static_file}"
+
+        # Gather results
+        for future in as_completed(tasks):
+            job_name = tasks[future]
+            try:
+                result = future.result()
+                if "Error" in result or "✗" in result:
+                    logger.error(result)
+                elif "SKIP" in result:
+                    logger.warning(result)
+                else:
+                    logger.info(result)
+            except Exception as exc:
+                logger.error(f"{job_name} generated an exception: {exc}")
+
+def generate_variants_test():
+    """Debug mode: Run variants on main.jpeg to test settings."""
+    logger.info("Running Parameter Stress Test on main.jpeg...")
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    
+    variants = [
+        ("preset_bw", {"preset": "bw"}),
+        ("preset_poster", {"preset": "poster"}),
+        ("mode_pixel", {"mode": "pixel"}),
+        ("mode_polygon", {"mode": "polygon"}),
+        ("detail_low", {"mode": "polygon", "filter_speckle": 16, "color_precision": 4}),
+        ("detail_high", {"mode": "spline", "filter_speckle": 0, "color_precision": 8}),
+    ]
+    
+    with ThreadPoolExecutor() as executor:
+        futures = []
+        for name, params in variants:
+            task = {
+                "name": "main",
+                "output_name": f"test_{name}",
+                "overrides": params,
+                "minify": False
+            }
+            futures.append(executor.submit(process_single_image, task))
+            
+        for future in as_completed(futures):
+            logger.info(future.result())
+
+
+# Define the production batch: (filename_without_extension, {overrides})
+# If the second element is None, it uses defaults exactly.
+PRODUCTION_JOBS = [
+    ("main", None),
+    ("book", None),
+    ("camera-viewfinder", None),
+    ("laptop", {"output_name": "laptop-screen"}), # Example of changing output name
+    ("navigation-sprites", None),
+    ("scroll", {"preset": "poster"}), # Specific override for scroll
+]
+
+# Static files that only need minification (no vtracer step)
+MINIFY_ONLY_JOBS = [
+    "laptop-frame",
+    "laptop-screen-cutout"
+]
+
 
 if __name__ == "__main__":
-    # Check if input file exists
-    if not os.path.exists(f"{INPUT_DIR}/main.jpeg"):
-        print(f"Error: Input image '{INPUT_DIR}/main.jpeg' not found!")
-        print("Please ensure main.jpeg is in the current directory.")
-        exit(1)
+    parser = argparse.ArgumentParser(description="SVG Batch Processor")
+    parser.add_argument("--mode", choices=["batch", "test"], default="batch", help="Run production batch or test variants")
     
-    # Run to compare effects of different parameters
-    # generate_variants()
+    # Minification controls
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("--no-minify", action="store_true", help="Skip the SVGO minification step completely")
+    group.add_argument("--minify-only", action="store_true", help="Skip generation, only minify existing output files")
+    
+    args = parser.parse_args()
 
-    # Final gen main.svg
-    # generate_svgs_from_jpeg()
-
-    # Minify the result
-    print("\nMinifying SVG...")
-    # subprocess.run(["svgo", f"{OUTPUT_DIR}/main.svg", "-o", f"{OUTPUT_MIN_DIR}/main.svg"], check=True)
-    # subprocess.run(["svgo", f"{OUTPUT_DIR}/laptop-screen.svg", "-o", f"{OUTPUT_MIN_DIR}/laptop-screen.svg"], check=True)
-    # subprocess.run(["svgo", f"{OUTPUT_DIR}/book.svg", "-o", f"{OUTPUT_MIN_DIR}/book.svg"], check=True)
-    # subprocess.run(["svgo", f"{OUTPUT_DIR}/camera-viewfinder.svg", "-o", f"{OUTPUT_MIN_DIR}/camera-viewfinder.svg"], check=True)
-    # subprocess.run(["svgo", f"{OUTPUT_DIR}/navigation-sprites.svg", "-o", f"{OUTPUT_MIN_DIR}/navigation-sprites.svg"], check=True)
-    # subprocess.run(["svgo", f"{OUTPUT_DIR}/scroll.svg", "-o", f"{OUTPUT_MIN_DIR}/scroll.svg"], check=True)
-
-    subprocess.run(["svgo", f"{OUTPUT_DIR}/laptop-frame-rectangle.svg", "-o", f"{OUTPUT_MIN_DIR}/laptop-frame-rectangle.svg"], check=True)
-    subprocess.run(["svgo", f"{OUTPUT_DIR}/laptop-screen-cutout-rectangle.svg", "-o", f"{OUTPUT_MIN_DIR}/laptop-screen-cutout-rectangle.svg"], check=True)
+    if args.mode == "test":
+        generate_variants_test()
+    else:
+        # If minify-only is True, we pass it.
+        # If no-minify is True, minify=False. Otherwise defaults to True.
+        do_minify = not args.no_minify
+        run_batch_parallel(minify=do_minify, minify_only=args.minify_only)
