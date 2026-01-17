@@ -4,8 +4,13 @@ import { inlineSVG } from './utils/svg-loader.js';
 import './components/content-viewer.js';
 import './components/tooltip-display.js';
 
+// import { initParticles } from './components/ui/particles.js';
+import { initParticles } from './components/ui/particle-effects/eventhorizon.js';
+
 class PortfolioApp {
     async init() {
+        initParticles();
+
         await inlineSVG();
 
         this.viewer = document.createElement('content-viewer');
