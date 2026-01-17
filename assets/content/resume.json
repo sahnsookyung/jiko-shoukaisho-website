@@ -61,10 +61,10 @@
             "title": "Skills",
             "items": [
                 {
-                    "company": "Technical Stack",
+                    "company": "",
                     "role": "",
                     "period": "",
-                    "description": "Java (Expert), Python (Intermediate), AWS, Kubernetes, Kafka, Elasticsearch, SQL.",
+                    "description": "Technical Stack: Java (Expert), Python (Intermediate), AWS, Kubernetes, Kafka, Elasticsearch, SQL.",
                     "highlights": [
                         "Cloud & DevOps: AWS (EC2, Lambda, S3, RDS), Docker, EKS, Istio, Terraform/CloudFormation",
                         "Tools: Git, CircleCI, GitHub Actions, SonarQube, Prometheus, Grafana",

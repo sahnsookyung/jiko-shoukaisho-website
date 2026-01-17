@@ -64,16 +64,9 @@ class TimelineViewer extends HTMLElement {
 
         .wrap { 
           position: relative; 
-          
-          /* Lock shape to SVG */
           aspect-ratio: ${cssRatio};
-
-          /* Fit to Screen Logic (95% to match others) */
           width: min(95vw, calc(95vh * ${ratioVal}));
-          
-          /* Allow child elements to use container query units */
           container-type: inline-size;
-
           margin: auto;
           display: flex; 
           align-items: center; 
@@ -82,20 +75,22 @@ class TimelineViewer extends HTMLElement {
 
         .frame { width: 100%; height: 100%; display: block; }
         
+        /* 1. SCROLL VIEWPORT: Fixed to the frame, handles scrolling */
         .content-area {
           position: absolute;
-          /* Adjust these percentages based on your specific scroll/parchment SVG */
           left: 14%; right: 14%; top: 12%; bottom: 12%;
           
           display: flex;
-          flex-direction: row;
-          align-items: center;
-          gap: 0; /* Removing gap, using padding on items for spacing */
+          /* Centers the strip vertically within the frame */
+          align-items: center; 
+          
           overflow-x: auto;
           overflow-y: hidden;
-          padding: 20px;
           
-          font-family: 'Italianno', cursive;
+          /* Horizontal padding for the scroll track */
+          padding: 0 20px;
+          
+          font-family: 'Bilbo Swash Caps', cursive;
           scrollbar-width: thin;
           scrollbar-color: #5c4033 rgba(0,0,0,0.05); 
         }
@@ -104,17 +99,34 @@ class TimelineViewer extends HTMLElement {
         .content-area::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); }
         .content-area::-webkit-scrollbar-thumb { background-color: #5c4033; border-radius: 10px; border: 1px solid #e0d0b0; }
 
+        /* 2. INNER STRIP: Wraps items to sync their height */
+        .timeline-strip {
+          display: flex;
+          flex-direction: row;
+          
+          /* Crucial: Stretches all items to the height of the tallest one */
+          align-items: stretch; 
+          
+          /* Ensures the strip expands horizontally */
+          width: max-content; 
+          
+          /* Vertical padding creates breathing room inside the borders */
+          padding: 20px 0;
+        }
+
+        /* 3. ITEMS: The actual content cells */
         .timeline-item {
-          /* Allow content to define width, but ensure minimums so it's not too squashed */
           flex: 0 0 clamp(200px, 25cqw, 280px);
           min-width: 200px; 
-          
           text-align: center;
-          
-          /* Symmetric padding ensures the border (right) is visually centered between contents */
           padding: 0 clamp(20px, 4cqw, 40px);
           
           border-right: 1px solid rgba(139, 69, 19, 0.2);
+          
+          /* Flex column ensures text is centered vertically within the stretched border */
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
         }
         .timeline-item:last-child { border-right: none; }
 
@@ -125,27 +137,32 @@ class TimelineViewer extends HTMLElement {
           margin-bottom: 8px; 
         }
         .title { 
-          font-size: clamp(18px, 3cqw, 24px); 
+          font-size: clamp(18px, 3cqw, 36px); 
           margin-bottom: 12px; 
           color: #2c1a0b; 
         }
         .desc { 
-          font-size: clamp(16px, 2.5cqw, 20px); 
+          font-size: clamp(16px, 2.5cqw, 24px); 
           line-height: 1.4; 
           color: #4a3b2a; 
         }
       </style>
+      
       <div class="wrap">
         <div class="frame">${cleanSvgString}</div>
+        
         <div class="content-area">
-          ${(this._data.events || []).map(evt => `
-            <div class="timeline-item">
-                <div class="year">${evt.year}</div>
-                <div class="title">${evt.title}</div>
-                <div class="desc">${evt.description}</div>
-            </div>
-          `).join('')}
+          <div class="timeline-strip">
+            ${(this._data.events || []).map(evt => `
+              <div class="timeline-item">
+                  <div class="year">${evt.year}</div>
+                  <div class="title">${evt.title}</div>
+                  <div class="desc">${evt.description}</div>
+              </div>
+            `).join('')}
+          </div>
         </div>
+        
       </div>
     `;
   }
