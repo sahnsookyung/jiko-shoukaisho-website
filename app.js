@@ -5,11 +5,13 @@ import './components/content-viewer.js';
 import './components/tooltip-display.js';
 
 // import { initParticles } from './components/ui/particles.js';
-import { initParticles } from './components/ui/particle-effects/eventhorizon.js';
+// import { initEventHorizon } from './components/ui/particle-effects/pseudoeventhorizon.js';
+import { initEventHorizon } from './components/ui/particle-effects/loreaccurateeventhorizon.js';
 
 class PortfolioApp {
     async init() {
-        initParticles();
+        // initParticles();
+        initEventHorizon(true);
 
         await inlineSVG();
 
