@@ -1,4 +1,5 @@
 import '../ui/navigation-arrows.js';
+import { parseFrameSvg } from './utils/frame-svg.js';
 
 class ThoughtViewer extends HTMLElement {
   constructor() {
@@ -36,39 +37,11 @@ class ThoughtViewer extends HTMLElement {
   render() {
     if (!this._frameSvg || !this._data) return;
 
-    // 1. PARSE & CLEAN SVG
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(this._frameSvg, "image/svg+xml");
-    const svgEl = doc.documentElement;
+    // 1. PARSE & CLEAN SVG (util)
+    const parsed = parseFrameSvg(this._frameSvg, { defaultW: 1000, defaultH: 1000 });
+    if (!parsed) return;
 
-    if (svgEl.nodeName !== 'svg') return;
-
-    // Get the exact dimensions
-    let viewBox = svgEl.getAttribute('viewBox');
-    let w, h;
-
-    if (viewBox) {
-      const parts = viewBox.split(/\s+|,/);
-      w = parseFloat(parts[2]);
-      h = parseFloat(parts[3]);
-    } else {
-      w = parseFloat(svgEl.getAttribute('width')) || 1000;
-      h = parseFloat(svgEl.getAttribute('height')) || 1000;
-      svgEl.setAttribute('viewBox', `0 0 ${w} ${h}`);
-    }
-
-    // Remove fixed dimensions so CSS can control size
-    svgEl.removeAttribute('width');
-    svgEl.removeAttribute('height');
-    svgEl.style.width = '100%';
-    svgEl.style.height = '100%';
-    svgEl.style.display = 'block';
-
-    const cleanSvgString = svgEl.outerHTML;
-
-    // Calculate ratio
-    const cssRatio = `${w} / ${h}`;
-    const ratioVal = w / h;
+    const { cleanSvgString, cssRatio, ratioVal } = parsed;
 
     const thoughts = this._data.thoughts || [];
     const item = thoughts[this.page];

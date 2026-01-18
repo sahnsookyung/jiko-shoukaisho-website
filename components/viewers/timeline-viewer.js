@@ -1,4 +1,5 @@
 import '../ui/navigation-arrows.js';
+import { parseFrameSvg } from './utils/frame-svg.js';
 
 class TimelineViewer extends HTMLElement {
   constructor() {
@@ -17,39 +18,11 @@ class TimelineViewer extends HTMLElement {
   render() {
     if (!this._frameSvg || !this._data) return;
 
-    // 1. PARSE & CLEAN SVG
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(this._frameSvg, "image/svg+xml");
-    const svgEl = doc.documentElement;
+    // 1. PARSE & CLEAN SVG (util)
+    const parsed = parseFrameSvg(this._frameSvg, { defaultW: 1376, defaultH: 768 });
+    if (!parsed) return;
 
-    if (svgEl.nodeName !== 'svg') return;
-
-    // Get the exact dimensions
-    let viewBox = svgEl.getAttribute('viewBox');
-    let w, h;
-
-    if (viewBox) {
-      const parts = viewBox.split(/\s+|,/);
-      w = parseFloat(parts[2]);
-      h = parseFloat(parts[3]);
-    } else {
-      w = parseFloat(svgEl.getAttribute('width')) || 1376;
-      h = parseFloat(svgEl.getAttribute('height')) || 768;
-      svgEl.setAttribute('viewBox', `0 0 ${w} ${h}`);
-    }
-
-    // Remove fixed dimensions so CSS can control size
-    svgEl.removeAttribute('width');
-    svgEl.removeAttribute('height');
-    svgEl.style.width = '100%';
-    svgEl.style.height = '100%';
-    svgEl.style.display = 'block';
-
-    const cleanSvgString = svgEl.outerHTML;
-
-    // Calculate ratio for CSS
-    const cssRatio = `${w} / ${h}`;
-    const ratioVal = w / h;
+    const { cleanSvgString, cssRatio, ratioVal } = parsed;
 
     this.shadowRoot.innerHTML = `
       <style>

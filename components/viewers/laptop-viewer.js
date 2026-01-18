@@ -1,3 +1,5 @@
+import { processSvgForImg } from './utils/frame-svg.js';
+
 class LaptopViewer extends HTMLElement {
   constructor() {
     super();
@@ -12,38 +14,8 @@ class LaptopViewer extends HTMLElement {
     this.render();
   }
 
-  /**
-   * 1. Extracts dimensions for the Aspect Ratio.
-   * 2. Converts the SVG string to a Data URI for isolation.
-   */
   _processSvg(svgString) {
-    if (!svgString) return null;
-
-    // A. Parse dimensions
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(svgString, "image/svg+xml");
-    const svgEl = doc.documentElement;
-
-    if (svgEl.nodeName !== 'svg') return null;
-
-    let w, h;
-    const viewBox = svgEl.getAttribute('viewBox');
-
-    if (viewBox) {
-      const parts = viewBox.split(/\s+|,/);
-      w = parseFloat(parts[2]);
-      h = parseFloat(parts[3]);
-    } else {
-      // Fallback: check attributes or style, default to standard HD if completely missing
-      w = parseFloat(svgEl.getAttribute('width')) || parseFloat(svgEl.style.width) || 1376;
-      h = parseFloat(svgEl.getAttribute('height')) || parseFloat(svgEl.style.height) || 768;
-    }
-
-    // B. Create Data URI
-    // We use encodeURIComponent to safely handle special characters without full base64 overhead
-    const dataUri = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgString)}`;
-
-    return { src: dataUri, w, h };
+    return processSvgForImg(svgString, { defaultW: 1376, defaultH: 768 });
   }
 
   render() {

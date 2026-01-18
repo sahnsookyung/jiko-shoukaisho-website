@@ -1,4 +1,5 @@
 import '../ui/navigation-arrows.js';
+import { parseFrameSvg } from './utils/frame-svg.js';
 
 class GalleryViewer extends HTMLElement {
     constructor() {
@@ -27,39 +28,11 @@ class GalleryViewer extends HTMLElement {
     render() {
         if (!this._frameSvg || !this._data) return;
 
-        // 1. PARSE & CLEAN SVG
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(this._frameSvg, "image/svg+xml");
-        const svgEl = doc.documentElement;
+        // 1. PARSE & CLEAN SVG (util)
+        const parsed = parseFrameSvg(this._frameSvg, { defaultW: 1000, defaultH: 1000 });
+        if (!parsed) return;
 
-        if (svgEl.nodeName !== 'svg') return;
-
-        // Get the exact dimensions
-        let viewBox = svgEl.getAttribute('viewBox');
-        let w, h;
-
-        if (viewBox) {
-            const parts = viewBox.split(/\s+|,/);
-            w = parseFloat(parts[2]);
-            h = parseFloat(parts[3]);
-        } else {
-            w = parseFloat(svgEl.getAttribute('width')) || 1000;
-            h = parseFloat(svgEl.getAttribute('height')) || 1000;
-            svgEl.setAttribute('viewBox', `0 0 ${w} ${h}`);
-        }
-
-        // Remove fixed dimensions
-        svgEl.removeAttribute('width');
-        svgEl.removeAttribute('height');
-        svgEl.style.width = '100%';
-        svgEl.style.height = '100%';
-        svgEl.style.display = 'block';
-
-        const cleanSvgString = svgEl.outerHTML;
-
-        // Calculate ratio
-        const cssRatio = `${w} / ${h}`;
-        const ratioVal = w / h;
+        const { cleanSvgString, cssRatio, ratioVal } = parsed;
 
         const images = this._data.images || [];
         const current = images[this.idx];
@@ -96,29 +69,30 @@ class GalleryViewer extends HTMLElement {
             height: 100%; 
             display: block; 
             position: relative; 
-            z-index: 2;         /* SVG sits ON TOP of the image (good for borders/glare) */
-            pointer-events: none; /* Let clicks pass through frame to controls if needed */
+            z-index: 1;         
+            pointer-events: none;
+            opacity: 0.9;
         }
         
         /* The container for the actual photo */
         .viewfinder {
             position: absolute;
             /* Adjust these percentages to fit the "hole" in your specific gallery SVG */
-            left: 8%; right: 8%; top: 8%; bottom: 8%;
+            left: 13%; right: 13%; top: 17%; bottom: 17%;
             
-            background: #000; 
+            background: rgba(233, 205, 141, 0.5); 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             justify-content: center;
             overflow: hidden;
-            z-index: 1; /* Image sits BEHIND the frame */
+            z-index: 2 /* Image sits BEHIND the frame */
         }
           
         img {
             max-width: 100%; 
             max-height: 100%; 
-            object-fit: contain; 
+            object-fit: cover; 
             animation: fadeIn 0.4s ease;
             user-select: none;
         }
@@ -149,16 +123,11 @@ class GalleryViewer extends HTMLElement {
       </style>
       
       <div class="wrap">
-        <!-- 1. The Image Layer -->
+        <div class="frame">${cleanSvgString}</div>
         <div class="viewfinder">
             ${current ? `<img src="${current.src}" alt="${current.caption || ''}">` : '<div style="color:white">No images</div>'}
             ${current?.caption ? `<div class="caption">${current.caption}</div>` : ''}
         </div>
-
-        <!-- 2. The SVG Frame Layer (Overlays the image) -->
-        <div class="frame">${cleanSvgString}</div>
-
-        <!-- 3. The Controls Layer -->
         <div class="controls">
             <navigation-arrows></navigation-arrows>
         </div>
