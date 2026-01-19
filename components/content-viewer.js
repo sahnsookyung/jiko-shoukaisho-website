@@ -79,12 +79,26 @@ class ContentViewer extends HTMLElement {
     requestClose() { this.dispatchEvent(new CustomEvent('close-request')); }
 
     async show(cfg) {
+        // Create a new request token
+        this._reqId = (this._reqId || 0) + 1;
+        const reqId = this._reqId;
+
         this.classList.add('visible');
         const panel = this.shadowRoot.querySelector('.panel');
         panel.innerHTML = `<loading-spinner></loading-spinner>`;
 
         try {
+            if (!/^[a-z0-9-]+$/i.test(cfg.component)) {
+                throw new Error('Invalid component name');
+            }
+            if (!/^[a-z0-9_-]+$/i.test(cfg.containerSVG)) {
+                throw new Error('Invalid containerSVG name');
+            }
+            if (cfg.cutoutSVG && !/^[a-z0-9_-]+$/i.test(cfg.cutoutSVG)) {
+                throw new Error('Invalid cutoutSVG name');
+            }
             await import(`./viewers/${cfg.component}.js`);
+            if (reqId !== this._reqId) return;
 
             const promises = [
                 loadSVG(`/site-component-images/output_svgs/min/${cfg.containerSVG}.svg`),
@@ -96,6 +110,7 @@ class ContentViewer extends HTMLElement {
             }
 
             const results = await Promise.all(promises);
+            if (reqId !== this._reqId) return;
             const frameSvg = results[0];
             const data = results[1];
             const cutoutSvg = cfg.cutoutSVG ? results[2] : null;
@@ -145,6 +160,7 @@ class ContentViewer extends HTMLElement {
             el.focus();
 
         } catch (e) {
+            if (reqId !== this._reqId) return;
             console.error('Failed to load viewer', e);
             panel.innerHTML = `<div style="color:white;padding:20px;text-align:center;">Failed to load content.<br>Please try again.</div>`;
         }

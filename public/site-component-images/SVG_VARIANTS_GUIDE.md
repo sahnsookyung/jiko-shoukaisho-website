@@ -109,7 +109,7 @@ Color difference between layers (lower = more gradual transitions):
 To regenerate all variants:
 
 ```bash
-cd /Users/sookyungahn/repos/jiko-shoukaisho-website/public/images
+cd public/site-component-images
 python3 generate-svgs.py
 ```
 

@@ -179,7 +179,11 @@ def generate_variants_test():
             futures.append(executor.submit(process_single_image, task))
             
         for future in as_completed(futures):
-            logger.info(future.result())
+            try:
+                result = future.result()
+                logger.info(result)
+            except Exception as exc:
+                logger.error(f"Test variant generated an exception: {exc}")
 
 
 # Define the production batch: (filename_without_extension, {overrides})

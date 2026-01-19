@@ -169,7 +169,6 @@ export function initParticles() {
                 t = Math.max(0, Math.min(1, t)); // Clamp between 0 and 1
 
                 // Interpolate Color: Cyan (Outer) -> Red (Inner)
-                // We use cubic easing (t*t*t) to make the red appear only really close to the center
                 col[i3] = THREE.MathUtils.lerp(CONFIG.colorIn.r, CONFIG.colorOut.r, t * t);
                 col[i3 + 1] = THREE.MathUtils.lerp(CONFIG.colorIn.g, CONFIG.colorOut.g, t * t);
                 col[i3 + 2] = THREE.MathUtils.lerp(CONFIG.colorIn.b, CONFIG.colorOut.b, t * t);

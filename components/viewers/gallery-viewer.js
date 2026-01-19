@@ -1,3 +1,4 @@
+import { escapeHtml } from '../../utils/string-utils.js';
 import '../ui/navigation-arrows.js';
 import { parseFrameSvg } from './utils/frame-svg.js';
 
@@ -125,8 +126,8 @@ class GalleryViewer extends HTMLElement {
       <div class="wrap">
         <div class="frame">${cleanSvgString}</div>
         <div class="viewfinder">
-            ${current ? `<img src="${current.src}" alt="${current.caption || ''}">` : '<div style="color:white">No images</div>'}
-            ${current?.caption ? `<div class="caption">${current.caption}</div>` : ''}
+            ${current ? `<img src="${escapeHtml(current.src)}" alt="${escapeHtml(current.caption)}">` : '<div style="color:white">No images</div>'}
+            ${current?.caption ? `<div class="caption">${escapeHtml(current.caption)}</div>` : ''}
         </div>
         <div class="controls">
             <navigation-arrows></navigation-arrows>

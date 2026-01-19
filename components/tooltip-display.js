@@ -26,8 +26,9 @@ class TooltipDisplay extends HTMLElement {
   }
 
   show(cfg, e) {
-    this.shadowRoot.querySelector('.label').textContent = cfg.label;
-    this.shadowRoot.querySelector('.desc').textContent = cfg.description;
+    if (!cfg || !e) return;
+    this.shadowRoot.querySelector('.label').textContent = cfg.label ?? '';
+    this.shadowRoot.querySelector('.desc').textContent = cfg.description ?? '';
     this.updatePosition(e);
     this.classList.add('visible');
   }
@@ -35,8 +36,8 @@ class TooltipDisplay extends HTMLElement {
   hide() {
     this.classList.remove('visible');
   }
-
   updatePosition(e) {
+    if (!e) return;
     const pad = 16;
     const tip = this.shadowRoot.querySelector('.tip');
     if (!tip) return; // Guard if not rendered yet
@@ -48,6 +49,10 @@ class TooltipDisplay extends HTMLElement {
 
     if (x + r.width > window.innerWidth) x = e.clientX - r.width - pad;
     if (y + r.height > window.innerHeight) y = e.clientY - r.height - pad;
+
+    // Clamp to avoid negative values
+    x = Math.max(0, x);
+    y = Math.max(0, y);
 
     this.style.left = `${x}px`;
     this.style.top = `${y}px`;

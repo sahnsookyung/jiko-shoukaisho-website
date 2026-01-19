@@ -1,5 +1,7 @@
+import DOMPurify from 'dompurify';
 import '../ui/navigation-arrows.js';
 import { parseFrameSvg } from './utils/frame-svg.js';
+import { escapeHtml } from '../../utils/string-utils.js';
 
 class ThoughtViewer extends HTMLElement {
   constructor() {
@@ -116,7 +118,6 @@ class ThoughtViewer extends HTMLElement {
           /* break-inside: avoid; <-- REMOVED to prevent column jumping */
         }
 
-        
         .nav {
           position: absolute;
           left: 50%; bottom: 6%; transform: translateX(-50%);
@@ -132,9 +133,9 @@ class ThoughtViewer extends HTMLElement {
         <div class="frame">${cleanSvgString}</div>
         <div class="content">
           <div class="pages-container">
-            <h2 style="margin-top:0">${item?.title ?? ''}</h2>
-            <p style="margin-top:0;margin-left:0.2em;margin-bottom:1em"><em>${item?.date ?? ''}</em></p>
-            <div style="margin-left:0.2em">${item?.content ?? ''}</div>
+            <h2 style="margin-top:0">${escapeHtml(item?.title ?? '')}</h2>
+            <p style="margin-top:0;margin-left:0.2em;margin-bottom:1em"><em>${escapeHtml(item?.date ?? '')}</em></p>
+            <div style="margin-left:0.2em">${DOMPurify.sanitize(item?.content ?? '')}</div>
           </div>
         </div>
         <div class="nav">
@@ -147,19 +148,46 @@ class ThoughtViewer extends HTMLElement {
     const arrows = this.shadowRoot.querySelector('navigation-arrows');
     if (arrows) {
       this._updateArrows(arrows);
-      arrows.addEventListener('prev', () => this.prev());
-      arrows.addEventListener('next', () => this.next());
+
+      // Prevent duplicate listeners by checking if we have a new element
+      if (this._arrows !== arrows) {
+        // defined bound handlers if not present
+        this._onArrowsPrev = this._onArrowsPrev || this.prev.bind(this);
+        this._onArrowsNext = this._onArrowsNext || this.next.bind(this);
+
+        if (this._arrows) {
+          this._arrows.removeEventListener('prev', this._onArrowsPrev);
+          this._arrows.removeEventListener('next', this._onArrowsNext);
+        }
+
+        this._arrows = arrows;
+        this._arrows.addEventListener('prev', this._onArrowsPrev);
+        this._arrows.addEventListener('next', this._onArrowsNext);
+      }
     }
 
     // Initial display
     this.updateSpread();
   }
 
+  _hasMoreSpreads() {
+    const track = this.shadowRoot.querySelector('.pages-container');
+    const content = this.shadowRoot.querySelector('.content');
+    if (!track || !content) return false;
+
+    // Check if there are more "spreads" (columns off-screen)
+    const currentPos = (this.spreadIndex + 1) * content.clientWidth;
+    return currentPos < track.scrollWidth - 5;
+  }
+
   _updateArrows(arrows) {
     if (!arrows) return;
     const thoughts = this._data?.thoughts || [];
+    const hasNextPage = this.page < thoughts.length - 1;
+    const canNext = this._hasMoreSpreads() || hasNextPage;
+
     arrows.setAttribute('can-prev', String(this.page > 0 || this.spreadIndex > 0));
-    arrows.setAttribute('can-next', String(this.page < thoughts.length - 1 || true));
+    arrows.setAttribute('can-next', String(canNext));
   }
 
   updateSpread() {

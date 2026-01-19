@@ -1,4 +1,5 @@
 import '../ui/navigation-arrows.js';
+import { escapeHtml } from '../../utils/string-utils.js';
 import { parseFrameSvg } from './utils/frame-svg.js';
 
 class TimelineViewer extends HTMLElement {
@@ -128,9 +129,9 @@ class TimelineViewer extends HTMLElement {
           <div class="timeline-strip">
             ${(this._data.events || []).map(evt => `
               <div class="timeline-item">
-                  <div class="year">${evt.year}</div>
-                  <div class="title">${evt.title}</div>
-                  <div class="desc">${evt.description}</div>
+                  <div class="year">${escapeHtml(evt.year)}</div>
+                  <div class="title">${escapeHtml(evt.title)}</div>
+                  <div class="desc">${escapeHtml(evt.description)}</div>
               </div>
             `).join('')}
           </div>

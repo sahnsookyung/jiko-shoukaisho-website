@@ -33,13 +33,13 @@ export function createEffectControls(watermarkCtrl, horizonCtrl) {
         btn.title = label;
         btn.style.cssText = `
             font-size: 28px; cursor: pointer; user-select: none;
-            opacity: ${initialState ? '1' : '0.6'};
+            opacity: ${initialState ? '0.9' : '0.6'};
             transition: opacity 0.5s; color: #bb7422ff;
         `;
         let active = initialState;
         btn.addEventListener('click', () => {
             active = !active;
-            btn.style.opacity = active ? '0.9' : '0.3';
+            btn.style.opacity = active ? '0.9' : '0.6';
             onClick(active);
         });
         return btn;

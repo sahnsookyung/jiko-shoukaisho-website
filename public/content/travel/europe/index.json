@@ -3,14 +3,6 @@
         {
             "src": "content/travel/europe/photo.jpg",
             "caption": "Paris"
-        },
-        {
-            "src": "https://source.unsplash.com/random/800x600?rome",
-            "caption": "Rome"
-        },
-        {
-            "src": "https://source.unsplash.com/random/800x600?barcelona",
-            "caption": "Barcelona"
         }
     ]
 }

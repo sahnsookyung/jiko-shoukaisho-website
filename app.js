@@ -97,4 +97,6 @@ class PortfolioApp {
     }
 }
 
-new PortfolioApp().init();
+new PortfolioApp().init().catch((err) => {
+    console.error('Portfolio initialization failed:', err);
+});

@@ -1,14 +1,14 @@
 {
     "main": {
         "prompt": "Wide horizontal scroll painting. A smooth Sumi-e ink wash painting with heavy black brushstrokes. A Korean scholar wearing a white traditional \"Hahoe\" mask with visible wood grain (very slight smile, closed mouth) and black Gat hat sits in a mountain pavilion. On the desk: a laptop made of dark driftwood and a tightly rolled, closed scroll. The scroll has mysterious markings indicative of time. The landscape features Icelandic volcanic peaks, jagged black rocks, and misty fjords, and European gothic style cities, as well as Japanese temples. A torii gate lines one of the ridges. An old philosopher statue is on the way to the torii gate. Above, a sketch-like Da Vinci machine glides and a man can be seen dropping from the vehicle. Texture: Faded silk, mineral pigments, eerie and atmospheric. --ar 16:9",
-        "vtracer_command": "vtracer --input main.jpeg --output output_svgs/test.svg --colormode color --preset photo --mode spline --hierarchical stacked --filter_speckle 2 --color_precision 8 --gradient_step 25 --segment_length 4"
+        "vtracer_command": "vtracer --input main.jpeg --output output_svgs/main.svg --colormode color --preset photo --mode spline --hierarchical stacked --filter_speckle 2 --color_precision 8 --gradient_step 25 --segment_length 4"
     },
     "laptop": {
         "prompt": "Front facing view of a laptop screen frame made of dark textured driftwood, blank white screen area in the center. Smooth Sumi-e ink wash painting style with heavy black brushstrokes defining the wood grain. The frame looks ancient and organic. Texture of faded silk and mineral pigments. High contrast, isolated on white background. --ar 16:9",
         "vtracer_command": "vtracer --input laptop.jpeg --output output_svgs/laptop.svg --colormode color --preset photo --mode spline --hierarchical stacked --filter_speckle 2 --color_precision 8 --gradient_step 25 --segment_length 4"
     },
     "thought": {
-        "prompt": "A large graphic thought bubble drawn in a single heavy black Sumi-e brushstroke. The tail must start at the bottom left. The line is thick and variable with ink splatter edges. Inside is empty space with a similar color to the surrounds. Texture of faded silk and mineral pigments. Sophiscated and atmospheric. Make the thought bubble isolated but similar background. --ar 16:9",
+        "prompt": "A large graphic thought bubble drawn in a single heavy black Sumi-e brushstroke. The tail must start at the bottom left. The line is thick and variable with ink splatter edges. Inside is empty space with a similar color to the surrounds. Texture of faded silk and mineral pigments. Sophisticated and atmospheric. Make the thought bubble isolated but similar background. --ar 16:9",
         "vtracer_command": "vtracer --input thought.jpeg --output output_svgs/thought.svg --colormode color --preset photo --mode spline --hierarchical stacked --filter_speckle 2 --color_precision 8 --gradient_step 25 --segment_length 4"
     },
     "camera": {

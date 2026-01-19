@@ -44,6 +44,9 @@ export async function loadSVG(path) {
     if (svgCache.has(path)) return svgCache.get(path);
 
     const res = await fetch(path);
+    if (!res.ok) {
+        throw new Error(`Failed to fetch SVG: ${res.status} ${res.statusText} for ${path}`);
+    }
     const text = await res.text();
     svgCache.set(path, text);
     return text;
@@ -53,6 +56,9 @@ export async function loadJSON(path) {
     if (jsonCache.has(path)) return jsonCache.get(path);
 
     const res = await fetch(path);
+    if (!res.ok) {
+        throw new Error(`Failed to fetch JSON: ${res.status} ${res.statusText} for ${path}`);
+    }
     const data = await res.json();
     jsonCache.set(path, data);
     return data;
