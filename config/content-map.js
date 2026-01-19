@@ -6,7 +6,7 @@ export const contentMap = {
         type: 'resume',
         containerSVG: 'laptop-frame',
         cutoutSVG: 'laptop-screen-cutout',
-        contentPath: 'assets/content/resume.json',
+        contentPath: 'public/content/resume.json',
         component: 'laptop-viewer'
     },
 
@@ -16,7 +16,7 @@ export const contentMap = {
         description: 'Read my thoughts page-by-page',
         type: 'thoughts',
         containerSVG: 'book',
-        contentPath: 'assets/content/thoughts/index.json',
+        contentPath: 'public/content/thoughts/index.json',
         component: 'thought-viewer'
     },
 
@@ -26,7 +26,7 @@ export const contentMap = {
         description: 'Photos from Iceland',
         type: 'gallery',
         containerSVG: 'camera-viewfinder-2',
-        contentPath: 'assets/content/travel/iceland/index.json',
+        contentPath: 'public/content/travel/iceland/index.json',
         component: 'gallery-viewer'
     },
 
@@ -36,7 +36,7 @@ export const contentMap = {
         description: 'Photos from Europe',
         type: 'gallery',
         containerSVG: 'camera-viewfinder-2',
-        contentPath: 'assets/content/travel/europe/index.json',
+        contentPath: 'public/content/travel/europe/index.json',
         component: 'gallery-viewer'
     },
 
@@ -46,7 +46,7 @@ export const contentMap = {
         description: 'Photos from Japan',
         type: 'gallery',
         containerSVG: 'camera-viewfinder-2',
-        contentPath: 'assets/content/travel/japan/index.json',
+        contentPath: 'public/content/travel/japan/index.json',
         component: 'gallery-viewer'
     },
 
@@ -56,7 +56,7 @@ export const contentMap = {
         description: 'Photos from the sky',
         type: 'gallery',
         containerSVG: 'camera-viewfinder-2',
-        contentPath: 'assets/content/travel/skydiving/index.json',
+        contentPath: 'public/content/travel/skydiving/index.json',
         component: 'gallery-viewer'
     },
 
@@ -66,7 +66,7 @@ export const contentMap = {
         description: 'A scroll-based story carousel',
         type: 'timeline',
         containerSVG: 'scroll',
-        contentPath: 'assets/content/timeline.json',
+        contentPath: 'public/content/timeline.json',
         component: 'timeline-viewer'
     },
 
@@ -77,7 +77,7 @@ export const contentMap = {
         type: 'about',
         containerSVG: 'laptop-frame',
         cutoutSVG: 'laptop-screen-cutout',
-        contentPath: 'assets/content/about.json',
+        contentPath: 'public/content/about.json',
         component: 'laptop-viewer'
     }
 };

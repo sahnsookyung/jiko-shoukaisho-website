@@ -87,12 +87,12 @@ class ContentViewer extends HTMLElement {
             await import(`./viewers/${cfg.component}.js`);
 
             const promises = [
-                loadSVG(`assets/site-component-images/output_svgs/min/${cfg.containerSVG}.svg`),
+                loadSVG(`public/site-component-images/output_svgs/min/${cfg.containerSVG}.svg`),
                 loadJSON(cfg.contentPath)
             ];
 
             if (cfg.cutoutSVG) {
-                promises.push(loadSVG(`assets/site-component-images/output_svgs/min/${cfg.cutoutSVG}.svg`));
+                promises.push(loadSVG(`public/site-component-images/output_svgs/min/${cfg.cutoutSVG}.svg`));
             }
 
             const results = await Promise.all(promises);
