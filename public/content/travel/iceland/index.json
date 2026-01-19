@@ -1,179 +1,179 @@
 {
     "images": [
         {
-            "src": "public/content/travel/iceland/nov11/reykjadalur-drone3.jpg",
+            "src": "content/travel/iceland/nov11/reykjadalur-drone3.jpg",
             "caption": "Reykjadalur geothermal valley hike"
         },
         {
-            "src": "public/content/travel/iceland/nov11/reykjadalur-drone2.jpg",
+            "src": "content/travel/iceland/nov11/reykjadalur-drone2.jpg",
             "caption": "Aerial view of the waterfall running through the Reykjadalur geothermal valley"
         },
         {
-            "src": "public/content/travel/iceland/nov11/reykjadalur-drone1.jpg",
+            "src": "content/travel/iceland/nov11/reykjadalur-drone1.jpg",
             "caption": "Drone perspective of the microbiome near steaming water bodies"
         },
         {
-            "src": "public/content/travel/iceland/nov13/anticipation-of-adventure.jpg",
+            "src": "content/travel/iceland/nov13/anticipation-of-adventure.jpg",
             "caption": "Stepping into adventure"
         },
         {
-            "src": "public/content/travel/iceland/nov13/adventure-2.jpg",
+            "src": "content/travel/iceland/nov13/adventure-2.jpg",
             "caption": "Taken in the bush by the diamond beach"
         },
         {
-            "src": "public/content/travel/iceland/nov13/diamond-beach-1.jpg",
+            "src": "content/travel/iceland/nov13/diamond-beach-1.jpg",
             "caption": "Big glaciers!"
         },
         {
-            "src": "public/content/travel/iceland/nov13/good-dog.jpg",
+            "src": "content/travel/iceland/nov13/good-dog.jpg",
             "caption": "Good boy from a farm"
         },
         {
-            "src": "public/content/travel/iceland/nov13/leaving-dog.jpg",
+            "src": "content/travel/iceland/nov13/leaving-dog.jpg",
             "caption": "Guarding the hoomans"
         },
         {
-            "src": "public/content/travel/iceland/nov13/by-the-glacial-outlet.jpg",
+            "src": "content/travel/iceland/nov13/by-the-glacial-outlet.jpg",
             "caption": "By the glacial outlet"
         },
         {
-            "src": "public/content/travel/iceland/nov13/icelandic-horse.jpg",
+            "src": "content/travel/iceland/nov13/icelandic-horse.jpg",
             "caption": "Icelandic horse photographed by a farm on the road."
         },
         {
-            "src": "public/content/travel/iceland/nov13/here-be-dragons.jpg",
+            "src": "content/travel/iceland/nov13/here-be-dragons.jpg",
             "caption": "Here be dragons? (closed off road by Vestrahorn entrance)"
         },
         {
-            "src": "public/content/travel/iceland/nov13/by-vestrahorn.jpg",
+            "src": "content/travel/iceland/nov13/by-vestrahorn.jpg",
             "caption": "Aye, here be dragons"
         },
         {
-            "src": "public/content/travel/iceland/nov14-egilsstadir-myvatn/sheep-at-hengifoss-hike-entrance.jpg",
+            "src": "content/travel/iceland/nov14-egilsstadir-myvatn/sheep-at-hengifoss-hike-entrance.jpg",
             "caption": "Sheep at entrance of Hengifoss hike"
         },
         {
-            "src": "public/content/travel/iceland/nov14-egilsstadir-myvatn/hengifoss-hike.jpg",
+            "src": "content/travel/iceland/nov14-egilsstadir-myvatn/hengifoss-hike.jpg",
             "caption": "Staring at the basalt towers and the waterfall running through"
         },
         {
-            "src": "public/content/travel/iceland/nov14-egilsstadir-myvatn/hengifoss-rock-formations.jpg",
+            "src": "content/travel/iceland/nov14-egilsstadir-myvatn/hengifoss-rock-formations.jpg",
             "caption": "Eye-level perspective of the basalt columns."
         },
         {
-            "src": "public/content/travel/iceland/nov14-egilsstadir-myvatn/view-hiking-down-from-hengifoss.jpg",
+            "src": "content/travel/iceland/nov14-egilsstadir-myvatn/view-hiking-down-from-hengifoss.jpg",
             "caption": "View hiking down from Hengifoss"
         },
         {
-            "src": "public/content/travel/iceland/nov14-egilsstadir-myvatn/hot-spring-at-myvatn-with-friends.jpg",
+            "src": "content/travel/iceland/nov14-egilsstadir-myvatn/hot-spring-at-myvatn-with-friends.jpg",
             "caption": "Chilling with friends at Vök baths."
         },
         {
-            "src": "public/content/travel/iceland/nov14-egilsstadir-myvatn/aurora-1.jpg",
+            "src": "content/travel/iceland/nov14-egilsstadir-myvatn/aurora-1.jpg",
             "caption": "Aurora at Egilsstaðir 1"
         },
         {
-            "src": "public/content/travel/iceland/nov14-egilsstadir-myvatn/aurora-2.jpg",
+            "src": "content/travel/iceland/nov14-egilsstadir-myvatn/aurora-2.jpg",
             "caption": "Aurora at Egilsstaðir 2"
         },
         {
-            "src": "public/content/travel/iceland/nov15/morning-after-aurorae.jpg",
+            "src": "content/travel/iceland/nov15/morning-after-aurorae.jpg",
             "caption": "A morning of beautiful pink skies after the night aurorae."
         },
         {
-            "src": "public/content/travel/iceland/nov15/dimmuborgir-the-dark-castle.jpg",
+            "src": "content/travel/iceland/nov15/dimmuborgir-the-dark-castle.jpg",
             "caption": "Dimmuborgir: A maze of jagged black lava towers that resemble a ruined city or fortress. Some formations reach up to 20 meters high."
         },
         {
-            "src": "public/content/travel/iceland/nov15/the-arch-dimmuborgir.jpg",
+            "src": "content/travel/iceland/nov15/the-arch-dimmuborgir.jpg",
             "caption": "The \"Church\" (Kirkjan) at Dimmuborgir."
         },
         {
-            "src": "public/content/travel/iceland/nov15/grjotagja.jpg",
+            "src": "content/travel/iceland/nov15/grjotagja.jpg",
             "caption": "Grjótagjá"
         },
         {
-            "src": "public/content/travel/iceland/nov15/hverir.jpg",
+            "src": "content/travel/iceland/nov15/hverir.jpg",
             "caption": "Hverir geothermal area - a landscape of bubbling mud pools and steaming fumaroles"
         },
         {
-            "src": "public/content/travel/iceland/nov15/hverir-steam-vents-2.jpg",
+            "src": "content/travel/iceland/nov15/hverir-steam-vents-2.jpg",
             "caption": "Steam vents at Hverir"
         },
         {
-            "src": "public/content/travel/iceland/nov15/hverir-drone1.jpg",
+            "src": "content/travel/iceland/nov15/hverir-drone1.jpg",
             "caption": "Aerial view of Hverir geothermal area"
         },
         {
-            "src": "public/content/travel/iceland/nov15/hverir-drone2.jpg",
+            "src": "content/travel/iceland/nov15/hverir-drone2.jpg",
             "caption": "Top-down drone perspective of the steaming landscape"
         },
         {
-            "src": "public/content/travel/iceland/nov15/hverir-drone4.jpg",
+            "src": "content/travel/iceland/nov15/hverir-drone4.jpg",
             "caption": "Bird's eye view of the geothermal field"
         },
         {
-            "src": "public/content/travel/iceland/nov15/hverir-drone5-sunset.jpg",
+            "src": "content/travel/iceland/nov15/hverir-drone5-sunset.jpg",
             "caption": "Sunset over Hverir from above"
         },
         {
-            "src": "public/content/travel/iceland/nov15/sunset-steam-2.jpg",
+            "src": "content/travel/iceland/nov15/sunset-steam-2.jpg",
             "caption": "Golden hour at the geothermal area"
         },
         {
-            "src": "public/content/travel/iceland/nov16/godafoss-1.jpg",
+            "src": "content/travel/iceland/nov16/godafoss-1.jpg",
             "caption": "Goðafoss - the Waterfall of the Gods"
         },
         {
-            "src": "public/content/travel/iceland/nov16/godafoss-drone2.jpg",
+            "src": "content/travel/iceland/nov16/godafoss-drone2.jpg",
             "caption": "Aerial view of Goðafoss"
         },
         {
-            "src": "public/content/travel/iceland/nov16/godafoss-3.jpg",
+            "src": "content/travel/iceland/nov16/godafoss-3.jpg",
             "caption": "The powerful cascade of Goðafoss"
         },
         {
-            "src": "public/content/travel/iceland/nov16/godafoss-4.jpg",
+            "src": "content/travel/iceland/nov16/godafoss-4.jpg",
             "caption": "Goðafoss from another angle"
         },
         {
-            "src": "public/content/travel/iceland/nov16/godafoss-bridge-5.jpg",
+            "src": "content/travel/iceland/nov16/godafoss-bridge-5.jpg",
             "caption": "Bridge view of Goðafoss"
         },
         {
-            "src": "public/content/travel/iceland/nov16/godafoss-6.jpg",
+            "src": "content/travel/iceland/nov16/godafoss-6.jpg",
             "caption": "Resultant river from the waterfall"
         },
         {
-            "src": "public/content/travel/iceland/nov16/godafoss-7.jpg",
+            "src": "content/travel/iceland/nov16/godafoss-7.jpg",
             "caption": "Goðafoss in its full glory"
         },
         {
-            "src": "public/content/travel/iceland/nov16/godafoss-8.jpg",
+            "src": "content/travel/iceland/nov16/godafoss-8.jpg",
             "caption": "The misty spray of Goðafoss"
         },
         {
-            "src": "public/content/travel/iceland/nov16/godafoss-9.jpg",
+            "src": "content/travel/iceland/nov16/godafoss-9.jpg",
             "caption": "Final view of the Waterfall of the Gods"
         },
         {
-            "src": "public/content/travel/iceland/nov18/gerðuberg-cliffs1.jpg",
+            "src": "content/travel/iceland/nov18/gerðuberg-cliffs1.jpg",
             "caption": "Gerðuberg basalt cliffs"
         },
         {
-            "src": "public/content/travel/iceland/nov18/gerduberg-cliffs2.jpg",
+            "src": "content/travel/iceland/nov18/gerduberg-cliffs2.jpg",
             "caption": "Hexagonal basalt columns at Gerðuberg"
         },
         {
-            "src": "public/content/travel/iceland/nov18/gerduberg-cliffs3.jpg",
+            "src": "content/travel/iceland/nov18/gerduberg-cliffs3.jpg",
             "caption": "The geometric patterns of Gerðuberg"
         },
         {
-            "src": "public/content/travel/iceland/nov18/gerduberg-cliffs4.jpg",
+            "src": "content/travel/iceland/nov18/gerduberg-cliffs4.jpg",
             "caption": "Close-up of the basalt formations"
         },
         {
-            "src": "public/content/travel/iceland/nov18/gerduberg-cliffs5.jpg",
+            "src": "content/travel/iceland/nov18/gerduberg-cliffs5.jpg",
             "caption": "The impressive wall of basalt columns"
         }
     ]

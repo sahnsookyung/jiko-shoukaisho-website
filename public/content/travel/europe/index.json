@@ -1,7 +1,7 @@
 {
     "images": [
         {
-            "src": "public/content/travel/europe/photo.jpg",
+            "src": "content/travel/europe/photo.jpg",
             "caption": "Paris"
         },
         {
