@@ -1,4 +1,5 @@
-images/
+# images/
 node_modules/
 .DS_Store
-package-lock.json
+interactive-svg-portfolio-implementation.md
+dist/

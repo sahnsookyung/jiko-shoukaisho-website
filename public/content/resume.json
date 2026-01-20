@@ -1,0 +1,77 @@
+{
+    "name": "Soo Kyung Ahn",
+    "title": "Software Engineer",
+    "sections": [
+        {
+            "title": "Summary",
+            "items": [
+                {
+                    "company": "",
+                    "role": "",
+                    "period": "",
+                    "description": "Pragmatic software engineer with 3.5+ years of experience building reliable, production-grade backend systems in the payments and digital goods space. Proven track record in shipping high-impact services to South Africa's top banks and retailers. Expert in Java and AWS.",
+                    "highlights": []
+                }
+            ]
+        },
+        {
+            "title": "Experience",
+            "items": [
+                {
+                    "company": "Electrum Payments",
+                    "role": "Software Engineer - Digital Goods and Services Team",
+                    "period": "2022 - 2025",
+                    "description": "Led the development and maintenance of backend services for digital goods (airtime, vouchers, money transfers, lotto), powering high-volume transactions across South Africa's top banks and national retailers.",
+                    "highlights": [
+                        "Engineered modular, plugin-based service components that enabled rapid feature delivery and robust testability across a shared payments platform.",
+                        "Managed service deployment on AWS-backed Kubernetes (EKS), owning Istio routing, rollout orchestration, and runtime diagnostics.",
+                        "Partnered with DevOps to integrate core infrastructure (Kafka, SQS/SNS, Route53) and observability stacks into developer workflows.",
+                        "Designed Kibana dashboards and Elasticsearch queries for real-time operational visibility and business-critical monitoring.",
+                        "Prototyped internal AI-powered tools including an LLM-based code review bot and automated ticket triage system.",
+                        "Drove test automation (JUnit, Mockito), code quality (SonarQube), and CI/CD reliability across the team."
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Education",
+            "items": [
+                {
+                    "company": "University of Cape Town",
+                    "role": "Honours in Computer Science",
+                    "period": "2021",
+                    "description": "Postgraduate specialization in Computer Science.",
+                    "highlights": [
+                        "First class GPA"
+                    ]
+                },
+                {
+                    "company": "University of Cape Town",
+                    "role": "B.S. in Computer Science and Applied Statistics",
+                    "period": "2018 - 2020",
+                    "description": "Double major undergraduate degree.",
+                    "highlights": [
+                        "Dean's Merit List",
+                        "Distinction"
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Skills",
+            "items": [
+                {
+                    "company": "",
+                    "role": "",
+                    "period": "",
+                    "description": "Technical Stack: Java (Expert), Python (Intermediate), AWS, Kubernetes, Kafka, Elasticsearch, SQL.",
+                    "highlights": [
+                        "Cloud & DevOps: AWS (EC2, Lambda, S3, RDS), Docker, EKS, Istio, Terraform/CloudFormation",
+                        "Tools: Git, CircleCI, GitHub Actions, SonarQube, Prometheus, Grafana",
+                        "Practices: CI/CD, Test-Driven Development (JUnit, Mockito), Agile/Scrum"
+                    ]
+                }
+            ]
+        }
+    ]
+}

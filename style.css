@@ -17,6 +17,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    font-family: 'Libre Caslon Text', serif;
 }
 
 .container {
@@ -27,11 +28,18 @@ body {
     align-items: center;
 }
 
-svg {
+svg,
+.main-svg {
     width: 100%;
     height: 100%;
+    max-width: 100vw;
+    max-height: 100vh;
     object-fit: contain;
     overflow: visible;
+}
+
+#main-svg-object {
+    opacity: 0.9;
 }
 
 /* =========================================

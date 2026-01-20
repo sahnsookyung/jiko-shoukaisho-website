@@ -5,34 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Soo Kyung Ahn</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bilbo+Swash+Caps&family=Estonia&family=Italianno&family=Marck+Script&family=Poiret+One&family=Qwigley&family=Yeon+Sung&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="components/korean-words-bg/korean-words-bg.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+    <div id="ancient-bg"></div>
     <div class="container">
-        <!-- Add a class for the script to target -->
-        <object class="svg-replace" data="images/inkscape_svg/main.min.interactiveLayerApplied-optimized.svg"
-            type="image/svg+xml" id="svg-object">
+        <!-- This svg was made using inkscape and not generate-svgs.py, and this keeps the g.id values -->
+        <object class="main-svg"
+            data="/site-component-images/inkscape_svg/main.min.interactiveLayerApplied-optimized.svg"
+            type="image/svg+xml" id="main-svg-object">
         </object>
     </div>
 
-    <script>
-        // This script replaces the <object> tag with the actual SVG code
-        // so your CSS in style.css can actually affect the elements inside.
-        document.querySelectorAll('object.svg-replace').forEach(async (obj) => {
-            const response = await fetch(obj.data);
-            const text = await response.text();
-            const span = document.createElement('span');
-            span.innerHTML = text;
-            const svg = span.querySelector('svg');
-
-            // Preserve the ID and Class if needed
-            if (obj.id) svg.id = obj.id;
-            if (obj.className) svg.classList.add(...obj.classList);
-
-            obj.replaceWith(svg);
-        });
-    </script>
+    <script type="module" src="/app.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,44 @@
+{
+    "events": [
+        {
+            "year": "2000",
+            "title": "Origins",
+            "description": "The journey begins."
+        },
+        {
+            "year": "2010",
+            "title": "Relocation to South Africa",
+            "description": "A young mind adapting to a new environment and culture."
+        },
+        {
+            "year": "2016",
+            "title": "Early Graduation",
+            "description": "I enjoyed a successful high school career, securing a first-place ranking every year and maintaining a 99% average in most years, alongside the privilege of serving as head prefect."
+        },
+        {
+            "year": "2017",
+            "title": "From Student to Teacher",
+            "description": "Returned to high school as a teacher at age 17, taking on the unique challenge of instructing former peers."
+        },
+        {
+            "year": "2018",
+            "title": "University Enrollment",
+            "description": "Commenced dual-focus studies in Computer Science and Applied Statistics."
+        },
+        {
+            "year": "2021",
+            "title": "Graduation with Distinction",
+            "description": "Awarded a B.Sc. in Applied Statistics and B.Sc. Honours in Computer Science. Gained deep expertise in data science, statistical analysis, and software engineering."
+        },
+        {
+            "year": "2022 - 2025",
+            "title": "FinTech Innovation",
+            "description": "Spent 3.5 years at Electrum Payments building distributed systems for digital goods and transactions used by South Africa's top banks and retailers."
+        },
+        {
+            "year": "2026 -",
+            "title": "Future Horizons",
+            "description": "Exploring emerging technologies that have the potential to shape the future."
+        }
+    ]
+}

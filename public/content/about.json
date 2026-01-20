@@ -1,0 +1,16 @@
+{
+    "title": "About Me",
+    "text": "<p>I am a software engineer, but the job title is only a part of my existence. I enjoy the logic of system building as there is a quiet satisfaction in building things that are reliable and efficient. For the last few years, I've channeled that energy into the payments space, bringing order to the complex flow of digital transactions using distributed architecture. </p><p>I also have a curiosity for tools that improve quality of life. Lately, I have been exploring how to leverage AI technologies, diving into their inner workings to understand how they can reshape the way we build and work.</p><p>While I love the determinism of code, I have found that significant events also happen away from the keyboard. I view life as a constant search for better paths, and expand my understanding of the world by launching myself into it.</p><p>Whether I'm trekking through a snowstorm, diving into the depths of the ocean, or just sitting in the silence of the 'blue hour' in the North, I am looking for those moments that shift my perspective. I am trying to make the best decisions I can with the information I have and the values I hold, and hopefully, find a few beautiful things along the way.</p>",
+    "links": [
+        {
+            "platform": "GitHub",
+            "url": "https://github.com/sahnsookyung",
+            "icon": "github"
+        },
+        {
+            "platform": "LinkedIn",
+            "url": "https://www.linkedin.com/in/soo-kyung-ahn-9a7aa012a/",
+            "icon": "linkedin"
+        }
+    ]
+}
