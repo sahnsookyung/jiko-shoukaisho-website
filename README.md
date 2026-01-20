@@ -64,4 +64,13 @@ npm run build
 - Add more content to website.
 
 ---
+
+## License
+The source code for this website is licensed under the MIT License (see the LICENSE file for details).
+
+### Exceptions:
+The content of this website, including but not limited to text, images, photos, personal data, and the specific design assets, is © Soo Kyung Ahn. You may not use these assets without explicit permission.
+
+---
+
 *Created by Soo Kyung Ahn*
