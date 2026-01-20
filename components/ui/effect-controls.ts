@@ -1,10 +1,18 @@
 /**
+ * Controller interface for effects.
+ */
+interface EffectController {
+    start(): void;
+    stop(): void;
+}
+
+/**
  * Creates and manages the effect toggle controls for Korean background and Event Horizon effects.
- * @param {Object} watermarkCtrl - Controller for the Korean background watermark effect
- * @param {Object} horizonCtrl - Controller for the Event Horizon effect
+ * @param {EffectController} watermarkCtrl - Controller for the Korean background watermark effect
+ * @param {EffectController} horizonCtrl - Controller for the Event Horizon effect
  * @returns {HTMLElement} The container element with toggle controls
  */
-export function createEffectControls(watermarkCtrl, horizonCtrl) {
+export function createEffectControls(watermarkCtrl: EffectController | undefined, horizonCtrl: EffectController | undefined): HTMLElement {
     const container = document.createElement('div');
     container.style.cssText = `
         position: fixed; top: 50%; left: 20px; transform: translateY(-50%);
@@ -27,7 +35,7 @@ export function createEffectControls(watermarkCtrl, horizonCtrl) {
     `;
     container.appendChild(heading);
 
-    const createToggle = (symbol, label, onClick, initialState = true) => {
+    const createToggle = (symbol: string, label: string, onClick: (active: boolean) => void, initialState = true): HTMLElement => {
         const btn = document.createElement('div');
         btn.innerHTML = symbol;
         btn.title = label;

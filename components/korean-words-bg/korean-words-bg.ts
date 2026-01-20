@@ -1,7 +1,7 @@
-// watermark.js
+// components/korean-words-bg/korean-words-bg.ts
 
 // Ancient words configuration
-const koreanWords = [
+const koreanWords: string[] = [
     "하늘", "땅", "바람", "구름", "별", "달", "해",
     "왕국", "전설", "역사", "기억", "영원", "시간",
     "사랑", "운명", "약속", "평화", "희망", "꿈",
@@ -15,10 +15,31 @@ const config = {
     baseSpeed: 120
 };
 
-export function initWatermark() {
-    let resizeListener = null;
-    let intervals = [];
-    let activeTimeouts = [];
+interface WatermarkController {
+    start: () => void;
+    stop: () => void;
+}
+
+export function initWatermark(): WatermarkController {
+    let resizeListener: (() => void) | null = null;
+    let intervals: ReturnType<typeof setInterval>[] = [];
+    let activeTimeouts: ReturnType<typeof setTimeout>[] = [];
+
+    const stop = () => {
+        const container = document.getElementById('ancient-bg');
+        if (container) container.innerHTML = '';
+
+        if (resizeListener) {
+            window.removeEventListener('resize', resizeListener);
+            resizeListener = null;
+        }
+
+        intervals.forEach(id => clearInterval(id));
+        intervals = [];
+
+        activeTimeouts.forEach(id => clearTimeout(id));
+        activeTimeouts = [];
+    };
 
     const start = () => {
         const container = document.getElementById('ancient-bg');
@@ -53,23 +74,7 @@ export function initWatermark() {
         window.addEventListener('resize', resizeListener);
     };
 
-    const stop = () => {
-        const container = document.getElementById('ancient-bg');
-        if (container) container.innerHTML = '';
-
-        if (resizeListener) {
-            window.removeEventListener('resize', resizeListener);
-            resizeListener = null;
-        }
-
-        intervals.forEach(id => clearInterval(id));
-        intervals = [];
-
-        activeTimeouts.forEach(id => clearTimeout(id));
-        activeTimeouts = [];
-    };
-
-    function createColumn(container, screenHeight) {
+    function createColumn(container: HTMLElement, screenHeight: number) {
         const col = document.createElement('div');
         col.classList.add('bg-column');
         col.style.fontSize = config.fontSize + "px";
@@ -77,7 +82,7 @@ export function initWatermark() {
 
         // Randomize speed
         const speedMod = Math.random() * 0.7 + 0.8;
-        const columnChars = [];
+        const columnChars: HTMLElement[] = [];
         let currentHeight = 0;
         let safety = 0;
 
@@ -107,7 +112,7 @@ export function initWatermark() {
         startRainEffect(columnChars, speedMod);
     }
 
-    function startRainEffect(chars, speedMod) {
+    function startRainEffect(chars: HTMLElement[], speedMod: number) {
         let activeIndex = 0;
         const startDelay = Math.random() * 6000;
 
@@ -141,7 +146,6 @@ export function initWatermark() {
     }
 
     // Auto-start on init if desired, or let consumption code handle it.
-    // Given usage in app.js is just initWatermark(), let's start it.
     start();
 
     return { start, stop };

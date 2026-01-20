@@ -1,23 +1,35 @@
-import '../ui/navigation-arrows.js';
-import { escapeHtml } from '../../utils/string-utils.js';
-import { parseFrameSvg } from './utils/frame-svg.js';
+import '../ui/navigation-arrows';
+import { escapeHtml } from '../../utils/string-utils';
+import { parseFrameSvg } from './utils/frame-svg';
+
+interface TimelineEvent {
+  year: string;
+  title: string;
+  description: string;
+}
+
+interface TimelineData {
+  events: TimelineEvent[];
+}
 
 class TimelineViewer extends HTMLElement {
+  private _frameSvg?: string;
+  private _data?: TimelineData;
+
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
   }
 
-  set frameSvg(v) { this._frameSvg = v; this.render(); }
-  set data(v) { this._data = v; this.render(); }
-  set config(v) { this._config = v; }
+  set frameSvg(v: string) { this._frameSvg = v; this.render(); }
+  set data(v: TimelineData) { this._data = v; this.render(); }
 
-  connectedCallback() {
+  connectedCallback(): void {
     this.render();
   }
 
-  render() {
-    if (!this._frameSvg || !this._data) return;
+  render(): void {
+    if (!this._frameSvg || !this._data || !this.shadowRoot) return;
 
     // 1. PARSE & CLEAN SVG (util)
     const parsed = parseFrameSvg(this._frameSvg, { defaultW: 1376, defaultH: 768 });

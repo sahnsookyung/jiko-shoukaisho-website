@@ -1,11 +1,13 @@
-const svgCache = new Map();
-const jsonCache = new Map();
+const svgCache = new Map<string, string>();
+const jsonCache = new Map<string, any>();
 
-export async function inlineSVG() {
+export async function inlineSVG(): Promise<void> {
     const objects = document.querySelectorAll('object.main-svg[type="image/svg+xml"]');
 
-    await Promise.all([...objects].map(async (obj) => {
+    await Promise.all([...objects].map(async (objNode) => {
+        const obj = objNode as HTMLObjectElement;
         try {
+            if (!obj.data) return;
             const res = await fetch(obj.data);
 
             if (!res.ok) {
@@ -40,8 +42,8 @@ export async function inlineSVG() {
     }));
 }
 
-export async function loadSVG(path) {
-    if (svgCache.has(path)) return svgCache.get(path);
+export async function loadSVG(path: string): Promise<string> {
+    if (svgCache.has(path)) return svgCache.get(path)!;
 
     const res = await fetch(path);
     if (!res.ok) {
@@ -52,7 +54,7 @@ export async function loadSVG(path) {
     return text;
 }
 
-export async function loadJSON(path) {
+export async function loadJSON(path: string): Promise<any> {
     if (jsonCache.has(path)) return jsonCache.get(path);
 
     const res = await fetch(path);

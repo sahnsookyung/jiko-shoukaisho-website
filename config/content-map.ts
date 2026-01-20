@@ -1,4 +1,15 @@
-export const contentMap = {
+export interface ContentConfig {
+    id: string;
+    label: string;
+    description: string;
+    type: 'resume' | 'thoughts' | 'gallery' | 'timeline' | 'about';
+    containerSVG: string;
+    cutoutSVG?: string;
+    contentPath: string;
+    component: string;
+}
+
+export const contentMap: Record<string, ContentConfig> = {
     laptop: {
         id: 'laptop',
         label: 'Resume & Experience',
@@ -82,6 +93,6 @@ export const contentMap = {
     }
 };
 
-export function getContentConfig(id) {
+export function getContentConfig(id: string): ContentConfig | null {
     return contentMap[id] || null;
 }

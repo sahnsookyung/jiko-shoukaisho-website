@@ -4,19 +4,21 @@ class NavigationArrows extends HTMLElement {
         this.attachShadow({ mode: 'open' });
     }
 
-    connectedCallback() {
+    connectedCallback(): void {
         this.render();
     }
 
-    static get observedAttributes() {
+    static get observedAttributes(): string[] {
         return ['can-prev', 'can-next'];
     }
 
-    attributeChangedCallback() {
+    attributeChangedCallback(): void {
         this.render();
     }
 
-    render() {
+    render(): void {
+        if (!this.shadowRoot) return;
+
         const canPrev = this.getAttribute('can-prev') !== 'false';
         const canNext = this.getAttribute('can-next') !== 'false';
 
@@ -35,15 +37,22 @@ class NavigationArrows extends HTMLElement {
       </div>
     `;
 
-        this.shadowRoot.querySelector('.prev').addEventListener('click', () => {
-            if (!canPrev) return;
-            this.dispatchEvent(new CustomEvent('prev', { bubbles: true }));
-        });
+        const prevBtn = this.shadowRoot.querySelector('.prev');
+        const nextBtn = this.shadowRoot.querySelector('.next');
 
-        this.shadowRoot.querySelector('.next').addEventListener('click', () => {
-            if (!canNext) return;
-            this.dispatchEvent(new CustomEvent('next', { bubbles: true }));
-        });
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                if (!canPrev) return;
+                this.dispatchEvent(new CustomEvent('prev', { bubbles: true }));
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                if (!canNext) return;
+                this.dispatchEvent(new CustomEvent('next', { bubbles: true }));
+            });
+        }
     }
 }
 

@@ -1,20 +1,32 @@
-import { escapeHtml } from '../../utils/string-utils.js';
-import '../ui/navigation-arrows.js';
-import { parseFrameSvg } from './utils/frame-svg.js';
+import { escapeHtml } from '../../utils/string-utils';
+import '../ui/navigation-arrows';
+import { parseFrameSvg } from './utils/frame-svg';
+
+interface GalleryImage {
+    src: string;
+    caption?: string;
+}
+
+interface GalleryData {
+    images: GalleryImage[];
+}
 
 class GalleryViewer extends HTMLElement {
+    private _frameSvg?: string;
+    private _data?: GalleryData;
+    private idx: number = 0;
+    private _onKey?: (e: KeyboardEvent) => void;
+
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
-        this.idx = 0;
     }
 
-    set frameSvg(v) { this._frameSvg = v; this.render(); }
-    set data(v) { this._data = v; this.idx = 0; this.render(); }
-    set config(v) { this._config = v; }
+    set frameSvg(v: string) { this._frameSvg = v; this.render(); }
+    set data(v: GalleryData) { this._data = v; this.idx = 0; this.render(); }
 
-    connectedCallback() {
-        this._onKey = (e) => {
+    connectedCallback(): void {
+        this._onKey = (e: KeyboardEvent) => {
             if (!this.isConnected) return;
             if (e.key === 'ArrowLeft') this.prev();
             if (e.key === 'ArrowRight') this.next();
@@ -22,12 +34,14 @@ class GalleryViewer extends HTMLElement {
         document.addEventListener('keydown', this._onKey);
     }
 
-    disconnectedCallback() {
-        document.removeEventListener('keydown', this._onKey);
+    disconnectedCallback(): void {
+        if (this._onKey) {
+            document.removeEventListener('keydown', this._onKey);
+        }
     }
 
-    render() {
-        if (!this._frameSvg || !this._data) return;
+    render(): void {
+        if (!this._frameSvg || !this._data || !this.shadowRoot) return;
 
         // 1. PARSE & CLEAN SVG (util)
         const parsed = parseFrameSvg(this._frameSvg, { defaultW: 1000, defaultH: 1000 });
@@ -144,12 +158,12 @@ class GalleryViewer extends HTMLElement {
         }
     }
 
-    prev() {
+    prev(): void {
         if (this.idx > 0) { this.idx--; this.render(); }
     }
 
-    next() {
-        const images = this._data.images || [];
+    next(): void {
+        const images = this._data?.images || [];
         if (this.idx < images.length - 1) { this.idx++; this.render(); }
     }
 }

@@ -1,11 +1,30 @@
-// utils/frame-svg.js
+// components/viewers/utils/frame-svg.ts
 // Shared helpers extracted from the existing viewer implementations.
 // Adds bounded memoization to avoid re-parsing identical SVG strings.
 
-const CACHE = new Map(); // key -> { parsed, img }
+interface ParsedSvg {
+    cleanSvgString: string;
+    cssRatio: string;
+    ratioVal: number;
+    w: number;
+    h: number;
+}
+
+interface SvgImg {
+    src: string;
+    w: number;
+    h: number;
+}
+
+interface CacheEntry {
+    parsed?: ParsedSvg;
+    img?: SvgImg;
+}
+
+const CACHE = new Map<string, CacheEntry>(); // key -> { parsed, img }
 const MAX_ENTRIES = 200;
 
-function cacheGet(key) {
+function cacheGet(key: string): CacheEntry | null {
     const val = CACHE.get(key);
     if (!val) return null;
     // Refresh insertion order (simple LRU behavior).
@@ -14,31 +33,38 @@ function cacheGet(key) {
     return val;
 }
 
-function cacheSet(key, val) {
+function cacheSet(key: string, val: CacheEntry): void {
     if (CACHE.has(key)) CACHE.delete(key);
     CACHE.set(key, val);
 
     while (CACHE.size > MAX_ENTRIES) {
         const firstKey = CACHE.keys().next().value;
-        CACHE.delete(firstKey);
+        if (firstKey !== undefined) {
+            CACHE.delete(firstKey);
+        }
     }
 }
 
-function makeKey(svgString, defaultW, defaultH) {
+function makeKey(svgString: string, defaultW: number, defaultH: number): string {
     // Defaults affect computed viewBox when width/height are missing or invalid.
     return `${defaultW}x${defaultH}::${svgString}`;
 }
 
-function ensureFinitePositive(n) {
+function ensureFinitePositive(n: number): boolean {
     return Number.isFinite(n) && n > 0;
 }
 
-function parseDimsFromViewBox(viewBox) {
+function parseDimsFromViewBox(viewBox: string): { w: number; h: number } | null {
     const parts = String(viewBox).trim().split(/\s+|,/);
     const w = Number.parseFloat(parts[2]);
     const h = Number.parseFloat(parts[3]);
     if (!ensureFinitePositive(w) || !ensureFinitePositive(h)) return null;
     return { w, h };
+}
+
+interface ParseOptions {
+    defaultW?: number;
+    defaultH?: number;
 }
 
 /**
@@ -48,7 +74,7 @@ function parseDimsFromViewBox(viewBox) {
  * - strip width/height so CSS controls sizing
  * - return cleanSvgString + cssRatio + ratioVal
  */
-export function parseFrameSvg(svgString, { defaultW = 1000, defaultH = 1000 } = {}) {
+export function parseFrameSvg(svgString: string, { defaultW = 1000, defaultH = 1000 }: ParseOptions = {}): ParsedSvg | null {
     if (!svgString) return null;
 
     const key = makeKey(svgString, defaultW, defaultH);
@@ -61,11 +87,11 @@ export function parseFrameSvg(svgString, { defaultW = 1000, defaultH = 1000 } = 
     // Some environments insert <parsererror> nodes for invalid XML.
     if (doc.querySelector && doc.querySelector('parsererror')) return null;
 
-    const svgEl = doc.documentElement;
+    const svgEl = doc.documentElement as unknown as SVGSVGElement;
     if (!svgEl || String(svgEl.nodeName).toLowerCase() !== 'svg') return null;
 
-    let w;
-    let h;
+    let w: number;
+    let h: number;
 
     const viewBox = svgEl.getAttribute('viewBox');
     const vb = viewBox ? parseDimsFromViewBox(viewBox) : null;
@@ -74,11 +100,14 @@ export function parseFrameSvg(svgString, { defaultW = 1000, defaultH = 1000 } = 
         w = vb.w;
         h = vb.h;
     } else {
-        w = Number.parseFloat(svgEl.getAttribute('width'));
-        h = Number.parseFloat(svgEl.getAttribute('height'));
+        const wAttr = svgEl.getAttribute('width');
+        const hAttr = svgEl.getAttribute('height');
 
-        w = ensureFinitePositive(w) ? w : defaultW;
-        h = ensureFinitePositive(h) ? h : defaultH;
+        const wParsed = wAttr ? Number.parseFloat(wAttr) : NaN;
+        const hParsed = hAttr ? Number.parseFloat(hAttr) : NaN;
+
+        w = ensureFinitePositive(wParsed) ? wParsed : defaultW;
+        h = ensureFinitePositive(hParsed) ? hParsed : defaultH;
 
         svgEl.setAttribute('viewBox', `0 0 ${w} ${h}`);
     }
@@ -94,7 +123,7 @@ export function parseFrameSvg(svgString, { defaultW = 1000, defaultH = 1000 } = 
     const cssRatio = `${w} / ${h}`;
     const ratioVal = w / h;
 
-    const parsed = { cleanSvgString, cssRatio, ratioVal, w, h };
+    const parsed: ParsedSvg = { cleanSvgString, cssRatio, ratioVal, w, h };
 
     const entry = cached ?? {};
     entry.parsed = parsed;
@@ -110,7 +139,7 @@ export function parseFrameSvg(svgString, { defaultW = 1000, defaultH = 1000 } = 
  *
  * Note: encodes the *cleaned* SVG so the <img> path matches the inline-svg path.
  */
-export function processSvgForImg(svgString, { defaultW = 1376, defaultH = 768 } = {}) {
+export function processSvgForImg(svgString: string, { defaultW = 1376, defaultH = 768 }: ParseOptions = {}): SvgImg | null {
     if (!svgString) return null;
 
     const key = makeKey(svgString, defaultW, defaultH);
@@ -121,7 +150,7 @@ export function processSvgForImg(svgString, { defaultW = 1376, defaultH = 768 } 
     if (!parsed) return null;
 
     const src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(parsed.cleanSvgString)}`;
-    const img = { src, w: parsed.w, h: parsed.h };
+    const img: SvgImg = { src, w: parsed.w, h: parsed.h };
 
     const entry = cached ?? {};
     entry.img = img;
@@ -131,6 +160,6 @@ export function processSvgForImg(svgString, { defaultW = 1376, defaultH = 768 } 
 }
 
 // Optional: useful for tests / hot-reload debugging.
-export function clearFrameSvgCache() {
+export function clearFrameSvgCache(): void {
     CACHE.clear();
 }

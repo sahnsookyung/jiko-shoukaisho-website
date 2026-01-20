@@ -6,7 +6,12 @@ export const IDS = {
     filter: 'event-horizon-filter',
     displacement: 'eh-displacement',
     blackHole: 'eh-blackhole'
-};
+} as const;
+
+export interface EHConfig {
+    diameter: number;
+    strength: number;
+}
 
 /**
  * Color matrix values to make the black hole opaque black.
@@ -31,13 +36,13 @@ export const BLACK_HOLE_MATRIX_DISABLED =
  * This prevents the displacement map from shifting pixels when no force is applied.
  * @returns {number} The calibration intercept.
  */
-export const getNeutralIntercept = () => (0.5 - 128 / 255);
+export const getNeutralIntercept = (): number => (0.5 - 128 / 255);
 
 /**
  * Determines settings based on current viewport size.
- * @returns {{diameter: number, strength: number}} The calculated configuration.
+ * @returns {EHConfig} The calculated configuration.
  */
-export const getConfig = () => {
+export const getConfig = (): EHConfig => {
     const minDim = Math.min(window.innerWidth, window.innerHeight);
     return {
         // The diameter affects the Schwarzschild radius as we use it in the feImage

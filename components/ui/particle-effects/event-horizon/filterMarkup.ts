@@ -1,18 +1,21 @@
-import { IDS } from './config.js';
+import { IDS } from './config';
+
+interface FilterMarkupParams {
+    gradientUrl: string;
+    neutralIntercept: number;
+    diameter: number;
+    strength: number;
+    debug?: boolean;
+}
 
 /**
  * Constructs the SVG filter string.
  * We interpolate the calculated intercept to ensure perfect calibration.
  * 
- * @param {Object} params
- * @param {string} params.gradientUrl - Data URL of the gravity map.
- * @param {number} params.neutralIntercept - Calculated intercept for calibration.
- * @param {number} params.diameter - Size of the lens image.
- * @param {number} params.strength - Scale of the displacement.
- * @param {boolean} [params.debug] - Whether to include debug layers.
+ * @param {FilterMarkupParams} params
  * @returns {string} The innerHTML for the SVG.
  */
-export const buildFilterMarkup = ({ gradientUrl, neutralIntercept, diameter, strength, debug }) => {
+export const buildFilterMarkup = ({ gradientUrl, neutralIntercept, diameter, strength, debug }: FilterMarkupParams): string => {
     // --- CONDITIONAL DEBUG STRINGS ---
     const debugDefinition = debug ? `
             <feColorMatrix in="calibratedMap" type="matrix" 
@@ -67,8 +70,6 @@ export const buildFilterMarkup = ({ gradientUrl, neutralIntercept, diameter, str
                     <!-- 4. BLACK HOLE CREATION -->
                     <!-- We threshold the Blue channel. If Blue > 0.6 (Hole), we make it Opaque Black. -->
                     <!-- Matrix logic: Alpha = 20*Blue - 12. -->
-                    <!-- If B=0.5 (Background) -> 10 - 12 = -2 (Transparent) -->
-                    <!-- If B=1.0 (Hole)       -> 20 - 12 = 8  (Opaque) -->
                     <feColorMatrix id="${IDS.blackHole}" in="calibratedMap" type="matrix"
                                 values="0 0 0 0 0
                                         0 0 0 0 0

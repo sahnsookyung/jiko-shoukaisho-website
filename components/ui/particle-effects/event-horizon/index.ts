@@ -1,14 +1,21 @@
-import { IDS, getConfig, BLACK_HOLE_MATRIX_ENABLED, BLACK_HOLE_MATRIX_DISABLED } from './config.js';
-import { ensureFilterInstalled, applyFilterToApp, cacheRefs } from './dom.js';
+import { IDS, getConfig, BLACK_HOLE_MATRIX_ENABLED, BLACK_HOLE_MATRIX_DISABLED } from './config';
+import { ensureFilterInstalled, applyFilterToApp, cacheRefs, EHState } from './dom';
+
+export interface EHController {
+    start(): void;
+    stop(): void;
+    setEnabled(enabled: boolean): void;
+    isEnabled(): boolean;
+}
 
 /**
  * Initializes the Event Horizon effect (Black Hole Gravitational Lensing).
  * 
  * @param {boolean} debug - If true, displays the underlying displacement map for debugging.
- * @returns {{start: Function, stop: Function, setEnabled: Function, isEnabled: Function}} Control methods.
+ * @returns {EHController} Control methods.
  */
-export function initEventHorizon(debug = false) {
-    const STATE = {
+export function initEventHorizon(debug: boolean = false): EHController {
+    const STATE: EHState = {
         animationId: null,
         resizeListener: null,
         mouseListener: null,
@@ -29,7 +36,7 @@ export function initEventHorizon(debug = false) {
      * 
      * @param {boolean} enabled 
      */
-    const setEffectEnabled = (enabled) => {
+    const setEffectEnabled = (enabled: boolean): void => {
         STATE.effectEnabled = enabled;
         cacheRefs(STATE);
 
@@ -45,7 +52,7 @@ export function initEventHorizon(debug = false) {
         }
     };
 
-    const bindInput = () => {
+    const bindInput = (): void => {
         cacheRefs(STATE);
         if (!STATE.refs.appContainer) return;
 
@@ -56,17 +63,17 @@ export function initEventHorizon(debug = false) {
         STATE.resizeListener = () => {
             STATE.config = getConfig();
             // Update scale on resize only
-            if (STATE.refs.displacementMap) {
-                STATE.refs.displacementMap.setAttribute('scale', STATE.config.strength);
+            if (STATE.refs.displacementMap && STATE.config) {
+                STATE.refs.displacementMap.setAttribute('scale', String(STATE.config.strength));
             }
-            if (lensElement) {
-                lensElement.setAttribute('width', STATE.config.diameter);
-                lensElement.setAttribute('height', STATE.config.diameter);
+            if (lensElement && STATE.config) {
+                lensElement.setAttribute('width', String(STATE.config.diameter));
+                lensElement.setAttribute('height', String(STATE.config.diameter));
             }
         };
-        window.addEventListener('resize', STATE.resizeListener);
+        globalThis.addEventListener('resize', STATE.resizeListener);
 
-        STATE.mouseListener = (e) => {
+        STATE.mouseListener = (e: MouseEvent) => {
             let localX = e.clientX;
             let localY = e.clientY;
             if (STATE.refs.appContainer) {
@@ -74,39 +81,41 @@ export function initEventHorizon(debug = false) {
                 localX = e.clientX - rect.left;
                 localY = e.clientY - rect.top;
             }
-            targetX = localX - (STATE.config.diameter / 2);
-            targetY = localY - (STATE.config.diameter / 2);
+            if (STATE.config) {
+                targetX = localX - (STATE.config.diameter / 2);
+                targetY = localY - (STATE.config.diameter / 2);
+            }
         };
-        window.addEventListener('mousemove', STATE.mouseListener);
+        globalThis.addEventListener('mousemove', STATE.mouseListener);
 
-        const animate = () => {
+        const animate = (): void => {
             currentX += (targetX - currentX) * 0.15;
             currentY += (targetY - currentY) * 0.15;
             if (lensElement) {
-                lensElement.setAttribute('x', currentX);
-                lensElement.setAttribute('y', currentY);
+                lensElement.setAttribute('x', String(currentX));
+                lensElement.setAttribute('y', String(currentY));
             }
             STATE.animationId = requestAnimationFrame(animate);
         };
         STATE.animationId = requestAnimationFrame(animate);
     };
 
-    const unbindInput = () => {
+    const unbindInput = (): void => {
         if (STATE.animationId) {
             cancelAnimationFrame(STATE.animationId);
             STATE.animationId = null;
         }
         if (STATE.resizeListener) {
-            window.removeEventListener('resize', STATE.resizeListener);
+            globalThis.removeEventListener('resize', STATE.resizeListener);
             STATE.resizeListener = null;
         }
         if (STATE.mouseListener) {
-            window.removeEventListener('mousemove', STATE.mouseListener);
+            globalThis.removeEventListener('mousemove', STATE.mouseListener);
             STATE.mouseListener = null;
         }
     };
 
-    const start = () => {
+    const start = (): void => {
         stop();
         STATE.config = getConfig();
         ensureFilterInstalled(STATE, debug);
@@ -115,7 +124,7 @@ export function initEventHorizon(debug = false) {
         bindInput();
     };
 
-    const stop = () => {
+    const stop = (): void => {
         unbindInput();
         const filterContainer = document.getElementById(IDS.filterSvg);
         if (filterContainer) {
@@ -128,8 +137,6 @@ export function initEventHorizon(debug = false) {
                 holeMatrix.setAttribute('values', BLACK_HOLE_MATRIX_DISABLED);
             }
         }
-        // Note: We leave the filter SVG in the DOM and the filter property on appContainer
-        // to avoid "jumping" when re-enabling.
     };
 
     start();

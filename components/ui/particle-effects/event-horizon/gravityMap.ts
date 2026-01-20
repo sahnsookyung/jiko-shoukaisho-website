@@ -4,18 +4,19 @@
  * @param {number} size - The width/height of the square canvas (e.g. 512).
  * @returns {string} The data URL of the generated image.
  */
-export const createGravityMap = (size) => {
+export const createGravityMap = (size: number): string => {
     const canvas = document.createElement('canvas');
     canvas.width = size;
     canvas.height = size;
     const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('Could not get canvas context');
+
     const imgData = ctx.createImageData(size, size);
     const data = imgData.data;
     const center = size / 2;
     const mass = 30;
 
     // Schwarzschild Radius (The Black Hole Size)
-    // This should actually be R_s = 2GM/c^2 but we not gonna see anything so we just break the laws.
     const rs = size * 0.05;
 
     for (let y = 0; y < size; y++) {
@@ -33,9 +34,6 @@ export const createGravityMap = (size) => {
 
             if (dist < rs) {
                 // --- INSIDE HORIZON ---
-                // No displacement (keep neutral to avoid tearing)
-                // Mark as HOLE (Blue = 255)
-                // red/green remain 128 (neutral)
                 blue = 255;
             } else if (dist < center) {
                 // --- GRAVITY LENSING ---
@@ -45,7 +43,7 @@ export const createGravityMap = (size) => {
                 // Smooth edges
                 const edgeFade = Math.pow(1 - (dist / center), 0.5);
                 force *= edgeFade;
-                force = Math.min(force, 3.0); // Cap force
+                force = Math.min(force, 3); // Cap force
 
                 const dirX = dx / dist;
                 const dirY = dy / dist;
@@ -54,8 +52,6 @@ export const createGravityMap = (size) => {
                 green = 128 - (dirY * force * 127);
 
                 // --- SOFT EDGE MASKING ---
-                // As we approach the edge of the canvas (center), fade alpha to 0
-                // This prevents the "square" box artifact
                 if (dist > center * 0.95) {
                     alpha = 255 * (1 - (dist - center * 0.95) / (center * 0.05));
                     alpha = Math.max(0, alpha);
@@ -63,9 +59,6 @@ export const createGravityMap = (size) => {
 
             } else {
                 // --- OUTSIDE CANVAS RADIUS ---
-                // Make the corners of the square transparent.
-                // Because we composite OVER neutral gray in the SVG, 
-                // this makes the lens shape perfectly circular.
                 alpha = 0;
             }
 
