@@ -20,6 +20,7 @@ The website is designed as a single-screen interactive experience. The user inte
 - **Timeline Viewer** (Scroll): A scrollable carousel for storytelling and chronological events.
 
 ### 3. Special Effects
+These graphics could be quite heavy for some users, so they are toggleable.
 - **Event Horizon Effect**: A real-time `Three.js` particle system that follows the mouse, simulating a gravity well with redshift color interpolation.
 - **Korean "Waterfall" Effect**: A thematic background effect featuring falling Korean characters, paying homage to traditional aesthetics (Ancient Korean Style).
 - **Toggleable Controls**: Users can independently toggle these high-fidelity visual effects on or off.
