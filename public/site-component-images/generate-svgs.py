@@ -191,7 +191,7 @@ def generate_variants_test():
 PRODUCTION_JOBS = [
     # ("main", None),
     # ("book", None),
-    ("camera-viewfinder-2", None),
+    ("camera-viewfinder", None),
     # ("laptop", {"output_name": "laptop-screen"}), # Example of changing output name
     # ("laptop-frame", None),
     # ("laptop-screen-cutout", None),

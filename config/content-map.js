@@ -25,7 +25,7 @@ export const contentMap = {
         label: 'Iceland Adventure',
         description: 'Photos from Iceland',
         type: 'gallery',
-        containerSVG: 'camera-viewfinder-2',
+        containerSVG: 'camera-viewfinder',
         contentPath: '/content/travel/iceland/index.json',
         component: 'gallery-viewer'
     },
@@ -35,7 +35,7 @@ export const contentMap = {
         label: 'Europe',
         description: 'Photos from Europe',
         type: 'gallery',
-        containerSVG: 'camera-viewfinder-2',
+        containerSVG: 'camera-viewfinder',
         contentPath: '/content/travel/europe/index.json',
         component: 'gallery-viewer'
     },
@@ -45,7 +45,7 @@ export const contentMap = {
         label: 'Japan',
         description: 'Photos from Japan',
         type: 'gallery',
-        containerSVG: 'camera-viewfinder-2',
+        containerSVG: 'camera-viewfinder',
         contentPath: '/content/travel/japan/index.json',
         component: 'gallery-viewer'
     },
@@ -55,7 +55,7 @@ export const contentMap = {
         label: 'Skydiving',
         description: 'Photos from the sky',
         type: 'gallery',
-        containerSVG: 'camera-viewfinder-2',
+        containerSVG: 'camera-viewfinder',
         contentPath: '/content/travel/skydiving/index.json',
         component: 'gallery-viewer'
     },

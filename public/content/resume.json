@@ -73,5 +73,17 @@
                 }
             ]
         }
+    ],
+    "links": [
+        {
+            "platform": "GitHub",
+            "url": "https://github.com/sahnsookyung",
+            "icon": "github"
+        },
+        {
+            "platform": "LinkedIn",
+            "url": "https://www.linkedin.com/in/soo-kyung-ahn-9a7aa012a/",
+            "icon": "linkedin"
+        }
     ]
 }
