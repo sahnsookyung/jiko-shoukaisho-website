@@ -42,10 +42,10 @@ export async function inlineSVG(): Promise<void> {
     }));
 }
 
-export async function loadSVG(path: string): Promise<string> {
+export async function loadSVG(path: string, signal?: AbortSignal): Promise<string> {
     if (svgCache.has(path)) return svgCache.get(path)!;
 
-    const res = await fetch(path);
+    const res = await fetch(path, { signal });
     if (!res.ok) {
         throw new Error(`Failed to fetch SVG: ${res.status} ${res.statusText} for ${path}`);
     }
@@ -54,10 +54,10 @@ export async function loadSVG(path: string): Promise<string> {
     return text;
 }
 
-export async function loadJSON(path: string): Promise<any> {
+export async function loadJSON(path: string, signal?: AbortSignal): Promise<any> {
     if (jsonCache.has(path)) return jsonCache.get(path);
 
-    const res = await fetch(path);
+    const res = await fetch(path, { signal });
     if (!res.ok) {
         throw new Error(`Failed to fetch JSON: ${res.status} ${res.statusText} for ${path}`);
     }

@@ -12,15 +12,30 @@ interface ViewerElement extends HTMLElement {
 
 class ContentViewer extends HTMLElement {
     private _reqId: number = 0;
+    private _abortController: AbortController | null = null;
+    private readonly _onBackdropClick: () => void;
+    private readonly _onCloseClick: () => void;
 
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
+        this._onBackdropClick = this.requestClose.bind(this);
+        this._onCloseClick = this.requestClose.bind(this);
     }
 
     connectedCallback(): void {
-        if (this.shadowRoot) {
-            this.shadowRoot.innerHTML = `
+        this._renderShell();
+        this._addListeners();
+    }
+
+    disconnectedCallback(): void {
+        this._removeListeners();
+    }
+
+    private _renderShell(): void {
+        if (!this.shadowRoot || this.shadowRoot.innerHTML.trim() !== '') return;
+
+        this.shadowRoot.innerHTML = `
           <style>
             :host {
                 position: fixed; inset: 0; display: none; 
@@ -81,13 +96,24 @@ class ContentViewer extends HTMLElement {
             </div>
           </div>
         `;
+    }
 
-            const backdrop = this.shadowRoot.querySelector('.backdrop');
-            const closeBtn = this.shadowRoot.querySelector('.close');
+    private _addListeners(): void {
+        if (!this.shadowRoot) return;
+        const backdrop = this.shadowRoot.querySelector('.backdrop');
+        const closeBtn = this.shadowRoot.querySelector('.close');
 
-            if (backdrop) backdrop.addEventListener('click', () => this.requestClose());
-            if (closeBtn) closeBtn.addEventListener('click', () => this.requestClose());
-        }
+        if (backdrop) backdrop.addEventListener('click', this._onBackdropClick);
+        if (closeBtn) closeBtn.addEventListener('click', this._onCloseClick);
+    }
+
+    private _removeListeners(): void {
+        if (!this.shadowRoot) return;
+        const backdrop = this.shadowRoot.querySelector('.backdrop');
+        const closeBtn = this.shadowRoot.querySelector('.close');
+
+        if (backdrop) backdrop.removeEventListener('click', this._onBackdropClick);
+        if (closeBtn) closeBtn.removeEventListener('click', this._onCloseClick);
     }
 
     isVisible(): boolean { return this.classList.contains('visible'); }
@@ -115,13 +141,17 @@ class ContentViewer extends HTMLElement {
             if (cfg.cutoutSVG && !/^[a-z0-9_-]+$/i.test(cfg.cutoutSVG)) {
                 throw new Error('Invalid cutoutSVG name');
             }
+            if (this._abortController) this._abortController.abort();
+            this._abortController = new AbortController();
+            const signal = this._abortController.signal;
+
             await import(`./viewers/${cfg.component}.ts`);
             if (reqId !== this._reqId) return;
 
-            const promises: [Promise<string>, Promise<any>, Promise<string> | undefined] = [
-                loadSVG(`/site-component-images/output_svgs/min/${cfg.containerSVG}.svg`),
-                loadJSON(cfg.contentPath),
-                cfg.cutoutSVG ? loadSVG(`/site-component-images/output_svgs/min/${cfg.cutoutSVG}.svg`) : undefined
+            const promises: [Promise<string>, Promise<any>, Promise<string | undefined>] = [
+                loadSVG(`/site-component-images/output_svgs/min/${cfg.containerSVG}.svg`, signal),
+                loadJSON(cfg.contentPath, signal),
+                cfg.cutoutSVG ? loadSVG(`/site-component-images/output_svgs/min/${cfg.cutoutSVG}.svg`, signal) : Promise.resolve(undefined)
             ];
 
             const results = await Promise.all(promises);
@@ -134,33 +164,8 @@ class ContentViewer extends HTMLElement {
 
             // 1. Set host to ignore events (so empty space clicks through)
             el.style.pointerEvents = 'none';
-
-            // 2. MONKEY PATCH: Override render to persist our style fix
-            // This ensures that even when you click "Next" or "Prev", the fix stays.
-            const originalRender = el.render.bind(el);
-            el.render = function (this: ViewerElement) {
-                // Call the original render (which wipes shadowRoot)
-                originalRender();
-
-                // Immediately re-inject our fix
-                if (this.shadowRoot) {
-                    const style = document.createElement('style');
-                    style.textContent = `
-                        /* Force specific internal areas to accept mouse events */
-                        .wrap, 
-                        .content-area, 
-                        .content, 
-                        .viewfinder, 
-                        .controls,
-                        .nav,
-                        button, 
-                        a { 
-                            pointer-events: auto !important; 
-                        }
-                    `;
-                    this.shadowRoot.appendChild(style);
-                }
-            };
+            // 2. Set custom property so internal interactive areas can opt-in
+            el.style.setProperty('--viewer-pointer-events', 'auto');
 
             // 3. Set data (which triggers the first render + our patch)
             el.frameSvg = frameSvg;
@@ -174,21 +179,24 @@ class ContentViewer extends HTMLElement {
             el.tabIndex = -1;
             el.focus();
 
-        } catch (e) {
-            if (reqId !== this._reqId) return;
+        } catch (e: any) {
+            if (reqId !== this._reqId || e.name === 'AbortError') return;
             console.error('Failed to load viewer', e);
             panel.innerHTML = `<div style="color:white;padding:20px;text-align:center;">Failed to load content.<br>Please try again.</div>`;
         }
     }
 
     hide(): void {
+        this._reqId++;
+        if (this._abortController) {
+            this._abortController.abort();
+            this._abortController = null;
+        }
         this.classList.remove('visible');
-        setTimeout(() => {
-            if (this.shadowRoot) {
-                const panel = this.shadowRoot.querySelector('.panel');
-                if (panel) panel.innerHTML = '';
-            }
-        }, 300);
+        if (this.shadowRoot) {
+            const panel = this.shadowRoot.querySelector('.panel');
+            if (panel) panel.innerHTML = '';
+        }
     }
 }
 

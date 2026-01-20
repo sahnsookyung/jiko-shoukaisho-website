@@ -56,7 +56,6 @@ export function initEventHorizon(debug: boolean = false): EHController {
         cacheRefs(STATE);
         if (!STATE.refs.appContainer) return;
 
-        const lensElement = STATE.refs.lensElement;
         let targetX = 0, targetY = 0;
         let currentX = 0, currentY = 0;
 
@@ -66,9 +65,9 @@ export function initEventHorizon(debug: boolean = false): EHController {
             if (STATE.refs.displacementMap && STATE.config) {
                 STATE.refs.displacementMap.setAttribute('scale', String(STATE.config.strength));
             }
-            if (lensElement && STATE.config) {
-                lensElement.setAttribute('width', String(STATE.config.diameter));
-                lensElement.setAttribute('height', String(STATE.config.diameter));
+            if (STATE.refs.lensElement && STATE.config) {
+                STATE.refs.lensElement.setAttribute('width', String(STATE.config.diameter));
+                STATE.refs.lensElement.setAttribute('height', String(STATE.config.diameter));
             }
         };
         globalThis.addEventListener('resize', STATE.resizeListener);
@@ -91,9 +90,9 @@ export function initEventHorizon(debug: boolean = false): EHController {
         const animate = (): void => {
             currentX += (targetX - currentX) * 0.15;
             currentY += (targetY - currentY) * 0.15;
-            if (lensElement) {
-                lensElement.setAttribute('x', String(currentX));
-                lensElement.setAttribute('y', String(currentY));
+            if (STATE.refs.lensElement) {
+                STATE.refs.lensElement.setAttribute('x', String(currentX));
+                STATE.refs.lensElement.setAttribute('y', String(currentY));
             }
             STATE.animationId = requestAnimationFrame(animate);
         };

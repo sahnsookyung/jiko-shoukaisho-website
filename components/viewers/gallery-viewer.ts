@@ -77,6 +77,9 @@ class GalleryViewer extends HTMLElement {
           display: flex;
           align-items: center;
           justify-content: center;
+
+          /* Opt-in to pointer events if parent allows */
+          pointer-events: var(--viewer-pointer-events, auto);
         }
 
         .frame { 
@@ -132,6 +135,7 @@ class GalleryViewer extends HTMLElement {
             justify-content: center; 
             gap: 20px; 
             z-index: 10; /* Controls sit on top of everything */
+            pointer-events: var(--viewer-pointer-events, auto);
         }
         
         @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
@@ -140,7 +144,7 @@ class GalleryViewer extends HTMLElement {
       <div class="wrap">
         <div class="frame">${cleanSvgString}</div>
         <div class="viewfinder">
-            ${current ? `<img src="${escapeHtml(current.src)}" alt="${escapeHtml(current.caption)}">` : '<div style="color:white">No images</div>'}
+            ${current ? `<img src="${escapeHtml(current.src)}" alt="${escapeHtml(current.caption ?? '')}">` : '<div style="color:white">No images</div>'}
             ${current?.caption ? `<div class="caption">${escapeHtml(current.caption)}</div>` : ''}
         </div>
         <div class="controls">

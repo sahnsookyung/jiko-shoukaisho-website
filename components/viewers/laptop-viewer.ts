@@ -1,3 +1,4 @@
+import DOMPurify from 'dompurify';
 import { processSvgForImg } from './utils/frame-svg';
 import { escapeHtml } from '../../utils/string-utils';
 
@@ -132,7 +133,7 @@ class LaptopViewer extends HTMLElement {
             padding: clamp(40px, 8cqw, 80px) clamp(15px, 6cqw, 80px) clamp(20px, 8cqw, 60px) clamp(15px, 6cqw, 60px);
 
 
-            pointer-events: auto; 
+            pointer-events: var(--viewer-pointer-events, auto); 
             
             font-family: 'Poiret One', system-ui, -apple-system, sans-serif; 
             color: #333;
@@ -210,53 +211,66 @@ class LaptopViewer extends HTMLElement {
   private renderContent(): string {
     const d = this._data;
     if (!d) return '';
-    let html = '';
 
     // For 'about' simple format
     if (d.text) {
-      const bodyContent = Array.isArray(d.text)
-        ? d.text.map(p => `<p>${p}</p>`).join('')
-        : d.text || '';
-
-      html = `
-            <h1>${escapeHtml(d.title || 'About Me')}</h1>
-            <div class="body-text">
-                ${bodyContent}
-            </div>
-        `;
-    } else {
-      // For 'resume' structured format
-      html = `
-        <h1>${escapeHtml(d.name || '')}</h1>
-        <p style="margin-top:-16px;color:#666;margin-bottom:24px;">${escapeHtml(d.title || '')}</p>
-        
-        ${(d.sections || []).map(section => {
-        const items = (section.items || []).map(item => {
-          // Ensure optional bits are only built if truthy
-          const highlightsHtml = (item.highlights?.length)
-            ? `<ul>${item.highlights.map(h => `<li>${escapeHtml(h)}</li>`).join('')}</ul>`
-            : '';
-
-          const descHtml = item.description ? `<p>${escapeHtml(item.description)}</p>` : '';
-          const companyHtml = item.company ? `<span class="company">@ ${escapeHtml(item.company)}</span>` : '';
-
-          return `
-                <div class="job">
-                  <div class="job-header">
-                    <div><span class="role">${escapeHtml(item.role || '')}</span> ${companyHtml}</div>
-                    <span class="period">${escapeHtml(item.period || '')}</span>
-                  </div>
-                  ${descHtml}
-                  ${highlightsHtml}
-                </div>`;
-        }).join('');
-
-        return `<h2>${escapeHtml(section.title || '')}</h2>${items}`;
-      }).join('')}`;
+      return this._renderAboutContent(d);
     }
 
-    // Always append social links if present
-    return html + this._renderSocialLinks(d.links);
+    // For 'resume' structured format
+    return this._renderResumeContent(d);
+  }
+
+  private _renderAboutContent(d: LaptopData): string {
+    const bodyContent = Array.isArray(d.text)
+      ? d.text.map(p => `<p>${DOMPurify.sanitize(p)}</p>`).join('')
+      : `<p>${DOMPurify.sanitize(d.text as string)}</p>`;
+
+    return `
+      <h1>${escapeHtml(d.title || 'About Me')}</h1>
+      <div class="body-text">
+          ${bodyContent}
+      </div>
+      ${this._renderSocialLinks(d.links)}
+    `;
+  }
+
+  private _renderResumeContent(d: LaptopData): string {
+    const sectionsHtml = (d.sections || []).map(s => this._renderResumeSection(s)).join('');
+
+    return `
+      <h1>${escapeHtml(d.name || '')}</h1>
+      <p style="margin-top:-16px;color:#666;margin-bottom:24px;">${escapeHtml(d.title || '')}</p>
+      ${sectionsHtml}
+      ${this._renderSocialLinks(d.links)}
+    `;
+  }
+
+  private _renderResumeSection(section: ResumeSection): string {
+    const items = (section.items || []).map(item => this._renderResumeItem(item)).join('');
+    return `<h2>${escapeHtml(section.title || '')}</h2>${items}`;
+  }
+
+  private _renderResumeItem(item: ResumeItem): string {
+    const highlightsHtml = this._renderHighlights(item.highlights);
+    const descHtml = item.description ? `<p>${DOMPurify.sanitize(item.description)}</p>` : '';
+    const companyHtml = item.company ? `<span class="company">@ ${escapeHtml(item.company)}</span>` : '';
+
+    return `
+      <div class="job">
+        <div class="job-header">
+          <div><span class="role">${escapeHtml(item.role || '')}</span> ${companyHtml}</div>
+          <span class="period">${escapeHtml(item.period || '')}</span>
+        </div>
+        ${descHtml}
+        ${highlightsHtml}
+      </div>`;
+  }
+
+  private _renderHighlights(highlights?: string[]): string {
+    if (!highlights?.length) return '';
+    const items = highlights.map(h => `<li>${DOMPurify.sanitize(h)}</li>`).join('');
+    return `<ul>${items}</ul>`;
   }
 
   private _renderSocialLinks(links?: SocialLink[]): string {
@@ -267,15 +281,20 @@ class LaptopViewer extends HTMLElement {
       linkedin: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>'
     };
 
+    const linksHtml = links.map(link => this._renderSocialLink(link, icons)).join('');
+
     return `
       <div class="social-links">
-        ${links.map(link => `
-          <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer" class="social-link" title="${escapeHtml(link.platform)}" aria-label="${escapeHtml(link.platform)}">
-            ${icons[link.icon] || ''}
-          </a>
-        `).join('')}
+        ${linksHtml}
       </div>
     `;
+  }
+
+  private _renderSocialLink(link: SocialLink, icons: Record<string, string>): string {
+    return `
+      <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer" class="social-link" title="${escapeHtml(link.platform)}" aria-label="${escapeHtml(link.platform)}">
+        ${icons[link.icon] || ''}
+      </a>`;
   }
 }
 

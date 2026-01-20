@@ -117,6 +117,8 @@ class ThoughtViewer extends HTMLElement {
 
           color: #1f1f1f; 
           line-height: 1.3;
+
+          pointer-events: var(--viewer-pointer-events, auto);
         }
         
         .pages-container {
@@ -141,6 +143,7 @@ class ThoughtViewer extends HTMLElement {
           background: rgba(255,255,255,.9);
           padding: 8px 14px; border-radius: 999px;
           box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+          pointer-events: var(--viewer-pointer-events, auto);
         }
         .count{font:12px system-ui;color:#555;min-width:64px;text-align:center;}
       </style>
@@ -156,7 +159,7 @@ class ThoughtViewer extends HTMLElement {
         </div>
         <div class="nav">
           <navigation-arrows></navigation-arrows>
-          <div class="count">${this.page + 1} / ${thoughts.length}</div>
+          <div class="count">${thoughts.length > 0 ? `${this.page + 1} / ${thoughts.length}` : '0 / 0'}</div>
         </div>
       </div>
     `;

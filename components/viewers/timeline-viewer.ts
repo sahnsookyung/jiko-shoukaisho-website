@@ -79,6 +79,8 @@ class TimelineViewer extends HTMLElement {
           font-family: 'Bilbo Swash Caps', cursive;
           scrollbar-width: thin;
           scrollbar-color: #5c4033 rgba(0,0,0,0.05); 
+
+          pointer-events: var(--viewer-pointer-events, auto);
         }
         
         .content-area::-webkit-scrollbar { height: 8px; }

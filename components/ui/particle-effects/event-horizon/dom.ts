@@ -10,10 +10,10 @@ export interface EHState {
     effectEnabled: boolean;
     refs: {
         appContainer: HTMLElement | null;
-        filterContainer: HTMLElement | null;
+        filterContainer: SVGSVGElement | null;
         lensElement: SVGFEImageElement | null;
-        displacementMap: SVGElement | null;
-        holeMatrix: SVGElement | null;
+        displacementMap: SVGFEDisplacementMapElement | null;
+        holeMatrix: SVGFEColorMatrixElement | null;
     };
 }
 
@@ -23,7 +23,14 @@ export interface EHState {
  */
 export const cacheRefs = (state: EHState): void => {
     state.refs.appContainer ??= document.querySelector('.container');
-    state.refs.filterContainer ??= document.getElementById(IDS.filterSvg);
+
+    if (!state.refs.filterContainer) {
+        const el = document.getElementById(IDS.filterSvg);
+        if (el instanceof SVGSVGElement) {
+            state.refs.filterContainer = el;
+        }
+    }
+
     if (state.refs.filterContainer) {
         state.refs.lensElement = state.refs.filterContainer.querySelector('feImage');
         state.refs.displacementMap = state.refs.filterContainer.querySelector(`#${IDS.displacement}`);
@@ -47,24 +54,24 @@ export const ensureFilterInstalled = (state: EHState, debug: boolean = false): v
         const neutralIntercept = getNeutralIntercept();
 
         const svgNS = "http://www.w3.org/2000/svg";
-        filterContainer = document.createElementNS(svgNS, "svg") as unknown as HTMLElement;
-        filterContainer.id = IDS.filterSvg;
+        const svgEl = document.createElementNS(svgNS, "svg");
+        svgEl.id = IDS.filterSvg;
 
-        filterContainer.style.position = "absolute";
-        filterContainer.style.width = "0";
-        filterContainer.style.height = "0";
-        filterContainer.style.zIndex = "-1";
+        svgEl.style.position = "absolute";
+        svgEl.style.width = "0";
+        svgEl.style.height = "0";
+        svgEl.style.zIndex = "-1";
 
-        filterContainer.innerHTML = buildFilterMarkup({
+        svgEl.innerHTML = buildFilterMarkup({
             gradientUrl,
             neutralIntercept,
             diameter: state.config.diameter,
             strength: state.config.strength,
             debug
         });
-        document.body.appendChild(filterContainer);
+        document.body.appendChild(svgEl);
 
-        state.refs.filterContainer = filterContainer;
+        state.refs.filterContainer = svgEl;
     }
 
     cacheRefs(state);

@@ -9,6 +9,22 @@ interface FilterMarkupParams {
 }
 
 /**
+ * Validates and sanitizes a URL for use in SVG attributes.
+ * Allows only data:, same-origin, or http(s) URLs.
+ */
+function validateUrl(url: string): string {
+    const trimmed = url.trim();
+    // Allow data: URLs (used by createGravityMap via canvas.toDataURL)
+    // Allow same-origin relative paths (e.g. /assets/...)
+    // Allow http: or https:
+    if (/^(data:image\/[^;]+;base64,|data:image\/svg\+xml;|\/|https?:\/\/)/i.test(trimmed)) {
+        return trimmed;
+    }
+    console.warn('Blocked potentially unsafe URL:', trimmed);
+    return 'about:blank';
+}
+
+/**
  * Constructs the SVG filter string.
  * We interpolate the calculated intercept to ensure perfect calibration.
  * 
@@ -36,7 +52,8 @@ export const buildFilterMarkup = ({ gradientUrl, neutralIntercept, diameter, str
                     <feFlood id="eh-neutral-background" flood-color="#808080" flood-opacity="1" result="neutralBackground" />
                     
                     <!-- The Lens Image (a rectangle with transparent corners: i.e. effectively a circle) -->
-                    <feImage href="${gradientUrl}" result="lensImage" x="0" y="0" width="${diameter}" height="${diameter}" preserveAspectRatio="none" />
+                    <!-- Note: gradientUrl is generated internally via canvas.toDataURL() in gravityMap.ts -->
+                    <feImage href="${validateUrl(gradientUrl)}" result="lensImage" x="0" y="0" width="${diameter}" height="${diameter}" preserveAspectRatio="none" />
                     
                     <!-- Composite OVER: Transparent corners reveal the perfect neutral background -->
                     <feComposite in="lensImage" in2="neutralBackground" operator="over" result="mergedMap" />

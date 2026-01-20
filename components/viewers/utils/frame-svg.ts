@@ -85,7 +85,7 @@ export function parseFrameSvg(svgString: string, { defaultW = 1000, defaultH = 1
     const doc = parser.parseFromString(svgString, 'image/svg+xml');
 
     // Some environments insert <parsererror> nodes for invalid XML.
-    if (doc.querySelector && doc.querySelector('parsererror')) return null;
+    if (doc.querySelector?.('parsererror')) return null;
 
     const svgEl = doc.documentElement as unknown as SVGSVGElement;
     if (!svgEl || String(svgEl.nodeName).toLowerCase() !== 'svg') return null;
@@ -103,8 +103,8 @@ export function parseFrameSvg(svgString: string, { defaultW = 1000, defaultH = 1
         const wAttr = svgEl.getAttribute('width');
         const hAttr = svgEl.getAttribute('height');
 
-        const wParsed = wAttr ? Number.parseFloat(wAttr) : NaN;
-        const hParsed = hAttr ? Number.parseFloat(hAttr) : NaN;
+        const wParsed = wAttr ? Number.parseFloat(wAttr) : Number.NaN;
+        const hParsed = hAttr ? Number.parseFloat(hAttr) : Number.NaN;
 
         w = ensureFinitePositive(wParsed) ? wParsed : defaultW;
         h = ensureFinitePositive(hParsed) ? hParsed : defaultH;

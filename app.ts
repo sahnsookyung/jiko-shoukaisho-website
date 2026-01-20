@@ -46,7 +46,7 @@ class PortfolioApp {
         this.tooltip = document.createElement('tooltip-display') as TooltipDisplayElement;
         document.body.appendChild(this.tooltip);
 
-        this.overlays = document.querySelector('#interactive-overlays') as HTMLElement | null;
+        this.overlays = document.getElementById('interactive-overlays');
 
         this.overlays?.addEventListener('click', (e) => this.onClick(e));
 
@@ -55,7 +55,7 @@ class PortfolioApp {
         this.overlays?.addEventListener('mouseleave', (e) => this.onLeave(e), true);
         this.overlays?.addEventListener('mousemove', (e) => this.onMove(e));
 
-        this.viewer.addEventListener('close-request', () => this.viewer?.hide());
+        this.viewer?.addEventListener('close-request', () => this.viewer?.hide());
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && this.viewer?.isVisible()) this.viewer.hide();
@@ -82,7 +82,7 @@ class PortfolioApp {
         }
 
         // 2) Try nearest parent group with id
-        const group = el.closest('g[id]') as HTMLElement | null;
+        const group = el.closest('g[id]') as HTMLElement;
         if (group?.id) {
             const fromGroup = getContentConfig(group.id);
             if (fromGroup) return fromGroup;

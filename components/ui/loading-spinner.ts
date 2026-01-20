@@ -27,4 +27,8 @@ class LoadingSpinner extends HTMLElement {
     }
 }
 
-customElements.define('loading-spinner', LoadingSpinner);
+if (!customElements.get('loading-spinner')) {
+    customElements.define('loading-spinner', LoadingSpinner);
+}
+
+export { LoadingSpinner };
