@@ -27,11 +27,12 @@ These graphics could be quite heavy for some users, so they are toggleable.
 
 ## Tech Stack
 
-- **Core**: Vanilla JavaScript, HTML5, Semantic CSS.
-- **Graphics**: SVG (Scalable Vector Graphics), [Three.js](https://threejs.org/) for particle simulations.
-- **Components**: Custom Web Components for modular and reusable viewers.
-- **Security**: [DOMPurify](https://github.com/cure53/dompurify) for sanitizing user-provided content.
-- **Build Tool**: [Vite](https://vitejs.dev/) for a fast development experience and optimized production builds.
+- **Core**: Vanilla JavaScript (ES6+), HTML5, Semantic CSS.
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) for modern, utility-first styling (v4 with Vite integration).
+- **Graphics**: SVG (Scalable Vector Graphics), [Three.js](https://threejs.org/) for real-time particle simulations.
+- **Architecture**: Native **Web Components** (Custom Elements) for modular, framework-less viewer components.
+- **Security**: [DOMPurify](https://github.com/cure53/dompurify) for sanitizing dynamically injected content.
+- **Build Tool**: [Vite](https://vitejs.dev/) for an extremely fast development server and optimized production bundling.
 
 ## Asset Optimization Pipeline
 
