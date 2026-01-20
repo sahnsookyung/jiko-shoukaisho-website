@@ -1,6 +1,6 @@
 # Interactive Portfolio (자기소개서 / 自己紹介書)
 
-Hi! This is an interactive portal website that showcases who I am, including both my professional background and glimpses into my personal life.
+Hi! This is an [interactive portal website](https://sookyungahn.com) that showcases who I am, including both my professional background and glimpses into my personal life. It is best enjoyed on a laptop or desktop.
 
 ## Overview
 
