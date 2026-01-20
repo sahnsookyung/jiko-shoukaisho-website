@@ -1,6 +1,10 @@
 {
     "images": [
         {
+            "src": "content/travel/iceland/nov13/anticipation-of-adventure.jpg",
+            "caption": "Stepping into adventure."
+        },
+        {
             "src": "content/travel/iceland/nov11/reykjadalur-drone3.jpg",
             "caption": "Reykjadalur geothermal valley hike."
         },
@@ -11,10 +15,6 @@
         {
             "src": "content/travel/iceland/nov11/reykjadalur-drone1.jpg",
             "caption": "Drone perspective of the microbiome near steaming water bodies."
-        },
-        {
-            "src": "content/travel/iceland/nov13/anticipation-of-adventure.jpg",
-            "caption": "Stepping into adventure."
         },
         {
             "src": "content/travel/iceland/nov13/adventure-2.jpg",
