@@ -228,7 +228,7 @@ class LaptopViewer extends HTMLElement {
     return `
       <div class="social-links">
         ${links.map(link => `
-          <a href="${link.url}" target="_blank" class="social-link" title="${link.platform}" aria-label="${link.platform}">
+          <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer" class="social-link" title="${escapeHtml(link.platform)}" aria-label="${escapeHtml(link.platform)}">
             ${icons[link.icon] || ''}
           </a>
         `).join('')}
