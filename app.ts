@@ -7,6 +7,7 @@ import './components/tooltip-display';
 import { initWatermark } from './components/korean-words-bg/korean-words-bg';
 import { initEventHorizon } from './components/ui/particle-effects/event-horizon/index';
 import { createEffectControls } from './components/ui/effect-controls';
+import './components/ui/social-links';
 
 interface EffectController {
     start(): void;
@@ -46,6 +47,65 @@ class PortfolioApp {
         this.tooltip = document.createElement('tooltip-display') as TooltipDisplayElement;
         document.body.appendChild(this.tooltip);
 
+        const style = document.createElement('style');
+        style.textContent = `
+            #sidebar-controls {
+                position: fixed;
+                left: clamp(10px, 2vw, 20px);
+                top: 50%;
+                transform: translateY(-50%);
+                display: flex;
+                flex-direction: column;
+                gap: clamp(10px, 3vmin, 30px);
+                z-index: 100;
+                pointer-events: none;
+                padding: 10px 5px;
+                border-radius: 12px;
+                transition: all 0.3s ease;
+            }
+
+            @media (max-width: 768px) {
+                #sidebar-controls {
+                    top: 15px;
+                    transform: none;
+                    flex-direction: row;
+                    align-items: center;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: rgba(15, 15, 15, 0.7);
+                    backdrop-filter: blur(12px);
+                    -webkit-backdrop-filter: blur(12px);
+                    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+                    border: 1px solid rgba(255,255,255,0.15);
+                    padding: 6px 15px;
+                    gap: 20px;
+                    border-radius: 20px;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        const sidebarControls = document.createElement('div');
+        sidebarControls.id = 'sidebar-controls';
+
+        const socialLinks = document.createElement('social-links-fixed');
+        socialLinks.style.pointerEvents = 'auto';
+        sidebarControls.appendChild(socialLinks);
+
+        this.addEffectControls(sidebarControls);
+        document.body.appendChild(sidebarControls);
+
+        // Handle responsive attributes for custom components
+        const mql = globalThis.matchMedia('(max-width: 768px)');
+        const handleResize = (e: MediaQueryListEvent | MediaQueryList) => {
+            const layout = e.matches ? 'horizontal' : 'vertical';
+            socialLinks.setAttribute('layout', layout);
+            const controls = sidebarControls.querySelector('div'); // effect-controls container
+            if (controls) controls.setAttribute('layout', layout);
+        };
+        mql.addEventListener('change', handleResize);
+        handleResize(mql);
+
         this.overlays = document.getElementById('interactive-overlays');
 
         this.overlays?.addEventListener('click', (e) => this.onClick(e));
@@ -61,13 +121,14 @@ class PortfolioApp {
             if (e.key === 'Escape' && this.viewer?.isVisible()) this.viewer.hide();
         });
 
-        this.addEffectControls();
+
     }
 
-    private addEffectControls(): void {
+    private addEffectControls(container: HTMLElement): void {
         if (this.watermarkCtrl && this.horizonCtrl) {
             const controls = createEffectControls(this.watermarkCtrl, this.horizonCtrl);
-            document.body.appendChild(controls);
+            controls.style.pointerEvents = 'auto'; // Re-enable pointer events for controls
+            container.appendChild(controls);
         }
     }
 
@@ -123,6 +184,8 @@ class PortfolioApp {
     }
 }
 
-new PortfolioApp().init().catch((err) => {
+try {
+    await new PortfolioApp().init();
+} catch (err) {
     console.error('Portfolio initialization failed:', err);
-});
+}
