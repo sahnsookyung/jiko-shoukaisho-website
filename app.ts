@@ -184,8 +184,10 @@ class PortfolioApp {
     }
 }
 
-try {
-    await new PortfolioApp().init();
-} catch (err) {
-    console.error('Portfolio initialization failed:', err);
-}
+(async () => {
+    try {
+        await new PortfolioApp().init();
+    } catch (err) {
+        console.error('Portfolio initialization failed:', err);
+    }
+})();
