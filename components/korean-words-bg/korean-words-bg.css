@@ -23,8 +23,6 @@
     flex-direction: column;
     align-items: center;
     overflow: hidden;
-    color: rgba(139, 0, 0, 0.12);
-    /* Base watermark color (dim red) */
     font-family: 'Yeon Sung', cursive;
     /* Korean brush font */
 }
@@ -33,23 +31,23 @@
     writing-mode: vertical-rl;
     text-orientation: upright;
     white-space: nowrap;
-    text-shadow: none;
-    transition: color 0.5s, text-shadow 0.5s;
     line-height: 1.2;
+    
+    /* GPU-accelerated properties */
+    will-change: opacity;
+    
+    /* Base state: dim red watermark */
+    color: #ffd700; /* Gold color */
+    text-shadow:
+        0 0 5px #ff4500,
+        0 0 15px #ff8c00,
+        0 0 25px #ffd700;
+    
+    /* Opacity controlled by JavaScript for smooth animation */
+    /* transform: translateZ(0); Force GPU acceleration */
 }
 
 .word-spacer {
     height: 1em;
     /* Gap between words */
-}
-
-/* The Glowing Animation State */
-.glowing {
-    color: #ffd700;
-    /* Gold */
-    text-shadow:
-        0 0 5px #ff4500,
-        0 0 15px #ff8c00,
-        0 0 25px #ffd700;
-    opacity: 1;
 }

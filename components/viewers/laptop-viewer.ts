@@ -28,6 +28,7 @@ interface LaptopData {
   text?: string | string[];
   sections?: ResumeSection[];
   links?: SocialLink[];
+  pdfUrl?: string;
 }
 
 interface SvgImg {
@@ -192,6 +193,34 @@ class LaptopViewer extends HTMLElement {
           height: 28px;
           fill: currentColor;
         }
+
+        /* Download Button */
+        .download-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          margin-top: 24px;
+          margin-bottom: 16px;
+          padding: 12px 24px;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          text-decoration: none;
+          border-radius: 8px;
+          font-weight: 600;
+          font-size: clamp(13px, 2.5cqw, 16px);
+          transition: all 0.3s ease;
+          box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .download-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+          background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        .download-btn svg {
+          flex-shrink: 0;
+        }
       </style>
       
       <div class="wrap">
@@ -238,11 +267,13 @@ class LaptopViewer extends HTMLElement {
 
   private _renderResumeContent(d: LaptopData): string {
     const sectionsHtml = (d.sections || []).map(s => this._renderResumeSection(s)).join('');
+    const downloadButton = d.pdfUrl ? this._renderDownloadButton(d.pdfUrl) : '';
 
     return `
       <h1>${escapeHtml(d.name || '')}</h1>
       <p style="margin-top:-16px;color:#666;margin-bottom:24px;">${escapeHtml(d.title || '')}</p>
       ${sectionsHtml}
+      ${downloadButton}
       ${this._renderSocialLinks(d.links)}
     `;
   }
@@ -291,6 +322,19 @@ class LaptopViewer extends HTMLElement {
       <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer" class="social-link" title="${escapeHtml(link.platform)}" aria-label="${escapeHtml(link.platform)}">
         ${SOCIAL_ICONS[link.icon] || ''}
       </a>`;
+  }
+
+  private _renderDownloadButton(pdfUrl: string): string {
+    return `
+    <a href="${escapeHtml(pdfUrl)}" download class="download-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+      Download Resume (PDF)
+    </a>
+  `;
   }
 }
 

@@ -12,7 +12,8 @@ const koreanWords: string[] = [
 
 const config = {
     fontSize: 26,
-    baseSpeed: 120
+    baseSpeed: 120,
+    columnSpacing: 2 // Reduce density by spacing columns
 };
 
 interface WatermarkController {
@@ -20,25 +21,92 @@ interface WatermarkController {
     stop: () => void;
 }
 
+interface Column {
+    element: HTMLElement;
+    chars: HTMLElement[];
+    activeIndex: number;
+    speed: number;
+    lastUpdate: number;
+}
+
 export function initWatermark(): WatermarkController {
-    let resizeListener: (() => void) | null = null;
-    let intervals: ReturnType<typeof setInterval>[] = [];
-    let activeTimeouts: ReturnType<typeof setTimeout>[] = [];
+    let resizeTimeout: ReturnType<typeof setTimeout> | null = null;
+    let animationFrameId: number | null = null;
+    let columns: Column[] = [];
+    let lastFrameTime = 0;
+    let handleResize: (() => void) | null = null;
 
     const stop = () => {
         const container = document.getElementById('ancient-bg');
         if (container) container.innerHTML = '';
 
-        if (resizeListener) {
-            window.removeEventListener('resize', resizeListener);
-            resizeListener = null;
+        if (resizeTimeout) {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = null;
         }
 
-        intervals.forEach(id => clearInterval(id));
-        intervals = [];
+        if (animationFrameId !== null) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+        }
 
-        activeTimeouts.forEach(id => clearTimeout(id));
-        activeTimeouts = [];
+        if (handleResize) {
+            window.removeEventListener('resize', handleResize);
+            handleResize = null;
+        }
+
+        columns = [];
+    };
+
+    // Single animation loop for all columns
+    const animate = (currentTime: number) => {
+        if (!lastFrameTime) lastFrameTime = currentTime;
+
+        // Update each column based on its individual speed
+        columns.forEach(col => {
+            const timeSinceLastUpdate = currentTime - col.lastUpdate;
+
+            if (timeSinceLastUpdate >= col.speed) {
+                // Update this column's active character
+                if (col.activeIndex >= 0 && col.activeIndex < col.chars.length) {
+                    // Add glow to current character
+                    col.chars[col.activeIndex].style.opacity = '1';
+
+                    // Fade out previous characters
+                    const prev1 = col.activeIndex - 1;
+                    if (prev1 >= 0) {
+                        col.chars[prev1].style.opacity = '0.6';
+                    }
+
+                    const prev2 = col.activeIndex - 2;
+                    if (prev2 >= 0) {
+                        col.chars[prev2].style.opacity = '0';
+                    }
+                }
+
+                // Clean up trailing glow when past the end
+                if (col.activeIndex >= col.chars.length) {
+                    const lastIndex = col.activeIndex - 1;
+                    if (lastIndex >= 0 && lastIndex < col.chars.length) {
+                        col.chars[lastIndex].style.opacity = '0';
+                    }
+                }
+
+                col.activeIndex++;
+
+                // Reset column when animation completes
+                if (col.activeIndex > col.chars.length + 5) {
+                    // Reset all chars to invisible
+                    col.chars.forEach(char => char.style.opacity = '0');
+                    col.activeIndex = 0;
+                }
+
+                col.lastUpdate = currentTime;
+            }
+        });
+
+        lastFrameTime = currentTime;
+        animationFrameId = requestAnimationFrame(animate);
     };
 
     const start = () => {
@@ -46,32 +114,39 @@ export function initWatermark(): WatermarkController {
         if (!container) return;
 
         // Clear and rebuild
-        stop(); // Ensure clean slate
+        stop();
 
         container.innerHTML = '';
         const width = window.innerWidth;
         const height = window.innerHeight;
-        const colCount = Math.floor(width / config.fontSize);
+
+        // Reduce column count for better performance
+        const colCount = Math.floor(width / (config.fontSize * config.columnSpacing));
 
         for (let i = 0; i < colCount; i++) {
             createColumn(container, height);
         }
 
-        // Handle Resize
-        resizeListener = () => {
-            container.innerHTML = '';
-            // Clear existing intervals on resize to prevent piling up
-            intervals.forEach(clearInterval);
-            intervals = [];
-            activeTimeouts.forEach(clearTimeout);
-            activeTimeouts = [];
+        // Start single animation loop
+        lastFrameTime = 0;
+        animationFrameId = requestAnimationFrame(animate);
 
-            const newColCount = Math.floor(window.innerWidth / config.fontSize);
-            for (let i = 0; i < newColCount; i++) {
-                createColumn(container, window.innerHeight);
-            }
+        // Debounced resize handler
+        handleResize = () => { // Assign the function to the declared variable
+            if (resizeTimeout) clearTimeout(resizeTimeout);
+
+            resizeTimeout = setTimeout(() => {
+                container.innerHTML = '';
+                columns = [];
+
+                const newColCount = Math.floor(window.innerWidth / (config.fontSize * config.columnSpacing));
+                for (let i = 0; i < newColCount; i++) {
+                    createColumn(container, window.innerHeight);
+                }
+            }, 100); // Wait 100ms after resize stops
         };
-        window.addEventListener('resize', resizeListener);
+
+        window.addEventListener('resize', handleResize);
     };
 
     function createColumn(container: HTMLElement, screenHeight: number) {
@@ -80,20 +155,25 @@ export function initWatermark(): WatermarkController {
         col.style.fontSize = config.fontSize + "px";
         col.style.width = config.fontSize + "px";
 
-        // Randomize speed
+        // Randomize speed for variety
         const speedMod = Math.random() * 0.7 + 0.8;
         const columnChars: HTMLElement[] = [];
         let currentHeight = 0;
         let safety = 0;
 
-        // Fill column
+        // Fill column with characters
         while (currentHeight < screenHeight + 100 && safety < 100) {
             const word = koreanWords[Math.floor(Math.random() * koreanWords.length)];
 
             for (let char of word) {
                 const span = document.createElement('span');
                 span.classList.add('bg-char');
-                span.innerText = char;
+                span.textContent = char;
+
+                // Use opacity for GPU-accelerated animation
+                span.style.opacity = '0';
+                span.style.transition = 'opacity 0.3s ease';
+
                 col.appendChild(span);
                 columnChars.push(span);
             }
@@ -101,6 +181,7 @@ export function initWatermark(): WatermarkController {
             const spacer = document.createElement('span');
             spacer.classList.add('bg-char', 'word-spacer');
             spacer.innerHTML = '&nbsp;';
+            spacer.style.opacity = '0';
             col.appendChild(spacer);
             columnChars.push(spacer);
 
@@ -109,40 +190,18 @@ export function initWatermark(): WatermarkController {
         }
 
         container.appendChild(col);
-        startRainEffect(columnChars, speedMod);
-    }
 
-    function startRainEffect(chars: HTMLElement[], speedMod: number) {
-        let activeIndex = 0;
-        const startDelay = Math.random() * 6000;
+        // Add to columns array with randomized starting position
+        // Each column starts at a random point in its cycle for natural staggering
+        const randomStartIndex = Math.floor(Math.random() * (columnChars.length + 10));
 
-        const timeoutId = setTimeout(() => {
-            const intervalId = setInterval(() => {
-                if (activeIndex < chars.length) {
-                    chars[activeIndex].classList.add('glowing');
-
-                    // Trail cleanup
-                    let prevIndex = activeIndex - 1;
-                    if (prevIndex >= 0) chars[prevIndex].classList.remove('glowing');
-
-                    let prevIndex2 = activeIndex - 2;
-                    if (prevIndex2 >= 0) chars[prevIndex2].classList.remove('glowing');
-                } else {
-                    let lastIndex = activeIndex - 1;
-                    if (lastIndex >= 0 && lastIndex < chars.length) {
-                        chars[lastIndex].classList.remove('glowing');
-                    }
-                }
-
-                activeIndex++;
-                if (activeIndex > chars.length + 5) activeIndex = 0;
-
-            }, config.baseSpeed * speedMod);
-
-            intervals.push(intervalId);
-        }, startDelay);
-
-        activeTimeouts.push(timeoutId);
+        columns.push({
+            element: col,
+            chars: columnChars,
+            activeIndex: randomStartIndex, // Random starting position
+            speed: config.baseSpeed * speedMod,
+            lastUpdate: performance.now()
+        });
     }
 
     // Auto-start on init if desired, or let consumption code handle it.
