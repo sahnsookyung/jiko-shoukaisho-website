@@ -12,7 +12,10 @@ interface EffectController {
  * @param {EffectController} horizonCtrl - Controller for the Event Horizon effect
  * @returns {HTMLElement} The container element with toggle controls
  */
-export function createEffectControls(watermarkCtrl: EffectController | undefined, horizonCtrl: EffectController | undefined): HTMLElement {
+export function createEffectControls(
+    watermarkCtrl: EffectController | undefined,
+    horizonCtrl: EffectController | undefined
+): HTMLElement {
     const container = document.createElement('div');
     container.style.cssText = `
         display: flex; flex-direction: column; gap: clamp(4px, 1vmin, 10px); z-index: 0;

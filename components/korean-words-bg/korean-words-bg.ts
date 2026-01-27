@@ -1,3 +1,5 @@
+
+
 // components/korean-words-bg/korean-words-bg.ts
 
 // Ancient words configuration
@@ -29,7 +31,7 @@ interface Column {
     lastUpdate: number;
 }
 
-export function initWatermark(): WatermarkController {
+export function initWatermark(autoStart = true): WatermarkController {
     let resizeTimeout: ReturnType<typeof setTimeout> | null = null;
     let animationFrameId: number | null = null;
     let columns: Column[] = [];
@@ -108,7 +110,6 @@ export function initWatermark(): WatermarkController {
         lastFrameTime = currentTime;
         animationFrameId = requestAnimationFrame(animate);
     };
-
     const start = () => {
         const container = document.getElementById('ancient-bg');
         if (!container) return;
@@ -203,9 +204,10 @@ export function initWatermark(): WatermarkController {
             lastUpdate: performance.now()
         });
     }
-
     // Auto-start on init if desired, or let consumption code handle it.
-    start();
+    if (autoStart) {
+        start();
+    }
 
     return { start, stop };
 }

@@ -1,5 +1,6 @@
 import { getContentConfig, ContentConfig } from './config/content-map';
 import { inlineSVG } from './utils/svg-loader';
+import { isSafari } from './utils/browser-detection';
 
 import './components/content-viewer';
 import './components/tooltip-display';
@@ -36,8 +37,17 @@ class PortfolioApp {
     private overlays: HTMLElement | null = null;
 
     async init(): Promise<void> {
-        this.watermarkCtrl = initWatermark();
-        this.horizonCtrl = initEventHorizon(); // mouse pointer effect
+        const safe = isSafari();
+        if (safe) {
+            document.body.classList.add('is-safari');
+        }
+
+        // On Safari, we force effects off and do not auto-start them
+        // The controls are also hidden, so they cannot be re-enabled
+        const autoStartEffects = !safe;
+
+        this.watermarkCtrl = initWatermark(autoStartEffects);
+        this.horizonCtrl = initEventHorizon(false, autoStartEffects); // mouse pointer effect
 
         await inlineSVG();
 
@@ -125,6 +135,9 @@ class PortfolioApp {
     }
 
     private addEffectControls(container: HTMLElement): void {
+        const safe = isSafari();
+        if (safe) return; // Do not show controls on Safari
+
         if (this.watermarkCtrl && this.horizonCtrl) {
             const controls = createEffectControls(this.watermarkCtrl, this.horizonCtrl);
             controls.style.pointerEvents = 'auto'; // Re-enable pointer events for controls

@@ -32,6 +32,20 @@ export async function inlineSVG(): Promise<void> {
                 return;
             }
 
+            // Fix for Safari: Ensure viewBox exists
+            if (!svg.hasAttribute('viewBox')) {
+                const w = svg.getAttribute('width');
+                const h = svg.getAttribute('height');
+                if (w && h) {
+                    // Strip 'px' if present for parsing (though viewbox usually expects numbers)
+                    const wVal = parseFloat(w);
+                    const hVal = parseFloat(h);
+                    if (!isNaN(wVal) && !isNaN(hVal)) {
+                        svg.setAttribute('viewBox', `0 0 ${wVal} ${hVal}`);
+                    }
+                }
+            }
+
             if (obj.id) svg.id = obj.id;
             if (obj.className) svg.classList.add(...obj.classList.value.split(/\s+/).filter(Boolean));
 

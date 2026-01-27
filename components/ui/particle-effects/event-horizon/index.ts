@@ -1,6 +1,7 @@
 import { IDS, getConfig, BLACK_HOLE_MATRIX_ENABLED, BLACK_HOLE_MATRIX_DISABLED } from './config';
 import { ensureFilterInstalled, applyFilterToApp, cacheRefs, EHState } from './dom';
 
+
 export interface EHController {
     start(): void;
     stop(): void;
@@ -14,7 +15,7 @@ export interface EHController {
  * @param {boolean} debug - If true, displays the underlying displacement map for debugging.
  * @returns {EHController} Control methods.
  */
-export function initEventHorizon(debug: boolean = false): EHController {
+export function initEventHorizon(debug: boolean = false, autoStart = true): EHController {
     const STATE: EHState = {
         animationId: null,
         resizeListener: null,
@@ -116,6 +117,7 @@ export function initEventHorizon(debug: boolean = false): EHController {
 
     const start = (): void => {
         stop();
+        // Safari check moved to init call site
         STATE.config = getConfig();
         ensureFilterInstalled(STATE, debug);
         applyFilterToApp(STATE);
@@ -138,7 +140,9 @@ export function initEventHorizon(debug: boolean = false): EHController {
         }
     };
 
-    start();
+    if (autoStart) {
+        start();
+    }
 
     return {
         start,
