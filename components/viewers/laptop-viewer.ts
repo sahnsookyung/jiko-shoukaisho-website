@@ -253,8 +253,8 @@ class LaptopViewer extends HTMLElement {
 
   private _renderAboutContent(d: LaptopData): string {
     const bodyContent = Array.isArray(d.text)
-      ? d.text.map(p => `<p>${DOMPurify.sanitize(p)}</p>`).join('')
-      : `<p>${DOMPurify.sanitize(d.text as string)}</p>`;
+      ? d.text.map(p => `<p>${DOMPurify.sanitize(p, { ADD_ATTR: ['target'] })}</p>`).join('')
+      : `<p>${DOMPurify.sanitize(d.text as string, { ADD_ATTR: ['target'] })}</p>`;
 
     return `
       <h1>${escapeHtml(d.title || 'About Me')}</h1>
@@ -279,19 +279,23 @@ class LaptopViewer extends HTMLElement {
   }
 
   private _renderResumeSection(section: ResumeSection): string {
-    const items = (section.items || []).map(item => this._renderResumeItem(item)).join('');
-    return `<h2>${escapeHtml(section.title || '')}</h2>${items}`;
+    const items = (section.items || []).map(item => this._renderResumeItem(item));
+
+    // Add separator logic: join with a border div if multiple items exist
+    const joinedItems = items.join('<div style="border-bottom: 1px solid #d5d2b8ff; margin-top: 20px; margin-bottom: 20px;"></div>');
+
+    return `<h2 style="border-bottom:1px solid #2f2202ff;">${escapeHtml(section.title || '')}</h2>${joinedItems}`;
   }
 
   private _renderResumeItem(item: ResumeItem): string {
     const highlightsHtml = this._renderHighlights(item.highlights);
-    const descHtml = item.description ? `<p>${DOMPurify.sanitize(item.description)}</p>` : '';
+    const descHtml = item.description ? `<p>${DOMPurify.sanitize(item.description, { ADD_ATTR: ['target'] })}</p>` : '';
     const companyHtml = item.company ? `<span class="company">@ ${escapeHtml(item.company)}</span>` : '';
 
     return `
       <div class="job">
-        <div class="job-header">
-          <div><span class="role">${escapeHtml(item.role || '')}</span> ${companyHtml}</div>
+        <div class="job-header" style="font-weight: bold;">
+          <div><span class="role"><i>${escapeHtml(item.role || '')}</i></span> ${companyHtml}</div>
           <span class="period">${escapeHtml(item.period || '')}</span>
         </div>
         ${descHtml}
@@ -301,7 +305,7 @@ class LaptopViewer extends HTMLElement {
 
   private _renderHighlights(highlights?: string[]): string {
     if (!highlights?.length) return '';
-    const items = highlights.map(h => `<li>${DOMPurify.sanitize(h)}</li>`).join('');
+    const items = highlights.map(h => `<li>${DOMPurify.sanitize(h, { ADD_ATTR: ['target'] })}</li>`).join('');
     return `<ul>${items}</ul>`;
   }
 
