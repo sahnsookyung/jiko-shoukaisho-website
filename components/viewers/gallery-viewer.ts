@@ -118,7 +118,7 @@ class GalleryViewer extends HTMLElement {
         .caption {
             position: absolute; 
             bottom: 0; left: 0; right: 0; 
-            background: rgba(0,0,0,0.6); 
+            background: rgba(0,0,0,0.1); 
             color: white; 
             padding: 10px; 
             text-align: center; 
