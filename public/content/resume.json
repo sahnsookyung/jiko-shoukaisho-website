@@ -97,14 +97,14 @@
                 },
                 {
                     "company": "",
-                    "role": "",
+                    "role": "LLM Voice Chatbot",
                     "period": "",
-                    "description": "LLM-Based Data Expansion Pipeline | Python, Gemini API, RunPod",
+                    "description": "An end-to-end local voice agent using Silero VAD, Faster-Whisper (STT), Ollama (LLM), and Kokoro TTS.",
                     "highlights": [
-                        "<a href='https://github.com/sahnsookyung/parts-data-cleaning' target='_blank'>github.com/sahnsookyung/parts-data-cleaning</a>",
-                        "Built a batch pipeline for dataset expansion with caching, retry logic, and exception logging to handle rate limits and transient API failures.",
-                        "Benchmarked RunPod-hosted Gemma-27b vs managed LLM APIs; migrated to Gemini 2.5 Flash to improve speed/quality per cost.",
-                        "Streamed responses to maintain throughput when provider-side batch APIs were unreliable."
+                        "<a href='https://github.com/sahnsookyung/LLM-voice-chatbot' target='_blank'>github.com/sahnsookyung/LLM-voice-chatbot</a>",
+                        "Streaming TTS playback and non-blocking audio capture; latency profiling to identify bottlenecks across STT/LLM inference and audio chunk boundaries.",
+                        "Sliding-window conversation history and prompt templating to control context growth across multi-turn chats.",
+                        "Quantized LLMs via Ollama (e.g., Gemma-3-27b GGUF) tuned for local memory/quality trade-offs."
                     ]
                 },
                 {
