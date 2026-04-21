@@ -74,25 +74,13 @@ function renderSocialLinks(links: SocialLink[] = []): string {
         .join('');
 }
 
-function renderHeroMeta(data: ResumeData, sectionCount: number, projectCount: number): string {
-    const chips = [
-        data.pdfUrl ? 'Printable PDF available' : '',
-        `${sectionCount} editorial sections`,
-        `${projectCount} featured projects`,
-    ].filter(Boolean);
-
-    return chips
-        .map((chip) => `<span class="meta-chip">${escapeHtml(chip)}</span>`)
-        .join('');
-}
-
 function renderSummaryCard(summarySection?: ResumeSection): string {
     const summaryItem = summarySection?.items?.[0];
     if (!summaryItem?.description) return '';
 
     return `
         <section class="summary-card" aria-labelledby="summary-card-title" data-reveal="2">
-            <p class="summary-label">Opening Statement</p>
+            <p class="summary-label">Overview</p>
             <p id="summary-card-title" class="summary-text">${sanitizeInlineHtml(summaryItem.description)}</p>
         </section>
     `;
@@ -152,7 +140,6 @@ function renderSection(section: ResumeSection, index: number): string {
         <section id="${sectionId}" class="resume-section" aria-labelledby="${sectionId}-title" data-reveal="${Math.min(index + 2, 5)}">
             <div class="section-header">
                 <div>
-                    <p class="section-kicker">Resume Section</p>
                     <h2 id="${sectionId}-title" class="section-title">${escapeHtml(section.title)}</h2>
                 </div>
                 <span class="section-count">${escapeHtml(countLabel)}</span>
@@ -184,7 +171,6 @@ function renderResume(data: ResumeData): string {
     const allSections = data.sections || [];
     const summarySection = allSections.find((section) => section.title.toLowerCase() === 'summary');
     const mainSections = allSections.filter((section) => section.title.toLowerCase() !== 'summary');
-    const projectCount = mainSections.find((section) => section.title.toLowerCase() === 'projects')?.items?.length || 0;
     const resumeTitle = escapeHtml(data.title || 'Software Engineer');
     const resumeName = escapeHtml(data.name || 'Resume');
     const pdfUrl = data.pdfUrl ? escapeHtml(data.pdfUrl) : '';
@@ -193,14 +179,14 @@ function renderResume(data: ResumeData): string {
         <div class="resume-layout">
             <aside class="resume-rail" aria-label="Resume navigation">
                 <section class="rail-panel" data-reveal="1">
-                    <p class="rail-kicker">Navigate</p>
+                    <p class="rail-kicker">Sections</p>
                     <nav class="rail-nav">
                         ${renderNavigation(mainSections)}
                     </nav>
                 </section>
 
                 <section class="rail-panel" data-reveal="2">
-                    <p class="rail-kicker">Actions</p>
+                    <p class="rail-kicker">Quick Links</p>
                     <div class="rail-actions">
                         ${pdfUrl ? `<a class="action-link" href="${pdfUrl}" download>Download PDF</a>` : ''}
                         <a class="back-link" href="/">Back to Portfolio</a>
@@ -208,33 +194,21 @@ function renderResume(data: ResumeData): string {
                 </section>
 
                 <section class="rail-panel" data-reveal="3">
-                    <p class="rail-kicker">Elsewhere</p>
+                    <p class="rail-kicker">Profiles</p>
                     <div class="rail-links">
                         ${renderSocialLinks(data.links)}
                     </div>
-                </section>
-
-                <section class="rail-panel" data-reveal="4">
-                    <p class="rail-kicker">Why This View</p>
-                    <p class="rail-note">
-                        A cleaner editorial presentation of the same resume content from the interactive portfolio,
-                        designed for easier scanning, sharing, and printing.
-                    </p>
                 </section>
             </aside>
 
             <div class="resume-main">
                 <header class="hero-panel" data-reveal="1">
                     <div class="hero-header">
-                        <span class="eyebrow">Editorial Resume</span>
+                        <span class="eyebrow">Resume</span>
                         <h1 class="hero-title">${resumeName}</h1>
                         <p class="hero-subtitle">${resumeTitle}</p>
                         <div class="hero-actions">
                             ${pdfUrl ? `<a class="action-link" href="${pdfUrl}" download>Download Resume (PDF)</a>` : ''}
-                            <a class="back-link" href="/">Back to Portfolio</a>
-                        </div>
-                        <div class="hero-meta">
-                            ${renderHeroMeta(data, mainSections.length, projectCount)}
                         </div>
                     </div>
                 </header>
