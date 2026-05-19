@@ -1,7 +1,16 @@
 {
     "name": "jiko-shoukaisho-website",
-    "compatibility_date": "2026-01-19",
+    "compatibility_date": "2026-05-19",
+    "main": "src/worker.ts",
+    "vars": {
+        "JOBSCOUT_ORIGIN": "https://jobscout-origin.sookyungahn.com"
+    },
     "assets": {
-        "directory": "./dist"
+        "directory": "./dist",
+        "binding": "ASSETS",
+        "run_worker_first": [
+            "/jobscout",
+            "/jobscout/*"
+        ]
     }
 }
