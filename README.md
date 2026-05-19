@@ -61,11 +61,10 @@ npm run build
 
 ## JobScout Endpoint
 
-The deployed Worker keeps the portfolio as the root site and forwards
-`/jobscout` plus `/jobscout/*` to the JobScout OCI origin. Configure the Worker
-environment variable `JOBSCOUT_ORIGIN` to the public OCI Caddy origin. The
-default is `https://jobscout-origin.sookyungahn.com`. The origin must not be
-`https://sookyungahn.com`, otherwise the Worker would proxy back to itself.
+The deployed Worker keeps the portfolio as the root site and redirects
+`/jobscout` plus `/jobscout/*` to the dedicated JobScout OCI subdomain.
+Configure the Worker environment variable `JOBSCOUT_URL` when the hosted app
+URL changes. The default is `https://jobscout.sookyungahn.com`.
 
 `npm run build` compiles `src/worker.ts` into `dist/_worker.js` so Cloudflare
 Pages Git deployments activate Pages Functions advanced mode automatically.

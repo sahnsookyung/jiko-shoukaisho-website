@@ -3,7 +3,7 @@
     "compatibility_date": "2026-05-19",
     "main": "src/worker.ts",
     "vars": {
-        "JOBSCOUT_ORIGIN": "https://jobscout-origin.sookyungahn.com"
+        "JOBSCOUT_URL": "https://jobscout.sookyungahn.com"
     },
     "assets": {
         "directory": "./dist",

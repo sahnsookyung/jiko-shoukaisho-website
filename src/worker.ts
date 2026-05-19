@@ -4,7 +4,7 @@ interface AssetBinding {
 
 interface Env {
     ASSETS: AssetBinding;
-    JOBSCOUT_ORIGIN?: string;
+    JOBSCOUT_URL?: string;
 }
 
 interface WorkerHandler {
@@ -12,29 +12,19 @@ interface WorkerHandler {
 }
 
 const JOBSCOUT_PREFIX = '/jobscout';
-const DEFAULT_JOBSCOUT_ORIGIN = 'https://jobscout-origin.sookyungahn.com';
-const HOP_BY_HOP_HEADERS = new Set([
-    'connection',
-    'keep-alive',
-    'proxy-authenticate',
-    'proxy-authorization',
-    'te',
-    'trailer',
-    'transfer-encoding',
-    'upgrade',
-]);
+const DEFAULT_JOBSCOUT_URL = 'https://jobscout.sookyungahn.com';
 
 function isJobScoutPath(pathname: string): boolean {
     return pathname === JOBSCOUT_PREFIX || pathname.startsWith(`${JOBSCOUT_PREFIX}/`);
 }
 
-function safeOrigin(rawOrigin: string | undefined, publicUrl: URL): URL | null {
-    if (!rawOrigin) {
+function safeJobScoutUrl(rawUrl: string | undefined, publicUrl: URL): URL | null {
+    if (!rawUrl) {
         return null;
     }
 
     try {
-        const origin = new URL(rawOrigin);
+        const origin = new URL(rawUrl);
         const isLocalHttp =
             origin.protocol === 'http:' &&
             ['localhost', '127.0.0.1', '[::1]'].includes(origin.hostname);
@@ -53,50 +43,10 @@ function safeOrigin(rawOrigin: string | undefined, publicUrl: URL): URL | null {
     }
 }
 
-function proxiedRequest(request: Request, origin: URL, publicUrl: URL): Request {
-    const upstreamUrl = new URL(origin);
-    upstreamUrl.pathname = publicUrl.pathname;
-    upstreamUrl.search = publicUrl.search;
-
-    const headers = new Headers(request.headers);
-    headers.set('X-Forwarded-Host', publicUrl.host);
-    headers.set('X-Forwarded-Proto', publicUrl.protocol.replace(':', ''));
-    headers.set('X-Forwarded-Prefix', JOBSCOUT_PREFIX);
-    for (const headerName of HOP_BY_HOP_HEADERS) {
-        headers.delete(headerName);
-    }
-
-    return new Request(upstreamUrl, {
-        body: request.body,
-        duplex: 'half',
-        headers,
-        method: request.method,
-        redirect: 'manual',
-    } as RequestInit & { duplex: 'half' });
-}
-
-function rewriteLocation(location: string | null, origin: URL, publicUrl: URL): string | null {
-    if (!location) {
-        return null;
-    }
-
-    try {
-        const redirected = new URL(location, origin);
-        if (redirected.origin !== origin.origin) {
-            return location;
-        }
-        redirected.protocol = publicUrl.protocol;
-        redirected.host = publicUrl.host;
-        return redirected.toString();
-    } catch {
-        return location;
-    }
-}
-
-async function fetchJobScout(request: Request, env: Env, publicUrl: URL): Promise<Response> {
-    const origin = safeOrigin(env.JOBSCOUT_ORIGIN ?? DEFAULT_JOBSCOUT_ORIGIN, publicUrl);
-    if (!origin) {
-        return new Response('JobScout origin is not configured.', {
+function redirectToJobScout(env: Env, publicUrl: URL): Response {
+    const target = safeJobScoutUrl(env.JOBSCOUT_URL ?? DEFAULT_JOBSCOUT_URL, publicUrl);
+    if (!target) {
+        return new Response('JobScout URL is not configured.', {
             status: 503,
             headers: {
                 'Cache-Control': 'no-store',
@@ -105,26 +55,20 @@ async function fetchJobScout(request: Request, env: Env, publicUrl: URL): Promis
         });
     }
 
-    const upstream = await fetch(proxiedRequest(request, origin, publicUrl));
-    const headers = new Headers(upstream.headers);
-    const rewrittenLocation = rewriteLocation(headers.get('Location'), origin, publicUrl);
-    if (rewrittenLocation) {
-        headers.set('Location', rewrittenLocation);
-    }
-    headers.set('Cache-Control', headers.get('Cache-Control') ?? 'no-store');
+    const suffix = publicUrl.pathname === JOBSCOUT_PREFIX
+        ? '/'
+        : publicUrl.pathname.slice(JOBSCOUT_PREFIX.length);
+    target.pathname = suffix.startsWith('/') ? suffix : `/${suffix}`;
+    target.search = publicUrl.search;
 
-    return new Response(upstream.body, {
-        headers,
-        status: upstream.status,
-        statusText: upstream.statusText,
-    });
+    return Response.redirect(target.toString(), 308);
 }
 
 export default {
     async fetch(request, env): Promise<Response> {
         const url = new URL(request.url);
         if (isJobScoutPath(url.pathname)) {
-            return fetchJobScout(request, env, url);
+            return redirectToJobScout(env, url);
         }
 
         return env.ASSETS.fetch(request);
