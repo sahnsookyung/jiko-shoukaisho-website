@@ -12,6 +12,7 @@ interface WorkerHandler {
 }
 
 const JOBSCOUT_PREFIX = '/jobscout';
+const DEFAULT_JOBSCOUT_ORIGIN = 'https://jobscout-origin.sookyungahn.com';
 const HOP_BY_HOP_HEADERS = new Set([
     'connection',
     'keep-alive',
@@ -93,7 +94,7 @@ function rewriteLocation(location: string | null, origin: URL, publicUrl: URL): 
 }
 
 async function fetchJobScout(request: Request, env: Env, publicUrl: URL): Promise<Response> {
-    const origin = safeOrigin(env.JOBSCOUT_ORIGIN, publicUrl);
+    const origin = safeOrigin(env.JOBSCOUT_ORIGIN ?? DEFAULT_JOBSCOUT_ORIGIN, publicUrl);
     if (!origin) {
         return new Response('JobScout origin is not configured.', {
             status: 503,

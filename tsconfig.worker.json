@@ -1,0 +1,12 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "allowImportingTsExtensions": false,
+        "noEmit": false,
+        "outDir": ".worker-build",
+        "rootDir": "src"
+    },
+    "include": [
+        "src/worker.ts"
+    ]
+}

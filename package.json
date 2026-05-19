@@ -2,7 +2,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && npm run build:worker",
+    "build:worker": "tsc -p tsconfig.worker.json && node scripts/install-pages-worker.mjs",
     "preview": "vite preview",
     "check": "tsc --noEmit"
   },

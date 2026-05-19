@@ -67,6 +67,9 @@ environment variable `JOBSCOUT_ORIGIN` to the public OCI Caddy origin. The
 default is `https://jobscout-origin.sookyungahn.com`. The origin must not be
 `https://sookyungahn.com`, otherwise the Worker would proxy back to itself.
 
+`npm run build` compiles `src/worker.ts` into `dist/_worker.js` so Cloudflare
+Pages Git deployments activate Pages Functions advanced mode automatically.
+
 ## TODO
 - Add a new graphic and add a section for portfolio as we build.
 - Add more content to website.
