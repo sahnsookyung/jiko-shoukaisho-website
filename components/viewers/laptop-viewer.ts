@@ -37,6 +37,24 @@ interface SvgImg {
   h: number;
 }
 
+function sanitizeInlineHtml(value: string): string {
+  const sanitized = DOMPurify.sanitize(value, {
+    ADD_ATTR: ['target', 'rel'],
+  });
+  const template = document.createElement('template');
+  template.innerHTML = sanitized;
+
+  template.content.querySelectorAll('a').forEach((anchor) => {
+    if (anchor.getAttribute('target')?.toLowerCase() !== '_blank') return;
+    const rel = new Set((anchor.getAttribute('rel') || '').split(/\s+/).filter(Boolean));
+    rel.add('noopener');
+    rel.add('noreferrer');
+    anchor.setAttribute('rel', [...rel].join(' '));
+  });
+
+  return template.innerHTML;
+}
+
 class LaptopViewer extends HTMLElement {
   private _frameSvg?: string;
   private _cutoutSvg?: string;
@@ -253,8 +271,8 @@ class LaptopViewer extends HTMLElement {
 
   private _renderAboutContent(d: LaptopData): string {
     const bodyContent = Array.isArray(d.text)
-      ? d.text.map(p => `<p>${DOMPurify.sanitize(p, { ADD_ATTR: ['target'] })}</p>`).join('')
-      : `<p>${DOMPurify.sanitize(d.text as string, { ADD_ATTR: ['target'] })}</p>`;
+      ? d.text.map(p => `<p>${sanitizeInlineHtml(p)}</p>`).join('')
+      : `<p>${sanitizeInlineHtml(d.text as string)}</p>`;
 
     return `
       <h1>${escapeHtml(d.title || 'About Me')}</h1>
@@ -289,7 +307,7 @@ class LaptopViewer extends HTMLElement {
 
   private _renderResumeItem(item: ResumeItem): string {
     const highlightsHtml = this._renderHighlights(item.highlights);
-    const descHtml = item.description ? `<p>${DOMPurify.sanitize(item.description, { ADD_ATTR: ['target'] })}</p>` : '';
+    const descHtml = item.description ? `<p>${sanitizeInlineHtml(item.description)}</p>` : '';
     const companyHtml = item.company ? `<span class="company">@ ${escapeHtml(item.company)}</span>` : '';
 
     return `
@@ -305,7 +323,7 @@ class LaptopViewer extends HTMLElement {
 
   private _renderHighlights(highlights?: string[]): string {
     if (!highlights?.length) return '';
-    const items = highlights.map(h => `<li>${DOMPurify.sanitize(h, { ADD_ATTR: ['target'] })}</li>`).join('');
+    const items = highlights.map(h => `<li>${sanitizeInlineHtml(h)}</li>`).join('');
     return `<ul>${items}</ul>`;
   }
 
