@@ -45,9 +45,21 @@ function escapeHtml(value: string): string {
 }
 
 function sanitizeInlineHtml(value: string): string {
-    return DOMPurify.sanitize(value, {
+    const sanitized = DOMPurify.sanitize(value, {
         ADD_ATTR: ['target', 'rel'],
     });
+    const template = document.createElement('template');
+    template.innerHTML = sanitized;
+
+    template.content.querySelectorAll('a').forEach((anchor) => {
+        if (anchor.getAttribute('target')?.toLowerCase() !== '_blank') return;
+        const rel = new Set((anchor.getAttribute('rel') || '').split(/\s+/).filter(Boolean));
+        rel.add('noopener');
+        rel.add('noreferrer');
+        anchor.setAttribute('rel', [...rel].join(' '));
+    });
+
+    return template.innerHTML;
 }
 
 function splitHighlights(highlights: string[] = []): { links: string[]; bullets: string[] } {
