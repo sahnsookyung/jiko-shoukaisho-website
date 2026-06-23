@@ -81,6 +81,45 @@
             "items": [
                 {
                     "company": "",
+                    "role": "ChordGlyph",
+                    "period": "",
+                    "description": "Browser-based gesture instrument that uses webcam hand tracking to render playable music surfaces over live video and generate synth audio directly in the browser.",
+                    "highlights": [
+                        "<a href='https://github.com/sahnsookyung/chordglyph' target='_blank'>github.com/sahnsookyung/chordglyph</a>",
+                        "Built multiple interaction modes including an on-camera piano keyboard with z-gated fingertip activation and a z-free circle mode for more stable performance on noisy webcam depth.",
+                        "Designed calibration and tuning workflows for per-hand depth gates, per-finger sensitivity, hover/press capture, and activation thresholds to make gesture input playable rather than purely experimental.",
+                        "Added real-time debug overlays, persistence of user-tuned settings in IndexedDB, and browser audio routing controls for practical testing and repeated use.",
+                        "Tech Stack: TypeScript, MediaPipe Hands, Web Audio, Tone.js, IndexedDB, Vite"
+                    ]
+                },
+                {
+                    "company": "",
+                    "role": "Anki Maker Japanese",
+                    "period": "",
+                    "description": "Local-first review workbench for turning Japanese workbook photos into Anki-ready CSV candidates through OCR, evidence-backed review, and human approval.",
+                    "highlights": [
+                        "<a href='https://github.com/sahnsookyung/anki-maker-japanese' target='_blank'>github.com/sahnsookyung/anki-maker-japanese</a>",
+                        "Built a human-in-the-loop pipeline that uploads workbook pages, runs local PaddleOCR with optional OCR-VL and Korean OCR paths, and extracts vocabulary and multiple-choice study candidates.",
+                        "Created a review interface that shows visual OCR evidence beside editable candidates, supports rescanning field-level crops, tracks review state, and exports only trusted rows for Anki import.",
+                        "Structured the system as a Next.js frontend with a FastAPI backend, OCR/extraction modules, benchmark tooling, and local-first runtime behavior that keeps generated artifacts disposable and auditable.",
+                        "Tech Stack: Python, FastAPI, Next.js, TypeScript, PaddleOCR, OCR-VL, uv, Playwright"
+                    ]
+                },
+                {
+                    "company": "",
+                    "role": "Colonizt",
+                    "period": "",
+                    "description": "Browser-first real-time resource-trading and route-building board-game prototype focused on deterministic multiplayer rules, server-authoritative state, replayability, and production-shaped deployment.",
+                    "highlights": [
+                        "<a href='https://github.com/sahnsookyung/colonizt' target='_blank'>github.com/sahnsookyung/colonizt</a>",
+                        "Implemented multiplayer game flows with server-authoritative commands, WebSocket room state, reconnect/resync behavior, deterministic replay logs, and spectator/replay views.",
+                        "Modeled core gameplay systems including setup placement, roads, settlements, cities, development cards, robber movement, discard-on-7, Longest Road, and Largest Army.",
+                        "Built a broader engineering platform around the game with bots, simulations, shared protocol schemas, PostgreSQL-backed persistence, optional Redis presence, and automated property, integration, end-to-end, and smoke testing.",
+                        "Tech Stack: TypeScript, React, Fastify, WebSockets, PostgreSQL, Redis, Playwright, Vitest, Docker"
+                    ]
+                },
+                {
+                    "company": "",
                     "role": "JobScout",
                     "period": "",
                     "description": "Full-stack intelligent system that automatically scrapes job listings from multiple platforms, extracts structured data using local LLMs (Ollama), and matches opportunities to user resumes using semantic vector search (pgvector).",
