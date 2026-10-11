@@ -28,241 +28,264 @@ interface ResumeData {
 }
 
 function slugify(value: string): string {
-    return value
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '');
+    return value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 }
 
 function escapeHtml(value: string): string {
-    return value
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
+    return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
 function sanitizeInlineHtml(value: string): string {
-    const sanitized = DOMPurify.sanitize(value, {
-        ADD_ATTR: ['target', 'rel'],
-    });
     const template = document.createElement('template');
-    template.innerHTML = sanitized;
-
+    template.innerHTML = DOMPurify.sanitize(value, { ADD_ATTR: ['target', 'rel'] });
     template.content.querySelectorAll('a').forEach((anchor) => {
         if (anchor.getAttribute('target')?.toLowerCase() !== '_blank') return;
-        const rel = new Set((anchor.getAttribute('rel') || '').split(/\s+/).filter(Boolean));
-        rel.add('noopener');
-        rel.add('noreferrer');
-        anchor.setAttribute('rel', [...rel].join(' '));
+        anchor.setAttribute('rel', 'noopener noreferrer');
     });
-
     return template.innerHTML;
 }
 
-function splitHighlights(highlights: string[] = []): { links: string[]; bullets: string[] } {
-    return highlights.reduce(
-        (acc, entry) => {
-            if (/<a[\s>]/i.test(entry)) {
-                acc.links.push(entry);
-            } else {
-                acc.bullets.push(entry);
-            }
-            return acc;
-        },
-        { links: [], bullets: [] } as { links: string[]; bullets: string[] }
-    );
+function splitHighlights(highlights: string[] = []) {
+    const links: string[] = [];
+    const bullets: string[] = [];
+    const stack: string[] = [];
+    for (const highlight of highlights) {
+        if (/<a[\s>]/i.test(highlight)) links.push(highlight);
+        else if (highlight.startsWith('Tech Stack:')) stack.push(highlight.slice('Tech Stack:'.length).trim());
+        else bullets.push(highlight);
+    }
+    return { links, bullets, stack };
 }
 
-function renderSocialLinks(links: SocialLink[] = []): string {
-    return links
-        .map((link) => {
-            const label = escapeHtml(link.platform);
-            const url = escapeHtml(link.url);
-            return `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`;
-        })
-        .join('');
+function renderHighlights(highlights: string[] = []): string {
+    return highlights.length
+        ? `<ul class="highlights">${highlights.map(text => `<li>${sanitizeInlineHtml(text)}</li>`).join('')}</ul>`
+        : '';
 }
 
-function renderSummaryCard(summarySection?: ResumeSection): string {
-    const summaryItem = summarySection?.items?.[0];
-    if (!summaryItem?.description) return '';
-
+function renderProject(item: ResumeItem, index: number): string {
+    const { links, bullets, stack } = splitHighlights(item.highlights);
+    const name = escapeHtml(item.role || 'Project');
     return `
-        <section class="summary-card" aria-labelledby="summary-card-title" data-reveal="2">
-            <p class="summary-label">Overview</p>
-            <p id="summary-card-title" class="summary-text">${sanitizeInlineHtml(summaryItem.description)}</p>
-        </section>
+        <details class="project" id="project-${slugify(item.role || String(index))}" ${index === 0 ? 'open' : ''}>
+            <summary class="project-summary" aria-labelledby="project-name-${index}">
+                <span class="project-heading">
+                    <span class="project-name" id="project-name-${index}">${name}</span>
+                    <span class="disclosure-mark" aria-hidden="true"></span>
+                </span>
+                ${item.description ? `<span class="project-description">${sanitizeInlineHtml(item.description)}</span>` : ''}
+            </summary>
+            <div class="project-body">
+                ${links.length ? `<div class="project-links">${links.map(sanitizeInlineHtml).join('')}</div>` : ''}
+                ${renderHighlights(bullets)}
+                ${stack.length ? `<p class="project-stack"><span>Built with</span> ${stack.map(sanitizeInlineHtml).join('; ')}</p>` : ''}
+                ${item.company ? `<p>${escapeHtml(item.company)}</p>` : ''}
+                ${item.period ? `<p class="entry-period">${escapeHtml(item.period)}</p>` : ''}
+            </div>
+        </details>
     `;
 }
 
-function renderProjectLinks(links: string[]): string {
-    if (!links.length) return '';
-
-    const chips = links
-        .map((link) => sanitizeInlineHtml(link).replace(/<a\b/i, '<a class="project-link-chip"'))
-        .join('');
-
-    return `<div class="entry-links">${chips}</div>`;
-}
-
-function renderHighlights(highlights: string[]): string {
-    if (!highlights.length) return '';
-
-    const items = highlights
-        .map((highlight) => `<li>${sanitizeInlineHtml(highlight)}</li>`)
-        .join('');
-
-    return `<ul class="entry-highlights">${items}</ul>`;
-}
-
 function renderEntry(item: ResumeItem): string {
-    const { links, bullets } = splitHighlights(item.highlights);
-    const role = escapeHtml(item.role || '');
-    const company = item.company ? `<span class="entry-company">${escapeHtml(item.company)}</span>` : '';
-    const period = item.period ? `<span class="entry-period">${escapeHtml(item.period)}</span>` : '';
-    const description = item.description
-        ? `<p class="entry-description">${sanitizeInlineHtml(item.description)}</p>`
-        : '';
-
     return `
-        <article class="entry-card">
-            <div class="entry-head">
-                <div class="entry-title-group">
-                    ${role ? `<h3 class="entry-role">${role}</h3>` : ''}
-                    ${company}
+        <article class="experience-entry">
+            <div class="entry-heading">
+                <div>
+                    ${item.company ? `<p class="entry-company">${escapeHtml(item.company)}</p>` : ''}
+                    ${item.role ? `<h3 class="entry-role">${escapeHtml(item.role)}</h3>` : ''}
                 </div>
-                ${period}
+                ${item.period ? `<p class="entry-period">${escapeHtml(item.period)}</p>` : ''}
             </div>
-            ${description}
-            ${renderProjectLinks(links)}
-            ${renderHighlights(bullets)}
+            ${item.description ? `<p class="entry-description">${sanitizeInlineHtml(item.description)}</p>` : ''}
+            ${renderHighlights(item.highlights)}
         </article>
     `;
 }
 
-function renderSection(section: ResumeSection, index: number): string {
-    const sectionId = slugify(section.title);
-    const entries = (section.items || []).map(renderEntry).join('');
-    const countLabel = `${section.items?.length || 0} ${section.items?.length === 1 ? 'entry' : 'entries'}`;
-
-    return `
-        <section id="${sectionId}" class="resume-section" aria-labelledby="${sectionId}-title" data-reveal="${Math.min(index + 2, 5)}">
-            <div class="section-header">
-                <div>
-                    <h2 id="${sectionId}-title" class="section-title">${escapeHtml(section.title)}</h2>
-                </div>
-                <span class="section-count">${escapeHtml(countLabel)}</span>
-            </div>
-            <div class="section-stack">
-                ${entries}
-            </div>
-        </section>
-    `;
+function renderSkills(items: ResumeItem[]): string {
+    return items.map(item => `
+        ${item.description ? `<p class="skills-intro">${sanitizeInlineHtml(item.description)}</p>` : ''}
+        <dl class="skill-list">
+            ${(item.highlights || []).map(highlight => {
+                const separator = highlight.indexOf(':');
+                const label = separator < 0 ? 'Skills' : highlight.slice(0, separator);
+                const detail = separator < 0 ? highlight : highlight.slice(separator + 1).trim();
+                return `<div class="skill-group"><dt>${escapeHtml(label)}</dt><dd>${sanitizeInlineHtml(detail)}</dd></div>`;
+            }).join('')}
+        </dl>
+    `).join('');
 }
 
-function renderNavigation(sections: ResumeSection[]): string {
-    const visibleSections = sections.filter((section) => section.title.toLowerCase() !== 'summary');
+function renderSection(section: ResumeSection): string {
+    const sectionId = slugify(section.title);
+    const projects = sectionId === 'projects';
+    const body = projects
+        ? `<div id="project-list">${section.items.map(renderProject).join('')}</div>`
+        : sectionId === 'technical-skills'
+            ? renderSkills(section.items)
+            : section.items.map(renderEntry).join('');
 
-    return visibleSections
-        .map((section, index) => {
-            const sectionId = slugify(section.title);
-            return `
-                <a href="#${sectionId}">
-                    <span>${escapeHtml(section.title)}</span>
-                    <span>${String(index + 1).padStart(2, '0')}</span>
-                </a>
-            `;
-        })
-        .join('');
+    return `
+        <section id="${sectionId}" class="resume-section ${sectionId}" aria-labelledby="${sectionId}-title">
+            <div class="section-heading">
+                <h2 id="${sectionId}-title">${escapeHtml(section.title)}</h2>
+                ${projects && section.items.length ? '<button class="text-button project-toggle" type="button" aria-controls="project-list">Expand all</button>' : ''}
+            </div>
+            ${section.items.length ? body : '<p class="empty-message">No entries to show yet.</p>'}
+        </section>
+    `;
 }
 
 function renderResume(data: ResumeData): string {
-    const allSections = data.sections || [];
-    const summarySection = allSections.find((section) => section.title.toLowerCase() === 'summary');
-    const mainSections = allSections.filter((section) => section.title.toLowerCase() !== 'summary');
-    const resumeTitle = escapeHtml(data.title || 'Software Engineer');
-    const resumeName = escapeHtml(data.name || 'Resume');
-    const pdfUrl = data.pdfUrl ? escapeHtml(data.pdfUrl) : '';
+    const sections = data.sections || [];
+    const summary = sections.find(section => section.title.toLowerCase() === 'summary');
+    const mainSections = sections.filter(section => section.title.toLowerCase() !== 'summary');
+    const name = escapeHtml(data.name || 'Resume');
+    const links = (data.links || []).map(link => `
+        <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(link.platform)}<span aria-hidden="true"> ↗</span></a>
+    `).join('');
 
     return `
-        <div class="resume-layout">
-            <aside class="resume-rail" aria-label="Resume navigation">
-                <section class="rail-panel" data-reveal="1">
-                    <p class="rail-kicker">Sections</p>
-                    <nav class="rail-nav">
-                        ${renderNavigation(mainSections)}
+        <header class="site-header">
+            <a class="portfolio-link" href="/" aria-label="Back to portfolio">sookyungahn.com</a>
+            <div class="header-actions">
+                ${links}
+                ${data.pdfUrl ? `<a class="pdf-link" href="${escapeHtml(data.pdfUrl)}" download>Download PDF<span aria-hidden="true"> ↓</span></a>` : ''}
+            </div>
+        </header>
+
+        <main id="main-content" tabindex="-1">
+            <header class="masthead">
+                <p class="document-label">Resume</p>
+                <h1>${name}</h1>
+                <p class="profession">${escapeHtml(data.title || 'Software Engineer')}</p>
+            </header>
+
+            <div class="document-layout">
+                <aside class="document-index">
+                    <nav aria-label="Resume sections">
+                        ${mainSections.map(section => `<a href="#${slugify(section.title)}">${escapeHtml(section.title)}</a>`).join('')}
                     </nav>
-                </section>
-
-                <section class="rail-panel" data-reveal="2">
-                    <p class="rail-kicker">Quick Links</p>
-                    <div class="rail-actions">
-                        ${pdfUrl ? `<a class="action-link" href="${pdfUrl}" download>Download PDF</a>` : ''}
-                        <a class="back-link" href="/">Back to Portfolio</a>
-                    </div>
-                </section>
-
-                <section class="rail-panel" data-reveal="3">
-                    <p class="rail-kicker">Profiles</p>
-                    <div class="rail-links">
-                        ${renderSocialLinks(data.links)}
-                    </div>
-                </section>
-            </aside>
-
-            <div class="resume-main">
-                <header class="hero-panel" data-reveal="1">
-                    <div class="hero-header">
-                        <span class="eyebrow">Resume</span>
-                        <h1 class="hero-title">${resumeName}</h1>
-                        <p class="hero-subtitle">${resumeTitle}</p>
-                        <div class="hero-actions">
-                            ${pdfUrl ? `<a class="action-link" href="${pdfUrl}" download>Download Resume (PDF)</a>` : ''}
-                        </div>
-                    </div>
-                </header>
-
-                ${renderSummaryCard(summarySection)}
-                ${mainSections.map((section, index) => renderSection(section, index)).join('')}
+                </aside>
+                <div class="document-body">
+                    ${summary?.items.map(item => item.description ? `<p class="introduction">${sanitizeInlineHtml(item.description)}</p>` : '').join('') || ''}
+                    ${mainSections.length ? mainSections.map(renderSection).join('') : '<p class="empty-message">Resume details are not available yet.</p>'}
+                </div>
             </div>
-        </div>
+        </main>
+
+        <footer class="site-footer">
+            <p>${name}</p>
+            <label class="appearance-control">Appearance
+                <select id="appearance" aria-label="Color theme">
+                    <option value="system">System</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                </select>
+            </label>
+            <a href="#main-content">Back to top<span aria-hidden="true"> ↑</span></a>
+        </footer>
     `;
 }
 
-function renderError(message: string): void {
-    const app = document.getElementById('resume-app');
-    if (!app) return;
+function initializeInteractions(root: HTMLElement): () => void {
+    const events = new AbortController();
+    const options = { signal: events.signal };
+    const projects = Array.from(root.querySelectorAll<HTMLDetailsElement>('.project'));
+    const toggle = root.querySelector<HTMLButtonElement>('.project-toggle');
+    const updateToggle = () => {
+        if (toggle) toggle.textContent = projects.every(project => project.open) ? 'Collapse all' : 'Expand all';
+    };
+    toggle?.addEventListener('click', () => {
+        const open = !projects.every(project => project.open);
+        projects.forEach(project => { project.open = open; });
+        updateToggle();
+    }, options);
+    projects.forEach(project => project.addEventListener('toggle', updateToggle, options));
+    updateToggle();
 
-    app.innerHTML = `
-        <section class="resume-error">
-            <div>
-                <h1>Resume unavailable</h1>
-                <p>${escapeHtml(message)}</p>
-            </div>
-        </section>
-    `;
+    // Expand project permalinks, including those opened directly in a new tab.
+    const revealHash = () => {
+        const target = document.getElementById(window.location.hash.slice(1));
+        if (target instanceof HTMLDetailsElement && target.classList.contains('project')) target.open = true;
+        target?.scrollIntoView();
+    };
+    window.addEventListener('hashchange', revealHash, options);
+    if (window.location.hash) revealHash();
+
+    const navigation = Array.from(root.querySelectorAll<HTMLAnchorElement>('.document-index a'));
+    const visible = new Set<string>();
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) visible.add(entry.target.id);
+            else visible.delete(entry.target.id);
+        });
+        const active = [...navigation].reverse().find(link => visible.has(link.hash.slice(1)));
+        if (!active) return;
+        navigation.forEach(link => {
+            if (link === active) link.setAttribute('aria-current', 'location');
+            else link.removeAttribute('aria-current');
+        });
+    }, { rootMargin: '-10% 0px -55% 0px' });
+    root.querySelectorAll('.resume-section').forEach(section => observer.observe(section));
+
+    const appearance = root.querySelector<HTMLSelectElement>('#appearance');
+    const themeKey = 'resume-appearance';
+    if (appearance) {
+        try {
+            const saved = localStorage.getItem(themeKey);
+            if (saved === 'light' || saved === 'dark') appearance.value = saved;
+        } catch { /* System appearance remains usable when storage is unavailable. */ }
+        const applyAppearance = () => { document.documentElement.dataset.theme = appearance.value; };
+        applyAppearance();
+        appearance.addEventListener('change', () => {
+            applyAppearance();
+            try { localStorage.setItem(themeKey, appearance.value); } catch { /* The current page still updates. */ }
+        }, options);
+    }
+
+    // Browser printing includes all project notes and then restores the reader's choices.
+    let printState: boolean[] | undefined;
+    window.addEventListener('beforeprint', () => {
+        printState ??= projects.map(project => project.open);
+        projects.forEach(project => { project.open = true; });
+    }, options);
+    window.addEventListener('afterprint', () => {
+        if (!printState) return;
+        projects.forEach((project, index) => { project.open = printState![index]; });
+        printState = undefined;
+    }, options);
+
+    return () => { events.abort(); observer.disconnect(); };
 }
+
+let dispose = () => {};
 
 async function init(): Promise<void> {
     const app = document.getElementById('resume-app');
     if (!app) return;
-
+    dispose();
     try {
         const response = await fetch('/content/resume.json');
-        if (!response.ok) {
-            throw new Error(`Failed to load resume content (${response.status})`);
-        }
-
+        if (!response.ok) throw new Error(`Failed to load resume content (${response.status})`);
         const data = (await response.json()) as ResumeData;
         app.innerHTML = renderResume(data);
         document.title = `${data.name || 'Resume'} | Resume`;
+        dispose = initializeInteractions(app);
     } catch (error) {
         console.error(error);
-        renderError('The resume content could not be loaded right now. Please try again shortly.');
+        app.innerHTML = `
+            <main id="main-content" class="resume-error" tabindex="-1">
+                <p class="document-label">Resume</p>
+                <h1>Unable to load the resume.</h1>
+                <p>Please reload the page to try again.</p>
+                <a href="/resume/">Reload resume</a>
+                <a href="/">Back to portfolio</a>
+            </main>
+        `;
     }
 }
 
+window.addEventListener('pagehide', event => { if (!event.persisted) dispose(); });
 void init();

@@ -4,33 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
     <title>Soo Kyung Ahn | Resume</title>
     <meta name="description"
-        content="Editorial resume for Soo Kyung Ahn, a fullstack software engineer focused on high-throughput systems, observability, cloud platforms, and AI-powered workflows.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap"
-        rel="stylesheet">
+        content="Resume and personal projects of Soo Kyung Ahn, a fullstack software engineer focused on high-throughput systems, observability, cloud platforms, and AI-powered workflows.">
+    <link rel="canonical" href="https://sookyungahn.com/resume/">
+    <link rel="preload" href="/fonts/archivo/archivo-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="./resume.css">
 </head>
 
 <body>
-    <div class="resume-shell">
-        <div class="resume-background" aria-hidden="true">
-            <div class="resume-glow resume-glow-left"></div>
-            <div class="resume-glow resume-glow-right"></div>
-            <div class="resume-grid"></div>
-        </div>
-
-        <main id="resume-app" class="resume-app">
-            <div class="resume-loading">
-                <span class="resume-loading-mark">Resume</span>
-                <p>Loading resume...</p>
-            </div>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div id="resume-app" class="resume-app">
+        <main id="main-content" class="resume-loading" tabindex="-1" aria-busy="true">
+            <p role="status">Loading resume...</p>
+            <div class="loading-name" aria-hidden="true"></div>
+            <div class="loading-line" aria-hidden="true"></div>
+            <div class="loading-body" aria-hidden="true"></div>
         </main>
     </div>
-
+    <noscript><p class="no-script">Enable JavaScript to read the resume, or <a href="/content/Soo%20Kyung%20Ahn%20Resume.pdf">download the PDF</a>.</p></noscript>
     <script type="module" src="./resume.ts"></script>
 </body>
 

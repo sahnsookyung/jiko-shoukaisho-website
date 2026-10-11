@@ -1,179 +1,255 @@
 {
-    "name": "Soo Kyung Ahn",
-    "title": "Software Engineer",
-    "pdfUrl": "/content/Soo Kyung Ahn Resume.pdf",
-    "sections": [
+  "name": "Soo Kyung Ahn",
+  "title": "Software Engineer",
+  "pdfUrl": "/content/Soo Kyung Ahn Resume.pdf",
+  "sections": [
+    {
+      "title": "Summary",
+      "items": [
         {
-            "title": "Summary",
-            "items": [
-                {
-                    "company": "",
-                    "role": "",
-                    "period": "",
-                    "description": "Fullstack Software Engineer with 3.5 years' professional experience building reliable, high-throughput services for banking and digital goods platforms. Skilled in Kubernetes and AWS with strong observability, production readiness, and stakeholder management. Hands-on integration of LLM-powered features into backend workflows across local and GPU-hosted inference.",
-                    "highlights": []
-                }
-            ]
-        },
-        {
-            "title": "Professional Experience",
-            "items": [
-                {
-                    "company": "Electrum Payments",
-                    "role": "Software Engineer - Digital Goods and Services Team",
-                    "period": "2022 - 2025",
-                    "description": "Built and operated services processing millions of transactions per day for top South African banks and retailers, improving transaction success rates and reducing incident MTTR via targeted observability dashboards.",
-                    "highlights": [
-                        "Led the development and maintenance of backend services for digital goods (airtime, vouchers, money transfers, lotto), powering high-volume transactions across South Africa's top banks and national retailers.",
-                        "Designed modular, plugin-based components enabling faster feature delivery and safer rollouts across multiple clients on the same platform.",
-                        "Drove test automation (JUnit, Mockito), code quality (+80% on SonarQube), and CI/CD robustness (GitHub Actions, CircleCI) to support frequent, low-risk production releases.",
-                        "Operated services on AWS EKS with Istio, owning deployment strategies, routing, and runtime diagnostics, and reducing incident MTTR through targeted Kibana/Elasticsearch dashboards.",
-                        "Partnered with DevOps to integrate Kafka, SQS/SNS, Route53, and observability tooling into developer workflows, improving deployment reliability and debugging speed.",
-                        "Prototyped internal Al-powered tools including an LLM-based code review bot and automated ticket triage system to streamline engineering and support workflows."
-                    ]
-                }
-            ]
-        },
-        {
-            "title": "Education",
-            "items": [
-                {
-                    "company": "University of Cape Town",
-                    "role": "B.Sc. Honours in Computer Science (First Class GPA)",
-                    "period": "2021",
-                    "description": "Postgraduate specialization in Computer Science.",
-                    "highlights": [
-                        "Thesis Focus: Nature simulation studying various techniques for improving immersion and user engagement using Virtual Reality (Unity) & HCI."
-                    ]
-                },
-                {
-                    "company": "University of Cape Town",
-                    "role": "B.Sc. Computer Science & Applied Statistics (Distinction)",
-                    "period": "2018 - 2020",
-                    "description": "Double major undergraduate degree.",
-                    "highlights": [
-                        "Capstone Project: Visualization environment for complex molecules in the domain of drug design.",
-                        "Dean's Merit List"
-                    ]
-                }
-            ]
-        },
-        {
-            "title": "Technical Skills",
-            "items": [
-                {
-                    "company": "",
-                    "role": "",
-                    "period": "",
-                    "description": "Technical Stack: Java, Python, MySQL, PostgresSQL, AWS, Kubernetes, Kafka, Elasticsearch, .",
-                    "highlights": [
-                        "AI & ML: LLM Orchestration (OpenAI, Gemini, Anthropic), Local and Remote GPU based inference (vLLM), Voice Pipelines, Vector Databases, Embeddings, Semantic Search, AI-native development",
-                        "Interactive Applications: Unity 3D (C#), VR Development.",
-                        "Frontend Engineering: TypeScript, React.js, Web Components, TailwindCSS, Three.js, Vite",
-                        "Backend Engineering: Python, Java, MySQL/PostgreSQL, FastAPI, REST API/WebSockets, Event-Driven Architecture, Playwright (web scraping)",
-                        "Infrastructure: AWS(EKS, EC2, S3, Lambda, RDS, Route53, SQS/SNS), Kubernetes/Docker, Observability Stack (ELK, Prometheus, Grafana), CI/CD (Github Actions, CircleCI), Redis"
-                    ]
-                }
-            ]
-        },
-        {
-            "title": "Projects",
-            "items": [
-                {
-                    "company": "",
-                    "role": "ChordGlyph",
-                    "period": "",
-                    "description": "Browser-based gesture instrument that uses webcam hand tracking to render playable music surfaces over live video and generate synth audio directly in the browser.",
-                    "highlights": [
-                        "<a href='https://github.com/sahnsookyung/chordglyph' target='_blank'>github.com/sahnsookyung/chordglyph</a>",
-                        "Built multiple interaction modes including an on-camera piano keyboard with z-gated fingertip activation and a z-free circle mode for more stable performance on noisy webcam depth.",
-                        "Designed calibration and tuning workflows for per-hand depth gates, per-finger sensitivity, hover/press capture, and activation thresholds to make gesture input playable rather than purely experimental.",
-                        "Added real-time debug overlays, persistence of user-tuned settings in IndexedDB, and browser audio routing controls for practical testing and repeated use.",
-                        "Tech Stack: TypeScript, MediaPipe Hands, Web Audio, Tone.js, IndexedDB, Vite"
-                    ]
-                },
-                {
-                    "company": "",
-                    "role": "Anki Maker Japanese",
-                    "period": "",
-                    "description": "Local-first review workbench for turning Japanese workbook photos into Anki-ready CSV candidates through OCR, evidence-backed review, and human approval.",
-                    "highlights": [
-                        "<a href='https://github.com/sahnsookyung/anki-maker-japanese' target='_blank'>github.com/sahnsookyung/anki-maker-japanese</a>",
-                        "Built a human-in-the-loop pipeline that uploads workbook pages, runs local PaddleOCR with optional OCR-VL and Korean OCR paths, and extracts vocabulary and multiple-choice study candidates.",
-                        "Created a review interface that shows visual OCR evidence beside editable candidates, supports rescanning field-level crops, tracks review state, and exports only trusted rows for Anki import.",
-                        "Structured the system as a Next.js frontend with a FastAPI backend, OCR/extraction modules, benchmark tooling, and local-first runtime behavior that keeps generated artifacts disposable and auditable.",
-                        "Tech Stack: Python, FastAPI, Next.js, TypeScript, PaddleOCR, OCR-VL, uv, Playwright"
-                    ]
-                },
-                {
-                    "company": "",
-                    "role": "Colonizt",
-                    "period": "",
-                    "description": "Browser-first real-time resource-trading and route-building board-game prototype focused on deterministic multiplayer rules, server-authoritative state, replayability, and production-shaped deployment.",
-                    "highlights": [
-                        "<a href='https://github.com/sahnsookyung/colonizt' target='_blank'>github.com/sahnsookyung/colonizt</a>",
-                        "Implemented multiplayer game flows with server-authoritative commands, WebSocket room state, reconnect/resync behavior, deterministic replay logs, and spectator/replay views.",
-                        "Modeled core gameplay systems including setup placement, roads, settlements, cities, development cards, robber movement, discard-on-7, Longest Road, and Largest Army.",
-                        "Built a broader engineering platform around the game with bots, simulations, shared protocol schemas, PostgreSQL-backed persistence, optional Redis presence, and automated property, integration, end-to-end, and smoke testing.",
-                        "Tech Stack: TypeScript, React, Fastify, WebSockets, PostgreSQL, Redis, Playwright, Vitest, Docker"
-                    ]
-                },
-                {
-                    "company": "",
-                    "role": "JobScout",
-                    "period": "",
-                    "description": "Full-stack intelligent system that automatically scrapes job listings from multiple platforms, extracts structured data using local LLMs (Ollama), and matches opportunities to user resumes using semantic vector search (pgvector).",
-                    "highlights": [
-                        "<a href='https://github.com/sahnsookyung/JobScout' target='_blank'>github.com/sahnsookyung/JobScout</a>",
-                        "ETL pipeline with concurrent job ingestion, extraction, facet analysis, and embedding generation",
-                        "Semantic matching engine using vector similarity between resume skills and job requirements",
-                        "Fit/want scoring system to evaluate job alignment",
-                        "Web dashboard (FastAPI + React) for browsing matches, viewing stats, and configuring alerts",
-                        "Async notification system with Redis queue for Discord/email digests",
-                        "Pipeline orchestration with preemption logic for concurrent execution",
-                        "Tech Stack: Python, FastAPI, React, PostgreSQL (pgvector), Redis, Ollama, Docker, SQLAlchemy"
-                    ]
-                },
-                {
-                    "company": "",
-                    "role": "LLM Voice Chatbot",
-                    "period": "",
-                    "description": "An end-to-end local voice agent using Silero VAD, Faster-Whisper (STT), Ollama (LLM), and Kokoro TTS.",
-                    "highlights": [
-                        "<a href='https://github.com/sahnsookyung/LLM-voice-chatbot' target='_blank'>github.com/sahnsookyung/LLM-voice-chatbot</a>",
-                        "Streaming TTS playback and non-blocking audio capture; latency profiling to identify bottlenecks across STT/LLM inference and audio chunk boundaries.",
-                        "Sliding-window conversation history and prompt templating to control context growth across multi-turn chats.",
-                        "Quantized LLMs via Ollama (e.g., Gemma-3-27b GGUF) tuned for local memory/quality trade-offs."
-                    ]
-                },
-                {
-                    "company": "",
-                    "role": "Portfolio/Personal Website (sookyungahn.com)⁠",
-                    "period": "",
-                    "description": "An interactive single-screen portfolio website featuring a hand-drawn SVG landscape with clickable regions that trigger content overlays.",
-                    "highlights": [
-                        "<a href='https://github.com/sahnsookyung/jiko-shoukaisho-website' target='_blank'>github.com/sahnsookyung/jiko-shoukaisho-website</a>",
-                        "Interactive SVG landscape with dynamic overlays and responsive tooltips",
-                        "Multiple purpose-built content viewers (resume, photo gallery, timeline, thoughts)",
-                        "Real-time Three.js particle system simulating gravitational lensing and \"waterfall\" effect from Korean words",
-                        "Native Web Components architecture for modular, framework-less components",
-                        "DOMPurify for security when sanitizing dynamically injected content",
-                        "Tech Stack: TypeScript, HTML5, Tailwind CSS v4, Three.js, Web Components, Vite"
-                    ]
-                }
-            ]
+          "company": "",
+          "role": "",
+          "period": "",
+          "description": "Fullstack Software Engineer with 3.5 years' professional experience building reliable, high-throughput services for banking and digital goods platforms. Skilled in Kubernetes and AWS with strong observability, production readiness, and stakeholder management. Hands-on integration of LLM-powered features into backend workflows across local and GPU-hosted inference.",
+          "highlights": []
         }
-    ],
-    "links": [
+      ]
+    },
+    {
+      "title": "Professional Experience",
+      "items": [
         {
-            "platform": "GitHub",
-            "url": "https://github.com/sahnsookyung",
-            "icon": "github"
+          "company": "Hudson AI",
+          "role": "Contract Specialist",
+          "period": "Jul–Sep 2026",
+          "description": "Audio Localisation and Workflow Tooling | Seoul, South Korea",
+          "highlights": [
+            "Built and rolled out a custom UI overlay and batch-generation automation for an internal localisation platform, delivering an estimated 3–12× improvement across common workflow steps. Demonstrations and training supported adoption by nearly the entire audio localisation team.",
+            "Reviewed Korean and English transcriptions and generated speech against source audio and video; recorded error categories and explanations of review decisions."
+          ]
         },
         {
-            "platform": "LinkedIn",
-            "url": "https://www.linkedin.com/in/soo-kyung-ahn-9a7aa012a/",
-            "icon": "linkedin"
+          "company": "Electrum Payments",
+          "role": "Software Engineer - Digital Goods and Services Team",
+          "period": "2022 - 2025",
+          "description": "Built and operated services processing millions of transactions per day for top South African banks and retailers, improving transaction success rates and reducing incident MTTR via targeted observability dashboards.",
+          "highlights": [
+            "Led the development and maintenance of backend services for digital goods (airtime, vouchers, money transfers, lotto), powering high-volume transactions across South Africa's top banks and national retailers.",
+            "Designed modular, plugin-based components enabling faster feature delivery and safer rollouts across multiple clients on the same platform.",
+            "Drove test automation (JUnit, Mockito), code quality (+80% on SonarQube), and CI/CD robustness (GitHub Actions, CircleCI) to support frequent, low-risk production releases.",
+            "Operated services on AWS EKS with Istio, owning deployment strategies, routing, and runtime diagnostics, and reducing incident MTTR through targeted Kibana/Elasticsearch dashboards.",
+            "Partnered with DevOps to integrate Kafka, SQS/SNS, Route53, and observability tooling into developer workflows, improving deployment reliability and debugging speed.",
+            "Prototyped internal Al-powered tools including an LLM-based code review bot and automated ticket triage system to streamline engineering and support workflows."
+          ]
         }
-    ]
+      ]
+    },
+    {
+      "title": "Education",
+      "items": [
+        {
+          "company": "University of Cape Town",
+          "role": "B.Sc. Honours in Computer Science (First Class GPA)",
+          "period": "2021",
+          "description": "Postgraduate specialization in Computer Science.",
+          "highlights": [
+            "Thesis Focus: Nature simulation studying various techniques for improving immersion and user engagement using Virtual Reality (Unity) & HCI."
+          ]
+        },
+        {
+          "company": "University of Cape Town",
+          "role": "B.Sc. Computer Science & Applied Statistics (Distinction)",
+          "period": "2018 - 2020",
+          "description": "Double major undergraduate degree.",
+          "highlights": [
+            "Capstone Project: Visualization environment for complex molecules in the domain of drug design.",
+            "Dean's Merit List"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Technical Skills",
+      "items": [
+        {
+          "company": "",
+          "role": "",
+          "period": "",
+          "description": "Technical Stack: Java, Python, MySQL, PostgresSQL, AWS, Kubernetes, Kafka, Elasticsearch, .",
+          "highlights": [
+            "AI & ML: LLM Orchestration (OpenAI, Gemini, Anthropic), Local and Remote GPU based inference (vLLM), Voice Pipelines, Vector Databases, Embeddings, Semantic Search, AI-native development",
+            "Interactive Applications: Unity 3D (C#), VR Development.",
+            "Frontend Engineering: TypeScript, React.js, Web Components, TailwindCSS, Three.js, Vite",
+            "Backend Engineering: Python, Java, MySQL/PostgreSQL, FastAPI, REST API/WebSockets, Event-Driven Architecture, Playwright (web scraping)",
+            "Infrastructure: AWS(EKS, EC2, S3, Lambda, RDS, Route53, SQS/SNS), Kubernetes/Docker, Observability Stack (ELK, Prometheus, Grafana), CI/CD (Github Actions, CircleCI), Redis"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Projects",
+      "items": [
+        {
+          "company": "",
+          "role": "JobScout",
+          "period": "",
+          "description": "Full-stack intelligent system that automatically scrapes job listings from multiple platforms, extracts structured data using local LLMs (Ollama), and matches opportunities to user resumes using semantic vector search (pgvector).",
+          "highlights": [
+            "<a href='https://github.com/sahnsookyung/JobScout' target='_blank'>github.com/sahnsookyung/JobScout</a>",
+            "ETL pipeline with concurrent job ingestion, extraction, facet analysis, and embedding generation",
+            "Semantic matching engine using vector similarity between resume skills and job requirements",
+            "Fit/want scoring system to evaluate job alignment",
+            "Web dashboard (FastAPI + React) for browsing matches, viewing stats, and configuring alerts",
+            "Async notification system with Redis queue for Discord/email digests",
+            "Pipeline orchestration with preemption logic for concurrent execution",
+            "Tech Stack: Python, FastAPI, React, PostgreSQL (pgvector), Redis, Ollama, Docker, SQLAlchemy"
+          ]
+        },
+        {
+          "company": "",
+          "role": "Points API & POS Demo",
+          "period": "",
+          "description": "Transactional loyalty-points API with a companion point-of-sale simulator for exploring order awards, refunds, cancellations, customer identity, and shift reconciliation.",
+          "highlights": [
+            "<a href='https://github.com/sahnsookyung/points-api' target='_blank'>github.com/sahnsookyung/points-api</a>",
+            "<a href='https://github.com/sahnsookyung/points-demo' target='_blank'>github.com/sahnsookyung/points-demo</a>",
+            "Designed an append-only points ledger with exact integer arithmetic, versioned earn rates, idempotent operations, and PostgreSQL locking to keep concurrent awards and reversals consistent.",
+            "Built a React POS simulator that demonstrates duplicate delivery, safe retries after uncertain responses, customer identifier updates, and end-of-shift reconciliation against the API.",
+            "Generated OpenAPI contracts and consumer-owned TypeScript clients with drift checks, runtime response validation, and automated unit, API, and concurrency tests.",
+            "Tech Stack: TypeScript, Fastify, TypeBox, Kysely, PostgreSQL, React, Vinext, Vitest, Docker"
+          ]
+        },
+        {
+          "company": "",
+          "role": "Japan Housing",
+          "period": "",
+          "description": "Local housing research dashboard for comparing Japanese rental options by total stay cost, upfront cash, room requirements, and commute scenarios when the eventual work location is uncertain.",
+          "highlights": [
+            "<a href='https://github.com/sahnsookyung/japan-housing' target='_blank'>github.com/sahnsookyung/japan-housing</a>",
+            "Built bounded listing collectors with resumable SQLite storage, cached requests, source provenance, and explicit handling of stale availability and incomplete fees.",
+            "Created linked maps, ranked tables, room comparisons, and Pareto charts that distinguish verified options from provisional listings without inventing missing costs or transit times.",
+            "Modeled calendar-aware stay expenses separately from refundable deposits and upfront cash, with editable destination pins, cached Google Routes transit observations, and JSON/CSV exports.",
+            "Tech Stack: Python, HTTPX, SQLite, JavaScript, Leaflet, Google Routes API, pytest, uv"
+          ]
+        },
+        {
+          "company": "",
+          "role": "Auto Albamon",
+          "period": "",
+          "description": "Python job-discovery and reporting toolkit for Korean part-time work, combining listing verification, deduplication, pay and commute screening, and a local decision dashboard.",
+          "highlights": [
+            "<a href='https://github.com/sahnsookyung/auto-albamon' target='_blank'>github.com/sahnsookyung/auto-albamon</a>",
+            "Built configurable Albamon and staffing-agency collection workflows that verify job details, group equivalent offers, and rank eligible shifts using base pay and observed commute information.",
+            "Added cached Kakao transit lookups with shared quota accounting and request pacing, plus atomic report generation and process locks to keep overlapping refreshes consistent.",
+            "Created a linked map and ranked-table dashboard, Korean application-message reports, and Discord digests that track semantic changes to avoid resending unchanged listings.",
+            "Tech Stack: Python standard library, TOML, Kakao Maps API, Discord Webhooks, JSON/CSV, unittest"
+          ]
+        },
+        {
+          "company": "",
+          "role": "Dub Machine",
+          "period": "",
+          "description": "Local dubbing workstation for Korean, English, and Japanese on Apple Silicon, combining segment editing, translation candidates, speech synthesis, consented voice conversion, and audio quality checks.",
+          "highlights": [
+            "<a href='https://github.com/sahnsookyung/dub-machine' target='_blank'>github.com/sahnsookyung/dub-machine</a>",
+            "Built a staged pipeline with project-pinned model revisions, content-addressed artifacts, and a persistent SQLite queue that serializes heavy inference with progress reporting and cancellation.",
+            "Created a React waveform and spectrogram editor with translation review, candidate listening, autosave, undo/redo, and a Tauri desktop shell backed by FastAPI.",
+            "Added duration-aware adaptation, FFmpeg timing correction, consent checks, and render provenance; real-actor perceptual validation remains pending.",
+            "Tech Stack: Python, FastAPI, React, TypeScript, Tauri, SQLite, FFmpeg, MLX/MPS, WaveSurfer.js"
+          ]
+        },
+        {
+          "company": "",
+          "role": "Stonks Radar",
+          "period": "",
+          "description": "Bilingual Korean/English financial and geopolitical research dashboard with immutable public data snapshots and authenticated research and administration tools.",
+          "highlights": [
+            "<a href='https://github.com/sahnsookyung/stonks-radar' target='_blank'>github.com/sahnsookyung/stonks-radar</a>",
+            "Separated the public React interface from ingestion and administration, serving versioned JSON snapshots while Phoenix manages authentication, role-based access, source review, and publication.",
+            "Used PostgreSQL as canonical storage with Ecto and Oban for backend workflows, and Valkey/Redis for caching, locks, and provider rate counters.",
+            "Codified Cloudflare and OCI infrastructure in Terraform with CI deployment workflows, while keeping unavailable provider data visibly unavailable instead of substituting sample observations.",
+            "Tech Stack: TypeScript, React, Elixir, Phoenix, Ecto, Oban, PostgreSQL, Valkey/Redis, Terraform, Docker"
+          ]
+        },
+        {
+          "company": "",
+          "role": "ChordGlyph",
+          "period": "",
+          "description": "Browser-based gesture instrument that uses webcam hand tracking to render playable music surfaces over live video and generate synth audio directly in the browser.",
+          "highlights": [
+            "<a href='https://github.com/sahnsookyung/chordglyph' target='_blank'>github.com/sahnsookyung/chordglyph</a>",
+            "Built multiple interaction modes including an on-camera piano keyboard with z-gated fingertip activation and a z-free circle mode for more stable performance on noisy webcam depth.",
+            "Designed calibration and tuning workflows for per-hand depth gates, per-finger sensitivity, hover/press capture, and activation thresholds to make gesture input playable rather than purely experimental.",
+            "Added real-time debug overlays, persistence of user-tuned settings in IndexedDB, and browser audio routing controls for practical testing and repeated use.",
+            "Tech Stack: TypeScript, MediaPipe Hands, Web Audio, Tone.js, IndexedDB, Vite"
+          ]
+        },
+        {
+          "company": "",
+          "role": "Anki Maker Japanese",
+          "period": "",
+          "description": "Local-first review workbench for turning Japanese workbook photos into Anki-ready CSV candidates through OCR, evidence-backed review, and human approval.",
+          "highlights": [
+            "<a href='https://github.com/sahnsookyung/anki-maker-japanese' target='_blank'>github.com/sahnsookyung/anki-maker-japanese</a>",
+            "Built a human-in-the-loop pipeline that uploads workbook pages, runs local PaddleOCR with optional OCR-VL and Korean OCR paths, and extracts vocabulary and multiple-choice study candidates.",
+            "Created a review interface that shows visual OCR evidence beside editable candidates, supports rescanning field-level crops, tracks review state, and exports only trusted rows for Anki import.",
+            "Structured the system as a Next.js frontend with a FastAPI backend, OCR/extraction modules, benchmark tooling, and local-first runtime behavior that keeps generated artifacts disposable and auditable.",
+            "Tech Stack: Python, FastAPI, Next.js, TypeScript, PaddleOCR, OCR-VL, uv, Playwright"
+          ]
+        },
+        {
+          "company": "",
+          "role": "Colonizt",
+          "period": "",
+          "description": "Browser-first real-time resource-trading and route-building board-game prototype focused on deterministic multiplayer rules, server-authoritative state, replayability, and production-shaped deployment.",
+          "highlights": [
+            "<a href='https://github.com/sahnsookyung/colonizt' target='_blank'>github.com/sahnsookyung/colonizt</a>",
+            "Implemented multiplayer game flows with server-authoritative commands, WebSocket room state, reconnect/resync behavior, deterministic replay logs, and spectator/replay views.",
+            "Modeled core gameplay systems including setup placement, roads, settlements, cities, development cards, robber movement, discard-on-7, Longest Road, and Largest Army.",
+            "Built a broader engineering platform around the game with bots, simulations, shared protocol schemas, PostgreSQL-backed persistence, optional Redis presence, and automated property, integration, end-to-end, and smoke testing.",
+            "Tech Stack: TypeScript, React, Fastify, WebSockets, PostgreSQL, Redis, Playwright, Vitest, Docker"
+          ]
+        },
+        {
+          "company": "",
+          "role": "LLM Voice Chatbot",
+          "period": "",
+          "description": "An end-to-end local voice agent using Silero VAD, Faster-Whisper (STT), Ollama (LLM), and Kokoro TTS.",
+          "highlights": [
+            "<a href='https://github.com/sahnsookyung/LLM-voice-chatbot' target='_blank'>github.com/sahnsookyung/LLM-voice-chatbot</a>",
+            "Streaming TTS playback and non-blocking audio capture; latency profiling to identify bottlenecks across STT/LLM inference and audio chunk boundaries.",
+            "Sliding-window conversation history and prompt templating to control context growth across multi-turn chats.",
+            "Quantized LLMs via Ollama (e.g., Gemma-3-27b GGUF) tuned for local memory/quality trade-offs."
+          ]
+        },
+        {
+          "company": "",
+          "role": "Portfolio/Personal Website (sookyungahn.com)⁠",
+          "period": "",
+          "description": "An interactive single-screen portfolio website featuring a hand-drawn SVG landscape with clickable regions that trigger content overlays.",
+          "highlights": [
+            "<a href='https://github.com/sahnsookyung/jiko-shoukaisho-website' target='_blank'>github.com/sahnsookyung/jiko-shoukaisho-website</a>",
+            "Interactive SVG landscape with dynamic overlays and responsive tooltips",
+            "Multiple purpose-built content viewers (resume, photo gallery, timeline, thoughts)",
+            "Real-time Three.js particle system simulating gravitational lensing and \"waterfall\" effect from Korean words",
+            "Native Web Components architecture for modular, framework-less components",
+            "DOMPurify for security when sanitizing dynamically injected content",
+            "Tech Stack: TypeScript, HTML5, Tailwind CSS v4, Three.js, Web Components, Vite"
+          ]
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "platform": "GitHub",
+      "url": "https://github.com/sahnsookyung",
+      "icon": "github"
+    },
+    {
+      "platform": "LinkedIn",
+      "url": "https://www.linkedin.com/in/soo-kyung-ahn-9a7aa012a/",
+      "icon": "linkedin"
+    }
+  ]
 }
